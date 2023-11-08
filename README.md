@@ -3,6 +3,21 @@
 This extension is a robot driver designed to run on a micro:bit v1 or v2 on a rover robot;
 and controlled by a MicroCode program running on the arcade shield.
 
+### Hardware requirements
+
+The firmware is designed for popular rover robots found in the micro:bit ecosystem
+(and more can be added):
+
+-   2 motors that can be forward, backward, left, right turns. Precise detection of distance is **not** needed.
+-   2 or more line sensors
+-   a distance sensor, typically an ultrasonic sensor
+
+The following features are found often but are optional:
+
+-   RGB LEDs
+-   Buzzer
+-   Programmable LED strip
+
 ## Usage with MakeCode
 
 -   Open https://makecode.microbit.org
@@ -53,6 +68,21 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+### How to prepare a pull request {#new-robot}
+
+To add a new robot to the list, prepare a pull request in [microsoft/microbit-robot](https://github.com/microsoft/microbit-robot) with:
+
+-   a new class extending `Robot` and configuring the hardware (see other robots)
+-   a global field instance instantiating the robot (see other robots)
+-   a URL in the jsdocs of the class pointing to the robot homepage
+-   add `main{company}{productname}.ts` file that starts the robot
+-   add `pxt-{company}{productname}.json` file that overrides the test files to load `main{company}{productname}.ts`
+-   add call to `mkc pxt-{company}{productname}.json` in `.github/workflows/makecode.yml`
+-   add image under `assets`
+
+Make sure to test and tune the configuration options in the robot class for your particular
+chassis/motor/line detectors. You may want to tweak some of the constants in the robot class to optimize the behavior of the robot.
 
 ## Trademarks
 
