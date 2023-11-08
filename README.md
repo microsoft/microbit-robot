@@ -5,6 +5,7 @@ and controlled by a MicroCode program running on the arcade shield.
 
 ## Usage with MakeCode
 
+-   Open https://makecode.microbit.org
 -   Add this extension to your project by adding url `https://github.io/microsoft/microbit-robot`
 -   Add the block to select the robot model you will be using. **This should be done before using any other blocks**.
 
