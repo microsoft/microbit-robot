@@ -15,5 +15,5 @@ jobs:
       - name: upload modified assets
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-            file_pattern: "assets/* _includes/*"
+            file_pattern: "assets/*"
             branch: main
