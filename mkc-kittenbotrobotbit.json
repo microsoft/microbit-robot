@@ -1,0 +1,5 @@
+{
+    "overrides": {
+        "testFiles": ["mainkittenbotrobotbit.ts"]
+    }
+}

@@ -1,0 +1,12 @@
+//microcode.elecfreaksCuteBot.start()
+//microcode.yahboomTinyBit.start(
+//microcode.elecfreaksCuteBotPro.start()
+//microcode.keyStudioMiniSmartRobot.start()
+//microcode.setMotorDrift(6)
+//microcode.dfRobotMaqueen.start()
+//microcode.dfRobotMaqueenPlusV2.start()
+//microcode.kittenbotMiniLFR.start()
+microcode.inksmithK8.start()
+//microcode.startCompactRadio()
+//microcode.startCalibrationButtons()
+microcode.robots.startTestMode()

@@ -1,0 +1,29 @@
+{
+    "editor.formatOnType": true,
+    "files.autoSave": "afterDelay",
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/built/**": true,
+        "**/node_modules/**": true,
+        "**/yotta_modules/**": true,
+        "**/yotta_targets": true,
+        "**/pxt_modules/**": true,
+        "**/.pxt/**": true
+    },
+    "files.associations": {
+        "*.blocks": "html",
+        "*.jres": "json"
+    },
+    "search.exclude": {
+        "**/built": true,
+        "**/node_modules": true,
+        "**/yotta_modules": true,
+        "**/yotta_targets": true,
+        "**/pxt_modules": true,
+        "**/.pxt": true
+    },
+    "files.exclude": {
+        "**/pxt_modules": true,
+        "**/.pxt": true
+    }
+}
