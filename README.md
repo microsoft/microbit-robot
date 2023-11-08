@@ -30,9 +30,14 @@ to the robot.
 
 -   [Documentation](https://microsoft.github.io/microcode/docs/robot)
 
-```
+## Supported targets
 
-```
+* for PXT/microbit
+* for PXT/calliope
+
+## License
+
+MIT
 
 ## Contributing
 
