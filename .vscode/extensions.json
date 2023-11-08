@@ -1,3 +1,6 @@
 {
-    "recommendations": ["ms-edu.pxt-vscode-web"]
+    "recommendations": [
+        "ms-edu.pxt-vscode-web",
+        "esbenp.prettier-vscode"
+    ]
 }
