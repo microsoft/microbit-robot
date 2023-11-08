@@ -1,4 +1,4 @@
-namespace microcode.robots {
+namespace robot.robots {
     export class ServoArm implements Arm {
         pulseUs?: number
         constructor(

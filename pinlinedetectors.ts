@@ -1,4 +1,4 @@
-namespace microcode.robots {
+namespace robot.robots {
     export class PinLineDetectors implements LineDetectors {
         /**
          * Left line detector

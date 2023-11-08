@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     export function startCalibrationButtons() {
         const d = RobotDriver.instance()
         input.onButtonPressed(Button.A, () =>

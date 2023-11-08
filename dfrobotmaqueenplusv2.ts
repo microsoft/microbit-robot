@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     const I2CADDR = 0x10
     const LEFT_LED_REGISTER = 0x0b
     const RIGHT_LED_REGISTER = 0x0c

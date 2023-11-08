@@ -1,4 +1,4 @@
-namespace microcode.robots {
+namespace robot.robots {
     export class WS2812bLEDStrip implements LEDStrip {
         private ledsBuffer: Buffer
 

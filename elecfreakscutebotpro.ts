@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/elecfreaks/pxt-Cutebot-Pro/blob/master/main.ts
     const i2cAddr: number = 0x10
 

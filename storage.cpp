@@ -2,7 +2,7 @@
 
 #define CALIBRATION_KEY "robot"
 
-namespace microcode {
+namespace robot {
     struct Calibration {
         int radioGroup;
         int drift;

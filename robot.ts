@@ -1,4 +1,4 @@
-namespace microcode.robots {
+namespace robot.robots {
     /**
      * A ws2812b LED strip
      */
@@ -85,36 +85,36 @@ namespace microcode.robots {
 
         constructor() {
             this.commands[
-                microcode.robots.RobotCompactCommand.MotorRunForward
+                robot.robots.RobotCompactCommand.MotorRunForward
             ] = {
                 speed: 70,
             }
             this.commands[
-                microcode.robots.RobotCompactCommand.MotorRunForwardFast
+                robot.robots.RobotCompactCommand.MotorRunForwardFast
             ] = {
                 speed: 100,
             }
             this.commands[
-                microcode.robots.RobotCompactCommand.MotorRunBackward
+                robot.robots.RobotCompactCommand.MotorRunBackward
             ] = {
                 speed: -60,
             }
-            this.commands[microcode.robots.RobotCompactCommand.MotorTurnLeft] =
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
                 {
                     turnRatio: -50,
                     speed: 70,
                 }
-            this.commands[microcode.robots.RobotCompactCommand.MotorTurnRight] =
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] =
                 {
                     turnRatio: 50,
                     speed: 70,
                 }
-            this.commands[microcode.robots.RobotCompactCommand.MotorSpinLeft] =
+            this.commands[robot.robots.RobotCompactCommand.MotorSpinLeft] =
                 {
                     turnRatio: -200,
                     speed: 60,
                 }
-            this.commands[microcode.robots.RobotCompactCommand.MotorSpinRight] =
+            this.commands[robot.robots.RobotCompactCommand.MotorSpinRight] =
                 {
                     turnRatio: 200,
                     speed: 60,

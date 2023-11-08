@@ -1,3 +1,3 @@
-microcode.inksmithK8.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.inksmithK8.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()

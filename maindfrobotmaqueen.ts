@@ -1,3 +1,3 @@
-microcode.dfRobotMaqueen.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.dfRobotMaqueen.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()

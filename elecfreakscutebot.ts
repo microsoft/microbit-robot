@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     const STM8_ADDRESSS = 0x10
 
     //https://github.com/elecfreaks/pxt-cutebot/blob/master/cutebot.ts

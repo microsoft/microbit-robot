@@ -1,6 +1,6 @@
-microcode.kittenbotNanobit.start()
-microcode.startCompactRadio()
+robot.kittenbotNanobit.start()
+robot.startCompactRadio()
 // there is no screen on the nanobit, set the radio group to 1
-microcode.RobotDriver.instance().setRadioGroup(1)
-microcode.startCalibrationButtons()
+robot.RobotDriver.instance().setRadioGroup(1)
+robot.startCalibrationButtons()
 pins.analogSetPitchVolume(168)

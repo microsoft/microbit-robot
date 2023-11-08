@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     const I2C_ADRESS = 0x10
     const M1_INDEX = 0
     const M2_INDEX = 0x02

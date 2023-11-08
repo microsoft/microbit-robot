@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     export const MAX_GROUPS = 25
     export const SCROLL_SPEED = 50
 
@@ -103,9 +103,9 @@ namespace microcode {
 
             // configuration of common hardware
             this.radioGroup =
-                microcode.__readCalibration(0) ||
+                robot.__readCalibration(0) ||
                 radioGroupFromDeviceSerialNumber()
-            this.runDrift = microcode.__readCalibration(1)
+            this.runDrift = robot.__readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
             this.leds = this.robot.leds
             if (this.leds) this.leds.start()
@@ -300,11 +300,11 @@ namespace microcode {
                 for (let i = 0; i < n; ++i) {
                     di = di + sd
                     const msg =
-                        microcode.robots.RobotCompactCommand.ObstacleState | di
+                        robot.robots.RobotCompactCommand.ObstacleState | di
                     this.sendCompactCommand(msg)
                 }
-                microcode.robots.raiseEvent(
-                    microcode.robots.RobotCompactCommand.ObstacleState
+                robot.robots.raiseEvent(
+                    robot.robots.RobotCompactCommand.ObstacleState
                 )
             }
 
@@ -365,24 +365,24 @@ namespace microcode {
                 this.currentLineState = ls
                 if (leftOrRight) this.lineLostCounter = 0
 
-                let msg: microcode.robots.RobotCompactCommand
+                let msg: robot.robots.RobotCompactCommand
                 if (
                     this.currentLineState === RobotLineState.None &&
                     prev === RobotLineState.Left
                 )
-                    msg = microcode.robots.RobotCompactCommand.LineLostLeft
+                    msg = robot.robots.RobotCompactCommand.LineLostLeft
                 else if (
                     this.currentLineState === RobotLineState.None &&
                     prev === RobotLineState.Right
                 )
-                    msg = microcode.robots.RobotCompactCommand.LineLostRight
+                    msg = robot.robots.RobotCompactCommand.LineLostRight
                 else
                     msg =
-                        microcode.robots.RobotCompactCommand.LineState |
+                        robot.robots.RobotCompactCommand.LineState |
                         this.currentLineState
 
                 this.sendCompactCommand(msg)
-                microcode.robots.raiseEvent(msg)
+                robot.robots.raiseEvent(msg)
             }
             if (!leftOrRight) this.lineLostCounter++
             return ls
@@ -423,7 +423,7 @@ namespace microcode {
             led.stopAnimation()
         }
 
-        private sendCompactCommand(cmd: microcode.robots.RobotCompactCommand) {
+        private sendCompactCommand(cmd: robot.robots.RobotCompactCommand) {
             if (this.useRadio) {
                 radio.sendNumber(cmd)
                 nativeSendNumber(cmd)

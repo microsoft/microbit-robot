@@ -1,3 +1,3 @@
-microcode.kittenbotMiniLFR.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.kittenbotMiniLFR.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()

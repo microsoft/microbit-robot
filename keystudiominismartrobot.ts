@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/mworkfun/pxt-k-bit/blob/master/main.ts
     const PCA9685_ADDRESS = 0x43 //device address
     const MODE1 = 0x00

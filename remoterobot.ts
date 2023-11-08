@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     class RemoteRobot extends robots.Robot {
         private _lineState: RobotLineState = undefined
         private _distance: number = undefined

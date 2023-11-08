@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/KittenBot/pxt-minilfr/blob/master/main.ts
 
     function writeCmd(cmd: string) {
@@ -58,13 +58,13 @@ namespace microcode {
         constructor() {
             super()
 
-            this.commands[microcode.robots.RobotCompactCommand.MotorTurnLeft] =
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
                 {
                     turnRatio: -50,
                     speed: 40,
                 }
 
-            this.commands[microcode.robots.RobotCompactCommand.MotorTurnRight] =
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] =
                 {
                     turnRatio: 50,
                     speed: 40,

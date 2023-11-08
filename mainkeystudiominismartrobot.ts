@@ -1,3 +1,3 @@
-microcode.keyStudioMiniSmartRobot.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.keyStudioMiniSmartRobot.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()

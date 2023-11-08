@@ -25,17 +25,17 @@ The following features are found often but are optional:
 -   Add the block to select the robot model you will be using. **This should be done before using any other blocks**.
 
 ```blocks
-microcode.elecfreaksCuteBot.start()
+robot.elecfreaksCuteBot.start()
 ```
 
 -   Use the blocks to control the robot.
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
-    microcode.motorRun(50, 50)
+    robot.motorRun(50, 50)
 })
 input.onButtonPressed(Button.B, () => {
-    microcode.motorStop()
+    robot.motorStop()
 })
 ```
 

@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/YahboomTechnology/Tiny-bitLib/blob/master/main.ts
     const PWM_ADD = 0x01
     const MOTOR = 0x02

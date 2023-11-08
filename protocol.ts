@@ -13,7 +13,7 @@ const enum RobotLineState {
     LostRight = None | 0x0a,
 }
 
-namespace microcode.robots {
+namespace robot.robots {
     export const MAGIC = 0x8429
 
     /**

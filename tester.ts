@@ -1,31 +1,31 @@
-namespace microcode.robots {
+namespace robot.robots {
     /**
      * Starts a testing mode to be used when building a robot
      */
     export function startTestMode() {
-        microcode.setLineAssist(false)
+        robot.setLineAssist(false)
         input.onButtonPressed(Button.A, () => {
             const d = 1000
-            microcode.motorRun(200, 100)
+            robot.motorRun(200, 100)
             pause(d)
-            microcode.motorRun(-200, 100)
+            robot.motorRun(-200, 100)
             pause(d)
-            microcode.motorStop()
+            robot.motorStop()
         })
 
         input.onButtonPressed(Button.B, () => {
             const d = 1000
-            microcode.motorRun(0, 100)
+            robot.motorRun(0, 100)
             pause(d)
-            microcode.motorRun(0, 50)
+            robot.motorRun(0, 50)
             pause(d)
-            microcode.motorRun(0, 0)
+            robot.motorRun(0, 0)
             pause(d)
-            microcode.motorRun(0, -50)
+            robot.motorRun(0, -50)
             pause(d)
-            microcode.motorRun(0, -100)
+            robot.motorRun(0, -100)
             pause(d)
-            microcode.motorStop()
+            robot.motorStop()
         })
     }
 }

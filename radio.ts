@@ -1,45 +1,45 @@
-namespace microcode {
+namespace robot {
     function decodeRobotCompactCommand(driver: RobotDriver, msg: number) {
         if (
-            msg >= microcode.robots.RobotCompactCommand.Command &&
-            msg <= microcode.robots.RobotCompactCommand.CommandLast
+            msg >= robot.robots.RobotCompactCommand.Command &&
+            msg <= robot.robots.RobotCompactCommand.CommandLast
         ) {
             driver.playTone(440, 40)
         }
         switch (msg) {
-            case microcode.robots.RobotCompactCommand.MotorStop:
-            case microcode.robots.RobotCompactCommand.MotorTurnLeft:
-            case microcode.robots.RobotCompactCommand.MotorTurnRight:
-            case microcode.robots.RobotCompactCommand.MotorSpinLeft:
-            case microcode.robots.RobotCompactCommand.MotorSpinRight:
-            case microcode.robots.RobotCompactCommand.MotorRunForwardFast:
-            case microcode.robots.RobotCompactCommand.MotorRunForward:
-            case microcode.robots.RobotCompactCommand.MotorRunBackward: {
+            case robot.robots.RobotCompactCommand.MotorStop:
+            case robot.robots.RobotCompactCommand.MotorTurnLeft:
+            case robot.robots.RobotCompactCommand.MotorTurnRight:
+            case robot.robots.RobotCompactCommand.MotorSpinLeft:
+            case robot.robots.RobotCompactCommand.MotorSpinRight:
+            case robot.robots.RobotCompactCommand.MotorRunForwardFast:
+            case robot.robots.RobotCompactCommand.MotorRunForward:
+            case robot.robots.RobotCompactCommand.MotorRunBackward: {
                 const command = driver.robot.commands[msg] || {}
                 const turnRatio = command.turnRatio || 0
                 const speed = command.speed || 0
                 driver.lineAssist =
                     msg !==
-                    microcode.robots.RobotCompactCommand.MotorRunForwardFast
+                    robot.robots.RobotCompactCommand.MotorRunForwardFast
                 driver.motorRun(turnRatio, speed)
                 break
             }
-            case microcode.robots.RobotCompactCommand.LEDRed:
+            case robot.robots.RobotCompactCommand.LEDRed:
                 driver.setColor(0xff0000)
                 break
-            case microcode.robots.RobotCompactCommand.LEDGreen:
+            case robot.robots.RobotCompactCommand.LEDGreen:
                 driver.setColor(0x00ff00)
                 break
-            case microcode.robots.RobotCompactCommand.LEDBlue:
+            case robot.robots.RobotCompactCommand.LEDBlue:
                 driver.setColor(0x0000ff)
                 break
-            case microcode.robots.RobotCompactCommand.LEDOff:
+            case robot.robots.RobotCompactCommand.LEDOff:
                 driver.setColor(0x00000)
                 break
-            case microcode.robots.RobotCompactCommand.ArmOpen:
+            case robot.robots.RobotCompactCommand.ArmOpen:
                 driver.armOpen(100)
                 break
-            case microcode.robots.RobotCompactCommand.ArmClose:
+            case robot.robots.RobotCompactCommand.ArmClose:
                 driver.armOpen(0)
                 break
         }

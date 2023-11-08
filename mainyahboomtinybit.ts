@@ -1,3 +1,3 @@
-microcode.yahboomTinyBit.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.yahboomTinyBit.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()

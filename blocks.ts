@@ -1,16 +1,16 @@
 /**
- * Microcode Robot
+ * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
 //% groups='["Robot", "Output", "Input", "Configuration"]'
-namespace microcode {
+namespace robot {
     /**
      * Moves the robot.
      */
     //% weight=98
     //% group="Output"
     //% block="robot motor run with steering $turnRatio at speed $speed \\%"
-    //% blockid="microcoderobotmotorturn"
+    //% blockid="mbitrobotmotorturn"
     //% speed.defl=100
     //% speed.min=-100
     //% speed.max=100
@@ -29,7 +29,7 @@ namespace microcode {
     //% weight=50
     //% group="Output"
     //% block="robot motor stop"
-    //% blockid="microcoderobotmotorstop"
+    //% blockid="mbitrobotmotorstop"
     export function motorStop() {
         const robot = RobotDriver.instance()
         robot.motorRun(0, 0)
@@ -38,7 +38,7 @@ namespace microcode {
     /**
      * Sets the LED color
      */
-    //% blockId="microcoderobotsetcolor" block="robot set color $rgb"
+    //% blockid="mbitrobotsetcolor" block="robot set color $rgb"
     //% group="Output"
     //% weight=10
     //% rgb.shadow=colorNumberPicker
@@ -50,7 +50,7 @@ namespace microcode {
     /**
      * Play a tone through the robot speaker
      */
-    //% blockId="microcoderobotplaytone" block="robot play tone $frequency for $duration"
+    //% blockid="mbitrobotplaytone" block="robot play tone $frequency for $duration"
     //% group="Output"
     //% weight=10
     //% frequency.shadow=device_note
@@ -78,8 +78,8 @@ namespace microcode {
     //% blockId=microcoderobotobstacledistancechanged
     //% group="Input"
     export function onObstacleChanged(handler: () => void) {
-        microcode.robots.onEvent(
-            microcode.robots.RobotCompactCommand.ObstacleState,
+        robot.robots.onEvent(
+            robot.robots.RobotCompactCommand.ObstacleState,
             handler
         )
     }
@@ -102,15 +102,15 @@ namespace microcode {
     //% blockId=microcoderobotondetectlines
     //% group="Input"
     export function onLineDetected(state: RobotLineState, handler: () => void) {
-        const msg = microcode.robots.RobotCompactCommand.LineState | state
-        microcode.robots.onEvent(msg, handler)
+        const msg = robot.robots.RobotCompactCommand.LineState | state
+        robot.robots.onEvent(msg, handler)
     }
 
     /**
      * Enables or disables the line speed assistance.
      */
     //% block="robot set line assist $enabled"
-    //% blockId="microcoderobotsetlineassist"
+    //% blockid="mbitrobotsetlineassist"
     //% group="Configuration"
     //% enabled.shadow=toggleOnOff
     export function setLineAssist(enabled: boolean): void {
@@ -122,7 +122,7 @@ namespace microcode {
      * Sets a value that corrects the ratio of power between the left and the right motor to account for hardware differences.
      */
     //% block="robot set motor drift to %drift"
-    //% blockId="microcoderobotsetmotordrift"
+    //% blockid="mbitrobotsetmotordrift"
     //% group="Configuration"
     //% weight=10
     //% drift.min=-25
@@ -138,7 +138,7 @@ namespace microcode {
      * @param enabled
      */
     //% block="robot set display $enabled"
-    //% blockId="microcoderobotsetdisplay"
+    //% blockid="mbitrobotsetdisplay"
     //% group="Configuration"
     //% enabled.shadow=toggleOnOff
     export function setDisplay(enabled: boolean) {

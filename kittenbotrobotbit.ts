@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/KittenBot/pxt-robotbit/blob/master/main.ts
     const PCA9685_ADDRESS = 0x40
     const MODE1 = 0x00

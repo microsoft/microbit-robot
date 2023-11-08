@@ -1,4 +1,4 @@
-microcode.elecfreaksCuteBotPro.start()
-microcode.startCompactRadio()
-microcode.startCalibrationButtons()
+robot.elecfreaksCuteBotPro.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()
 pins.analogSetPitchVolume(156)

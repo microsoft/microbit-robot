@@ -1,5 +1,5 @@
-namespace microcode {
-    //% shim=microcode::__writeCalibration
+namespace robot {
+    //% shim=robot::__writeCalibration
     export function __writeCalibration(
         radioGroup: number,
         drift: number
@@ -8,7 +8,7 @@ namespace microcode {
         console.log("run drift: " + drift)
     }
 
-    //% shim=microcode::__readCalibration
+    //% shim=robot::__readCalibration
     export function __readCalibration(field: number): number {
         // read run drift
         return 0

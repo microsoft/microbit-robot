@@ -1,4 +1,4 @@
-namespace microcode {
+namespace robot {
     // https://github.com/KittenBot/pxt-nanobit.git
 
     // TODO: there is no 5x5 led matrix on nanobit, possible add oled I2C display support?
