@@ -38,6 +38,15 @@ The following features are found often but are optional:
 
 ## Blocks
 
+### Understanding the screen
+
+The extension uses the 5x5 screen to show the state of the robot (you can turn off this behavior see configuration).
+This is particularly useful to debug your robot program.
+
+-   left and right LED column show the line detector state
+-   center column shows the obstacle distance in multiple of 5cm
+-   2nd and 4th column show the motor throttle
+
 ### Choosing the robot type
 
 At the start of any robot program, you need add the block to select the robot model you will be using.
