@@ -236,7 +236,7 @@ To add a new robot to the list, prepare a pull request in [microsoft/microbit-ro
 -   a URL in the jsdocs of the class pointing to the robot homepage
 -   add `main{company}{productname}.ts` file that starts the robot
 -   add `pxt-{company}{productname}.json` file that overrides the test files to load `main{company}{productname}.ts`
--   add call to `mkc pxt-{company}{productname}.json` in `.github/workflows/makecode.yml`
+-   add call to `mkc -c pxt-{company}{productname}.json` in `.github/workflows/makecode.yml`
 -   add image under `assets`
 
 Make sure to test and tune the configuration options in the robot class for your particular
