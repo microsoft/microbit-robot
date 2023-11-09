@@ -42,7 +42,7 @@ The following features are found often but are optional:
 
 ### Choosing the robot type
 
-At the start of any robot program, you need add the block to select the robot model you will be using. 
+At the start of any robot program, you need add the block to select the robot model you will be using.
 
 > **This should be done before using any other blocks**.
 
@@ -60,10 +60,10 @@ input.onButtonPressed(Button.A, () => {
 })
 ```
 
-The move block takes a `steering`` and `speed` parameters.
-The `steering` controls how much "turn", `speed` controls the throttle on the motors.
+The move block takes a ` steering`` and  `speed`parameters.
+The`steering`controls how much "turn",`speed` controls the throttle on the motors.
 
--  stop the robot
+-   stop the robot
 
 ```blocks
 input.onButtonPressed(Button.B, () => {
@@ -90,13 +90,42 @@ input.onButtonPressed(Button.A, function () {
 ### Input
 
 -   detect when an obstacle is changing
-and read the current distance (in cm)
+    and read the current distance (in cm)
 
 ```blocks
 let dist = 0
 robot.onObstacleChanged(function () {
     dist = robot.obstacleDistance()
 })
+```
+
+-   detect line changes or read line state
+
+```blocks
+let left = false
+robot.onLineDetected(RobotLineState.Left, function () {
+    left = robot.detectLines(RobotLineState.Left)
+})
+```
+
+### Configuration
+
+-   turn off robot screen
+
+```blocks
+robot.setDisplay(false)
+```
+
+-   configure the motor drift
+
+```blocks
+robot.setMotorDrift(10)
+```
+
+-   disable or enable line assist
+
+```blocks
+robot.setLineAssist(false)
 ```
 
 ## Usage with MicroCode
