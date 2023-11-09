@@ -153,31 +153,31 @@ to the robot.
 
 ### DFRobot Maqueen V2+ <a id="dfrobot-maq"></a>
 
-![Photograph of the Maqueen](https://microsoft.github.io/microbit-robot/assets/images/maqueen.jpeg){:class="photo"}
+![Photograph of the Maqueen](https://microsoft.github.io/microbit-robot/assets/images/maqueen.jpeg)
 
 -   [Home](https://wiki.dfrobot.com/micro_Maqueen_for_micro_bit_SKU_ROB0148-EN)
 
 ### DFRobot Maqueen Plus V2 <a id="dfrobot-maq-plus"></a>
 
-![Photograph of the Maqueen plus](https://microsoft.github.io/microbit-robot/assets/images/dfrobotmaqueenplusv2.jpg){:class="photo"}
+![Photograph of the Maqueen plus](https://microsoft.github.io/microbit-robot/assets/images/dfrobotmaqueenplusv2.jpg)
 
 -   [Home](https://www.dfrobot.com/product-2026.html)
 
 ### Elecfreaks Cutebot <a id="cutebot"></a>
 
-![Photograph of the Cutebot](https://microsoft.github.io/microbit-robot/assets/images/cutebot.jpeg){:class="photo"}
+![Photograph of the Cutebot](https://microsoft.github.io/microbit-robot/assets/images/cutebot.jpeg)
 
 -   [Home](https://www.elecfreaks.com/micro-bit-smart-cutebot.html)
 
 ### Elecfreaks Cutebot PRO <a id="cutebot-pro"></a>
 
-![Photograph of the Cutebot PRO](https://microsoft.github.io/microbit-robot/assets/images/cutebotpro.jpeg){:class="photo"}
+![Photograph of the Cutebot PRO](https://microsoft.github.io/microbit-robot/assets/images/cutebotpro.jpeg)
 
 -   [Home](https://shop.elecfreaks.com/products/elecfreaks-smart-cutebot-pro-v2-programming-robot-car-for-micro-bit)
 
 ## InkSmith K8 <a id="inksmith-k8"></a>
 
-![Photograph of the K8](https://microsoft.github.io/microbit-robot/assets/images/inksmithk8.webp){:class="photo"}
+![Photograph of the K8](https://microsoft.github.io/microbit-robot/assets/images/inksmithk8.webp)
 
 -   [Home](https://www.inksmith.ca/products/k8-robotics-kit)
 
@@ -187,25 +187,25 @@ to the robot.
 
 ### KittenBot MiniLFR <a id="kittenbot-mlfr"></a>
 
-![Photo of the MiniLFR robot](https://microsoft.github.io/microbit-robot/assets/images/minilfr.png){:class="photo"}
+![Photo of the MiniLFR robot](https://microsoft.github.io/microbit-robot/assets/images/minilfr.png)
 
 -   [Home](https://www.kittenbot.cc/products/kittenbot-minilfr-programmable-robot-car-kit-for-microbit)
 
 ### KittenBot Robotbit <a id="kittenbot-robotbit"></a>
 
-![Photo of the Robotbit robot](https://microsoft.github.io/microbit-robot/assets/images/robotbit.webp){:class="photo"}
+![Photo of the Robotbit robot](https://microsoft.github.io/microbit-robot/assets/images/robotbit.webp)
 
 -   [Home](https://www.kittenbot.cc/products/robotbit-robotics-expansion-board-for-micro-bit)
 
 ### KittenBot Nanobit <a id="kittenbot-nanobit"></a>
 
-![Photo of the Nanobit robot](https://microsoft.github.io/microbit-robot/assets/images/nanobit.webp){:class="photo"}
+![Photo of the Nanobit robot](https://microsoft.github.io/microbit-robot/assets/images/nanobit.webp)
 
 -   [Home](https://www.kittenbot.cc/products/kittenbot-nanobit-with-kb-link-downloader-for-makecode-python-and-arduino-programming)
 
 ### Yahboom Tiny:bit <a id="yahboom"></a>
 
-![Photograph of the Tiny:bit](https://microsoft.github.io/microbit-robot/assets/images/tinybit.jpeg){:class="photo"}
+![Photograph of the Tiny:bit](https://microsoft.github.io/microbit-robot/assets/images/tinybit.jpeg)
 
 -   [Home](http://www.yahboom.net/study/Tiny:bit)
 
