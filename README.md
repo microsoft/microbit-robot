@@ -121,7 +121,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-dfrobot-maqueen-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-dfrobot-maqueen-for-microbit-v2.hex)
 
-### DFRobot Maqueen Plus V2 {#dfrobot-maq-plus}
+### DFRobot Maqueen Plus V2 <a id="dfrobot-maq-plus"></a>
 
 ![Photograph of the Maqueen plus](./assets/images/dfrobotmaqueenplusv2.jpg){:class="photo"}
 
@@ -129,7 +129,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-dfrobot-maqueen-plus-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-dfrobot-maqueen-plus-for-microbit-v2.hex)
 
-### Elecfreaks Cutebot {#cutebot}
+### Elecfreaks Cutebot <a id="cutebot"></a>
 
 ![Photograph of the Cutebot](./assets/images/cutebot.jpeg){:class="photo"}
 
@@ -137,7 +137,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-elecfreaks-cutebot-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-elecfreaks-cutebot-for-microbit-v2.hex)
 
-### Elecfreaks Cutebot PRO {#cutebot-pro}
+### Elecfreaks Cutebot PRO <a id="cutebot-pro"></a>
 
 ![Photograph of the Cutebot PRO](./assets/images/cutebotpro.jpeg){:class="photo"}
 
@@ -145,7 +145,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-elecfreaks-cutebotpro-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-elecfreaks-cutebotpro-for-microbit-v2.hex)
 
-## InkSmith K8 {#inksmith-k8}
+## InkSmith K8 <a id="inksmith-k8"></a>
 
 ![Photograph of the K8](./assets/images/inksmithk8.webp){:class="photo"}
 
@@ -153,13 +153,13 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-inksmith-k8-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-inksmith-k8-for-microbit-v2.hex)
 
-### KeyStudio KS0426 Mini Smart Robot {#keystudio-mini}
+### KeyStudio KS0426 Mini Smart Robot <a id="keystudio-mini"></a>
 
 -   [Home](https://wiki.keyestudio.com/KS0426_Keyestudio_Micro%EF%BC%9Abit_Mini_Smart_Robot_Car_Kit_V2)
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-keystudio-minismartrobot-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-keystudio-minismartrobot-for-microbit-v2.hex)
 
-### KittenBot MiniLFR {#kittenbot-mlfr}
+### KittenBot MiniLFR <a id="kittenbot-mlfr"></a>
 
 ![Photo of the MiniLFR robot](./assets/images/minilfr.png){:class="photo"}
 
@@ -167,7 +167,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-minilfr-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-minilfr-for-microbit-v2.hex)
 
-### KittenBot Robotbit {#kittenbot-robotbit}
+### KittenBot Robotbit <a id="kittenbot-robotbit"></a>
 
 ![Photo of the Robotbit robot](./assets/images/robotbit.webp){:class="photo"}
 
@@ -175,7 +175,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-robotbit-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-robotbit-for-microbit-v2.hex)
 
-### KittenBot Nanobit {#kittenbot-nanobit}
+### KittenBot Nanobit <a id="kittenbot-nanobit"></a>
 
 ![Photo of the Nanobit robot](./assets/images/nanobit.webp){:class="photo"}
 
@@ -183,7 +183,7 @@ to the robot.
 -   [Download for micro:bit V1](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-nanobit-for-microbit-v1.hex)
 -   [Download for micro:bit V2](https://microsoft.github.io/microbit-robot/assets/robot-kittenbot-nanobit-for-microbit-v2.hex)
 
-### Yahboom Tiny:bit {#yahboom}
+### Yahboom Tiny:bit <a id="yahboom"></a>
 
 ![Photograph of the Tiny:bit](./assets/images/tinybit.jpeg){:class="photo"}
 
@@ -209,7 +209,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-### How to prepare a pull request {#new-robot}
+### How to prepare a pull request <a id="new-robot"></a>
 
 To add a new robot to the list, prepare a pull request in [microsoft/microbit-robot](https://github.com/microsoft/microbit-robot) with:
 
