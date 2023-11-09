@@ -48,6 +48,8 @@ At the start of any robot program, you need add the block to select the robot mo
 robot.elecfreaksCuteBot.start()
 ```
 
+This is the only code that is specific to the robot you are using. The rest of the blocks are the same for all robots.
+
 ### Output
 
 -   move
