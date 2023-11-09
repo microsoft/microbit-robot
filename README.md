@@ -5,6 +5,8 @@ This library is compatible with micro:bit V1 and V2.
 
 ![3 micro:bit robots](./assets/images/robots.jpg)
 
+-   [Read Documentation](https://makecode.microbit.org/pkg/microsoft/microbit-robot)
+
 -   [DFRobot Maqueen](#dfrobot-maq)
 -   [DFRobot Maqueen Plus](#dfrobot-maq-plus)
 -   [Elecfreaks Cutebot](#cutebot)
@@ -48,11 +50,17 @@ robot.elecfreaksCuteBot.start()
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
-    robot.motorRun(50, 50)
+    robot.motorRun(0, 100)
 })
 input.onButtonPressed(Button.B, () => {
     robot.motorStop()
 })
+```
+
+-  stop the robot
+
+```blocks
+robot.motorStop()
 ```
 
 ## Usage with MicroCode
