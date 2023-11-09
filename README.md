@@ -36,31 +36,67 @@ The following features are found often but are optional:
 ## Using this extension
 
 -   Open https://makecode.microbit.org
--   Add this extension to your project by adding url `https://github.io/microsoft/microbit-robot`
+-   Add this extension to your project by adding url [https://github.io/microsoft/microbit-robot](https://github.io/microsoft/microbit-robot)
 
 ## Blocks
 
--   Add the block to select the robot model you will be using. **This should be done before using any other blocks**.
+### Choosing the robot type
+
+At the start of any robot program, you need add the block to select the robot model you will be using. 
+
+> **This should be done before using any other blocks**.
 
 ```blocks
 robot.elecfreaksCuteBot.start()
 ```
 
--   Use the blocks to control the robot.
+### Output
+
+-   move
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
     robot.motorRun(0, 100)
 })
+```
+
+The move block takes a `steering`` and `speed` parameters.
+The `steering` controls how much "turn", `speed` controls the throttle on the motors.
+
+-  stop the robot
+
+```blocks
 input.onButtonPressed(Button.B, () => {
     robot.motorStop()
 })
 ```
 
--  stop the robot
+-   play tone
 
 ```blocks
-robot.motorStop()
+input.onButtonPressed(Button.A, function () {
+    robot.playTone(262, music.beat(BeatFraction.Whole))
+})
+```
+
+-   set LED and headlights color
+
+```blocks
+input.onButtonPressed(Button.A, function () {
+    robot.setColor(0xff0000)
+})
+```
+
+### Input
+
+-   detect when an obstacle is changing
+and read the current distance (in cm)
+
+```blocks
+let dist = 0
+robot.onObstacleChanged(function () {
+    dist = robot.obstacleDistance()
+})
 ```
 
 ## Usage with MicroCode
@@ -75,7 +111,9 @@ to the robot.
 -   for PXT/microbit
 -   for PXT/calliope
 
-### DFRobot Maqueen V2+ {#dfrobot-maq}
+## Supported Robots
+
+### DFRobot Maqueen V2+ <a id="dfrobot-maq"></a>
 
 ![Photograph of the Maqueen](./assets/images/maqueen.jpeg){:class="photo"}
 
