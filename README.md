@@ -34,7 +34,7 @@ The following features are found often but are optional:
 ## Using this extension
 
 -   Open https://makecode.microbit.org
--   Add this extension to your project by adding url [https://github.io/microsoft/microbit-robot](https://github.io/microsoft/microbit-robot)
+-   Add this extension to your project by adding url [https://github.com/microsoft/microbit-robot](https://github.com/microsoft/microbit-robot)
 
 ## Blocks
 
