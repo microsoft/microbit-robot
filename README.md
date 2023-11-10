@@ -139,8 +139,7 @@ robot.setLineAssist(false)
 
 ## Usage with MicroCode
 
-Download this firmware onto the micro:bit that stays on the robot. Then use MicroCode to send commands
-to the robot.
+Use micro:code to remote control a robot using this library.
 
 -   [Documentation](https://microsoft.github.io/microcode/docs/robot)
 
