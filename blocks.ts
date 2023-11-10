@@ -36,6 +36,20 @@ namespace robot {
     }
 
     /**
+     * Opens or closes the claw (if available).
+     * @param opening the opening of the claw, from 0 (closed) to 100 (open)
+     */
+    //% group="Output"
+    //% block="robot arm open $opening \\%"
+    //% blockid="mbitrobotarmopen"
+    //% opening.min=0
+    //% opening.max=100
+    export function armOpen(opening: number) {
+        const robot = RobotDriver.instance()
+        robot.armOpen(opening)
+    }
+
+    /**
      * Sets the LED color
      */
     //% blockid="mbitrobotsetcolor" block="robot set color $rgb"

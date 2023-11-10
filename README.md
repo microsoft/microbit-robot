@@ -80,11 +80,11 @@ input.onButtonPressed(Button.B, () => {
 })
 ```
 
--   play tone
+-   open the claw/arm
 
 ```blocks
-input.onButtonPressed(Button.A, function () {
-    robot.playTone(262, music.beat(BeatFraction.Whole))
+input.onButtonPressed(Button.B, () => {
+    robot.armOpen(50)
 })
 ```
 
@@ -93,6 +93,14 @@ input.onButtonPressed(Button.A, function () {
 ```blocks
 input.onButtonPressed(Button.A, function () {
     robot.setColor(0xff0000)
+})
+```
+
+-   play tone
+
+```blocks
+input.onButtonPressed(Button.A, function () {
+    robot.playTone(262, music.beat(BeatFraction.Whole))
 })
 ```
 
