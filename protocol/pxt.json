@@ -1,0 +1,21 @@
+{
+    "name": "microbit-robot-protocol",
+    "version": "2.5.30",
+    "dependencies": {
+        "core": "*",
+        "radio": "*"
+    },
+    "files": [
+        "README.md",
+        "protocol.ts"
+    ],
+    "targetVersions": {
+        "target": "6.0.19",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit",
+        "calliopemini"
+    ],
+    "preferredEditor": "tsprj"
+}

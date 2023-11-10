@@ -9,7 +9,7 @@
     "files": [
         "README.md",
         "microbit.ts",
-        "protocol.ts",
+        "protocol/protocol.ts",
         "messages.ts",
         "robot.ts",
         "keystudiominismartrobot.ts",

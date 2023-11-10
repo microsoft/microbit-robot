@@ -29,3 +29,6 @@ cp ./built/mbcodal-binary.hex ./assets/kittenbot-robotbit-for-microbit-v2.hex
 makecode -c mkc-inksmithk8.json
 cp ./built/mbdal-binary.hex ./assets/inksmith-k8-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/inksmith-k8-for-microbit-v2.hex
+
+cd protocol
+makecode
