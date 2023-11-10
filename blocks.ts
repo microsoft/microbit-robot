@@ -4,6 +4,8 @@
 //% color="#ff6800" icon="\uf1b9" weight=15
 //% groups='["Robot", "Output", "Input", "Configuration"]'
 namespace robot {
+    const MAX_GROUPS = 25
+
     /**
      * Moves the robot.
      */
@@ -158,5 +160,23 @@ namespace robot {
     export function setDisplay(enabled: boolean) {
         const robot = RobotDriver.instance()
         robot.hud = !!enabled
+    }
+
+    /**
+     * Sets the group used for radio communication
+     * @param id group id
+     */
+    //% block="robot set radio group $enabled"
+    //% blockid="mbitrobotsetradiogroup"
+    //% group="Configuration"
+    //% group.min=1
+    //% group.max=25
+    export function setRadioGroup(id: number) {
+        const robot = RobotDriver.instance()
+        id = id >> 0
+        if (id === 0) return // not allowed
+        if (id < 0) id += MAX_GROUPS
+        id = id % MAX_GROUPS
+        robot.setRadioGroup(id)
     }
 }

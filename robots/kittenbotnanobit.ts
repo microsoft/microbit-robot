@@ -64,7 +64,7 @@ namespace robot {
     class KittenbotNanobitOminiRobot extends robots.Robot {
         constructor() {
             super()
-            this.leds = new robots.WS2812bLEDStrip(DigitalPin.P16, 2)
+            this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 2)
             pca9624Init()
             motorSet4(0, 0, 0, 0)
         }

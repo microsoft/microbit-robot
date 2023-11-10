@@ -1,4 +1,4 @@
-namespace robot.robots {
+namespace robot.drivers {
     export class ServoArm implements Arm {
         pulseUs?: number
         constructor(

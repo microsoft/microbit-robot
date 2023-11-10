@@ -1,4 +1,4 @@
-namespace robot.robots {
+namespace robot.drivers {
     export class SR04Sonar implements Sonar {
         /**
          * Microseconds to keep the trigger pin low. Default is 4.

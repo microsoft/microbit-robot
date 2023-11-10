@@ -1,4 +1,4 @@
-namespace robot {
+namespace robot.drivers {
     /**
      * Kalman Filter 1D.
      * Ported from https://github.com/wouterbulten/kalmanjs

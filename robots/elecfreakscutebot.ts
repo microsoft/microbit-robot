@@ -5,14 +5,14 @@ namespace robot {
     class ElecfreaksCutebotRobot extends robots.Robot {
         constructor() {
             super()
-            this.leds = new robots.WS2812bLEDStrip(DigitalPin.P15, 2)
-            this.sonar = new robots.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
-            this.lineDetectors = new robots.PinLineDetectors(
+            this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 2)
+            this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
+            this.lineDetectors = new drivers.PinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
                 false
             )
-            this.arm = new robots.ServoArm(45, 135, AnalogPin.P1)
+            this.arm = new drivers.ServoArm(45, 135, AnalogPin.P1)
             this.maxLineSpeed = 28
         }
 

@@ -1,4 +1,4 @@
-namespace robot.robots {
+namespace robot.drivers {
     export class PinLineDetectors implements LineDetectors {
         /**
          * Left line detector

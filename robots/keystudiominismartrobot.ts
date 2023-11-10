@@ -90,8 +90,8 @@ namespace robot {
     class KeyStudioMiniSmartRobot extends robots.Robot {
         constructor() {
             super()
-            this.sonar = new robots.SR04Sonar(ECHO_PIN, TRIG_PIN)
-            this.lineDetectors = new robots.PinLineDetectors(
+            this.sonar = new drivers.SR04Sonar(ECHO_PIN, TRIG_PIN)
+            this.lineDetectors = new drivers.PinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
                 true

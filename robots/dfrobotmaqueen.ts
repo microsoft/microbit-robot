@@ -18,13 +18,13 @@ namespace robot {
     class DFRobotMaqueenRobot extends robots.Robot {
         constructor() {
             super()
-            this.lineDetectors = new robots.PinLineDetectors(
+            this.lineDetectors = new drivers.PinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
                 false
             )
-            this.leds = new robots.WS2812bLEDStrip(DigitalPin.P15, 4)
-            this.sonar = new robots.SR04Sonar(DigitalPin.P2, DigitalPin.P1)
+            this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 4)
+            this.sonar = new drivers.SR04Sonar(DigitalPin.P2, DigitalPin.P1)
         }
 
         motorRun(left: number, right: number): void {

@@ -1,4 +1,4 @@
-namespace robot.robots {
+namespace robot.drivers {
     export class WS2812bLEDStrip implements LEDStrip {
         private ledsBuffer: Buffer
 

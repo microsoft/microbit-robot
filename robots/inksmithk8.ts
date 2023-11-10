@@ -25,13 +25,13 @@ namespace robot {
     class InksmithK8Robot extends robots.Robot {
         constructor() {
             super()
-            this.lineDetectors = new robots.PinLineDetectors(
+            this.lineDetectors = new drivers.PinLineDetectors(
                 IR_SENSOR_LEFT,
                 IR_SENSOR_RIGHT,
                 true
             )
-            this.arm = new robots.ServoArm(-85, 85, SERVO_1)
-            const sonar = new robots.SR04Sonar(SONAR, SONAR)
+            this.arm = new drivers.ServoArm(-85, 85, SERVO_1)
+            const sonar = new drivers.SR04Sonar(SONAR, SONAR)
             this.sonar = sonar
         }
 

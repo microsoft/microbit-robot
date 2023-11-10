@@ -1,5 +1,5 @@
 {
     "overrides": {
-        "testFiles": ["mainkittenbotrobotbit.ts"]
+        "testFiles": ["remotes/mainkittenbotrobotbit.ts"]
     }
 }

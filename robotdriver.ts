@@ -1,5 +1,4 @@
 namespace robot {
-    export const MAX_GROUPS = 25
     export const SCROLL_SPEED = 50
 
     function radioGroupFromDeviceSerialNumber() {
@@ -38,7 +37,7 @@ namespace robot {
         /**
          * Gets the latest distance returned by the sensor
          */
-        private readonly sonarDistanceFilter = new KalmanFilter1D()
+        private readonly sonarDistanceFilter = new drivers.KalmanFilter1D()
         private lastSonarValue = 0
 
         hud = true
@@ -64,11 +63,11 @@ namespace robot {
         lineAssist = true
         runDrift = 0
 
-        private leds: robots.LEDStrip
+        private leds: drivers.LEDStrip
 
-        private sonar: robots.Sonar
-        private lineDetectors: robots.LineDetectors
-        private arm: robots.Arm
+        private sonar: drivers.Sonar
+        private lineDetectors: drivers.LineDetectors
+        private arm: drivers.Arm
 
         /**
          * Maximum distance in cm for the ultrasonic sensor
@@ -103,8 +102,7 @@ namespace robot {
 
             // configuration of common hardware
             this.radioGroup =
-                robot.__readCalibration(0) ||
-                radioGroupFromDeviceSerialNumber()
+                robot.__readCalibration(0) || radioGroupFromDeviceSerialNumber()
             this.runDrift = robot.__readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
             this.leds = this.robot.leds
@@ -412,12 +410,8 @@ namespace robot {
          * Sets the radio group used to transfer messages.
          */
         setRadioGroup(newGroup: number) {
-            newGroup = newGroup >> 0
-            if (newGroup === 0) return // not allowed
-
             this.start()
-            if (newGroup < 0) newGroup += MAX_GROUPS
-            this.radioGroup = newGroup % MAX_GROUPS
+            this.radioGroup = newGroup & 0xff
             radio.setGroup(this.radioGroup)
             __writeCalibration(this.radioGroup, this.runDrift)
             led.stopAnimation()

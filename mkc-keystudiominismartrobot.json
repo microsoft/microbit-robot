@@ -1,5 +1,5 @@
 {
     "overrides": {
-        "testFiles": ["mainkeystudiominismartrobot.ts"]
+        "testFiles": ["remotes/mainkeystudiominismartrobot.ts"]
     }
 }

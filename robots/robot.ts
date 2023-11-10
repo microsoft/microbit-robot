@@ -1,27 +1,4 @@
 namespace robot.robots {
-    /**
-     * A ws2812b LED strip
-     */
-    export interface LEDStrip {
-        start(): void
-        setColor(red: number, green: number, blue: number): void
-    }
-
-    export interface Sonar {
-        start(): void
-        distance(maxCmDistance: number): number
-    }
-
-    export interface LineDetectors {
-        start(): void
-        lineState(): RobotLineState
-    }
-
-    export interface Arm {
-        start(): void
-        open(aperture: number): void
-    }
-
     export class Robot {
         /**
          * Maximum speed while following a line with line assist
@@ -63,19 +40,19 @@ namespace robot.robots {
         /**
          * LED configuration
          */
-        leds?: LEDStrip
+        leds?: drivers.LEDStrip
         /**
          * Distance sensor configuration, if SR04
          */
-        sonar?: Sonar
+        sonar?: drivers.Sonar
         /**
          * Line detector configuration
          */
-        lineDetectors?: LineDetectors
+        lineDetectors?: drivers.LineDetectors
         /**
          * Robotic arm configuration
          */
-        arm?: Arm
+        arm?: drivers.Arm
         /**
          * A map from microcode command to speed, turn ratio values
          */

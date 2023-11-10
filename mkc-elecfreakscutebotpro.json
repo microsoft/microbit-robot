@@ -1,5 +1,5 @@
 {
     "overrides": {
-        "testFiles": ["mainelecfreakscutebotpro.ts"]
+        "testFiles": ["remotes/mainelecfreakscutebotpro.ts"]
     }
 }

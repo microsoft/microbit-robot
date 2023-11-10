@@ -116,8 +116,8 @@ namespace robot {
     class ElecfreaksCutebotProRobot extends robots.Robot {
         constructor() {
             super()
-            this.leds = new robots.WS2812bLEDStrip(DigitalPin.P15, 8)
-            this.sonar = new robots.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
+            this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 8)
+            this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
             this.maxLineSpeed = 30
         }
 

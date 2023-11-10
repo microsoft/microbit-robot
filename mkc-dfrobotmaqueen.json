@@ -1,5 +1,5 @@
 {
     "overrides": {
-        "testFiles": ["maindfrobotmaqueen.ts"]
+        "testFiles": ["remotes/maindfrobotmaqueen.ts"]
     }
 }

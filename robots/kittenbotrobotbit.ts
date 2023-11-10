@@ -131,9 +131,9 @@ namespace robot {
     class KittenbotRobotbitRobot extends robots.Robot {
         constructor() {
             super()
-            this.leds = new robots.WS2812bLEDStrip(DigitalPin.P16, 4)
-            this.sonar = new robots.SR04Sonar(DigitalPin.P15, DigitalPin.P15)
-            this.lineDetectors = new robots.PinLineDetectors(
+            this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 4)
+            this.sonar = new drivers.SR04Sonar(DigitalPin.P15, DigitalPin.P15)
+            this.lineDetectors = new drivers.PinLineDetectors(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 false
