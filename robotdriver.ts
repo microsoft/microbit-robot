@@ -273,11 +273,11 @@ namespace robot {
             if (this.showConfiguration || !this.hud) return
 
             // render left/right lines
-            const t = this.robot.lineHighThreshold
+            const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
-            const left = s[LineDetector.Left] > t
-            const right = s[LineDetector.Right] > t
-            const middle = s[LineDetector.Middle] > t
+            const left = s[LineDetector.Left] >= threshold
+            const right = s[LineDetector.Right] >= threshold
+            const middle = s[LineDetector.Middle] >= threshold
             for (let i = 0; i < 5; ++i) {
                 if (left || middle) led.plot(4, i)
                 else led.unplot(4, i)
@@ -364,7 +364,6 @@ namespace robot {
                 state[LineDetector.Left] >= threshold ||
                 state[LineDetector.Right] >= threshold
             if (state.some((v, i) => v !== this.currentLineState[i])) {
-                const prev = this.currentLineState
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 

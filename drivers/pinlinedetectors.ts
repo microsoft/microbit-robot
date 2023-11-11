@@ -32,4 +32,36 @@ namespace robot.drivers {
             }
         }
     }
+
+    export class AnalogPinLineDetectors implements LineDetectors {
+        readonly pins: AnalogPin[] = []
+        /**
+         * Left line detector
+         */
+        constructor(
+            left: AnalogPin,
+            right: AnalogPin,
+            public lineHigh = false
+        ) {
+            this.pins = [left, right]
+        }
+
+        start() {
+            for (let i = 0; i < this.pins.length; ++i) {
+                const pin = this.pins[i]
+                if (pin) pins.setPull(pin as number, PinPullMode.PullNone)
+            }
+        }
+
+        lineState(state: number[]) {
+            for (let i = 0; i < this.pins.length; ++i) {
+                const pin = this.pins[i]
+                if (pin) {
+                    let v = pins.analogReadPin(pin)
+                    if (this.lineHigh) v = 1023 - v
+                    state[i] = v
+                }
+            }
+        }
+    }
 }

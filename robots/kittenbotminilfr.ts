@@ -79,7 +79,6 @@ namespace robot {
         constructor() {
             super()
             this.lineDetectors = new SerialLineDetector()
-            this.lineHighThreshold = 200
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
                 turnRatio: -50,
                 speed: 40,
