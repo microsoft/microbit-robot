@@ -1,4 +1,7 @@
 namespace robot {
+    /**
+     * Registers button A, B, A+B to change the radio group and drift.
+     */
     export function startCalibrationButtons() {
         const d = RobotDriver.instance()
         input.onButtonPressed(Button.A, () =>

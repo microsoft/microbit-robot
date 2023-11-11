@@ -202,9 +202,9 @@ namespace robot {
     //% group.max=25
     export function setRadioGroup(id: number) {
         const robot = RobotDriver.instance()
-        id = id >> 0
+        id = (id >> 0) & 0xff
         if (id === 0) return // not allowed
-        if (id < 0) id += MAX_GROUPS
+        while (id < 0) id += MAX_GROUPS
         id = id % MAX_GROUPS
         robot.setRadioGroup(id)
     }
