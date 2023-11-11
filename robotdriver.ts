@@ -53,13 +53,7 @@ namespace robot {
         radioGroup: number
         useRadio: boolean = false
 
-        currentLineState: number[] = [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-        ]
+        currentLineState: number[] = [-1, -1, -1, -1, -1]
         private lineLostCounter: number
 
         private stopToneMillis: number = 0
@@ -122,7 +116,7 @@ namespace robot {
             this.motorRun(0, 0)
             // wake up sensors
             this.ultrasonicDistance()
-            this.lineState()
+            this.computeLineState()
 
             basic.forever(() => this.updateSonar()) // potentially slower
             control.inBackground(() => this.backgroundWork())
@@ -271,18 +265,23 @@ namespace robot {
         }
 
         private updateLineState() {
-            const lineState = this.lineState()
+            this.computeLineState()
+            this.showLineState()
+        }
+
+        private showLineState() {
             if (this.showConfiguration || !this.hud) return
 
             // render left/right lines
-            const left =
-                (lineState & RobotLineState.Left) === RobotLineState.Left
-            const right =
-                (lineState & RobotLineState.Right) === RobotLineState.Right
+            const t = this.robot.lineHighThreshold
+            const s = this.currentLineState
+            const left = s[LineDetector.Left] > t
+            const right = s[LineDetector.Right] > t
+            const middle = s[LineDetector.Middle] > t
             for (let i = 0; i < 5; ++i) {
-                if (left) led.plot(4, i)
+                if (left || middle) led.plot(4, i)
                 else led.unplot(4, i)
-                if (right) led.plot(0, i)
+                if (right || middle) led.plot(0, i)
                 else led.unplot(0, i)
             }
         }
@@ -358,13 +357,13 @@ namespace robot {
             return state
         }
 
-        private lineState(): RobotLineState {
+        private computeLineState(): void {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                state[drivers.LineDetectorIndex.Left] > threshold ||
-                state[drivers.LineDetectorIndex.Right] > threshold
-            if (state.some((v,i) => v !== this.currentLineState[i])) {
+                state[LineDetector.Left] > threshold ||
+                state[LineDetector.Right] > threshold
+            if (state.some((v, i) => v !== this.currentLineState[i])) {
                 const prev = this.currentLineState
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
@@ -389,7 +388,6 @@ namespace robot {
                 robot.robots.raiseEvent(msg)
             }
             if (!leftOrRight) this.lineLostCounter++
-            return ls
         }
 
         playTone(frequency: number, duration: number) {
