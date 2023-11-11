@@ -103,10 +103,10 @@ namespace robot {
     /**
      * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
-    //% block="robot detect $line line"
+    //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    export function detectLines(detector: LineDetector): boolean {
+    export function detectLine(detector: LineDetector): boolean {
         const robot = RobotDriver.instance()
         const threshold = robot.robot.lineHighThreshold
         const current = robot.currentLineState
