@@ -49,9 +49,8 @@ namespace robot {
 
     class SerialLineDetector implements drivers.LineDetectors {
         sensorUpdated: number = 0
-        sensorValue: number[] = [0, 0, 0, 0, 0]
-        start(): void {
-        }
+        sensorValue: number[] = [-1, -1, -1, -1, -1]
+        start(): void {}
         lineState(state: number[]): void {
             const v = this.sensorValue
             state[LineDetector.OuterLeft] = v[0]
@@ -81,17 +80,15 @@ namespace robot {
             super()
             this.lineDetectors = new SerialLineDetector()
             this.lineHighThreshold = 200
-            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
-                {
-                    turnRatio: -50,
-                    speed: 40,
-                }
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
+                turnRatio: -50,
+                speed: 40,
+            }
 
-            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] =
-                {
-                    turnRatio: 50,
-                    speed: 40,
-                }
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] = {
+                turnRatio: 50,
+                speed: 40,
+            }
 
             serial.redirect(SerialPin.P0, SerialPin.P1, 115200)
             serial.writeString("\n\n")
@@ -105,7 +102,7 @@ namespace robot {
                     this.ultrasonicValue = parseIntFromDigits(tmp[1])
                     this.ultrasonicUpdated = control.millis()
                 } else if (tmp[0] === "M10") {
-                    (this.lineDetectors as SerialLineDetector).parse(tmp)
+                    ;(this.lineDetectors as SerialLineDetector).parse(tmp)
                 } else if (tmp[0] === "M33") {
                     //this.mode = MiniLFRMode.IDLE
                 }
@@ -113,7 +110,12 @@ namespace robot {
 
             basic.forever(() => {
                 // read line sensor
-                if (control.millis() - (this.lineDetectors as SerialLineDetector).sensorUpdated > 100) {
+                if (
+                    control.millis() -
+                        (this.lineDetectors as SerialLineDetector)
+                            .sensorUpdated >
+                    100
+                ) {
                     writeCmd("M10")
                 }
                 basic.pause(50)
