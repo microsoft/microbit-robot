@@ -61,20 +61,6 @@ namespace robot {
         pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
     }
 
-    function trackbitStateValue() {
-        let i2cBuffer = pins.createBuffer(7)
-        i2cBuffer[0] = 0x99
-        i2cBuffer[1] = 0x12
-        i2cBuffer[2] = 0x00
-        i2cBuffer[3] = 0x00
-        i2cBuffer[4] = 0x00
-        i2cBuffer[5] = 0x00
-        i2cBuffer[6] = 0x88
-        pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
-        return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt8LE, false)
-        //basic.pause(5);
-    }
-
     const enum TrackbitStateType {
         //% block="◌ ◌ ◌ ◌"
         Tracking_State_0 = 0,
@@ -113,11 +99,40 @@ namespace robot {
         Tracking_State_15 = 10,
     }
 
+    class I2CLineDetector implements drivers.LineDetectors {
+        start(): void {}
+        lineState(state: number[]): void {
+            const v = this.trackbitStateValue()
+            state[LineDetector.Left] =
+                v & TrackbitStateType.Tracking_State_11 ? 1 : 0
+            state[LineDetector.Right] =
+                v & TrackbitStateType.Tracking_State_14 ? 1 : 0
+            state[LineDetector.OuterLeft] =
+                v & TrackbitStateType.Tracking_State_8 ? 1 : 0
+            state[LineDetector.OuterRight] =
+                v & TrackbitStateType.Tracking_State_12 ? 1 : 0
+        }
+
+        private trackbitStateValue() {
+            const i2cBuffer = pins.createBuffer(7)
+            i2cBuffer[0] = 0x99
+            i2cBuffer[1] = 0x12
+            i2cBuffer[2] = 0x00
+            i2cBuffer[3] = 0x00
+            i2cBuffer[4] = 0x00
+            i2cBuffer[5] = 0x00
+            i2cBuffer[6] = 0x88
+            pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
+            return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt8LE, false)
+        }
+    }
+
     class ElecfreaksCutebotProRobot extends robots.Robot {
         constructor() {
             super()
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 8)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
+            this.lineDetectors = new I2CLineDetector()
             this.maxLineSpeed = 30
         }
 
@@ -135,13 +150,6 @@ namespace robot {
             buf[5] = b
             buf[6] = 0x88
             pins.i2cWriteBuffer(i2cAddr, buf)
-        }
-
-        lineState(): RobotLineState {
-            const state = trackbitStateValue()
-            let left = state & TrackbitStateType.Tracking_State_11 ? 1 : 0
-            let right = state & TrackbitStateType.Tracking_State_14 ? 1 : 0
-            return (left << 0) | (right << 1)
         }
     }
 

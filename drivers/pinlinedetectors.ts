@@ -1,25 +1,35 @@
 namespace robot.drivers {
-    export class PinLineDetectors implements LineDetectors {
+    export class DigitalPinLineDetectors implements LineDetectors {
+        readonly pins: DigitalPin[] = []
         /**
          * Left line detector
          */
         constructor(
-            public readonly left: DigitalPin,
-            public readonly right: DigitalPin,
-            public readonly lineHigh: boolean
-        ) {}
-
-        start() {
-            pins.setPull(this.left, PinPullMode.PullNone)
-            pins.setPull(this.right, PinPullMode.PullNone)
+            left: DigitalPin,
+            right: DigitalPin,
+            public lineHigh = false
+        ) {
+            this.pins = [left, right]
         }
 
-        lineState() {
-            const left =
-                pins.digitalReadPin(this.left) > 0 === this.lineHigh ? 1 : 0
-            const right =
-                pins.digitalReadPin(this.right) > 0 === this.lineHigh ? 1 : 0
-            return (left << 0) | (right << 1)
+        start() {
+            for (let i = 0; i < this.pins.length; ++i) {
+                const pin = this.pins[i]
+                if (pin) pins.setPull(pin, PinPullMode.PullNone)
+            }
+        }
+
+        lineState(state: number[]) {
+            for (let i = 0; i < this.pins.length; ++i) {
+                const pin = this.pins[i]
+                if (pin) {
+                    const v =
+                        pins.digitalReadPin(pin) > 0 === this.lineHigh
+                            ? 1023
+                            : 0
+                    state[i] = v
+                }
+            }
         }
     }
 }

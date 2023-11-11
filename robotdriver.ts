@@ -53,10 +53,13 @@ namespace robot {
         radioGroup: number
         useRadio: boolean = false
 
-        /**
-         * Gets the latest line sensor state
-         */
-        currentLineState: RobotLineState = RobotLineState.None
+        currentLineState: number[] = [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+        ]
         private lineLostCounter: number
 
         private stopToneMillis: number = 0
@@ -350,17 +353,20 @@ namespace robot {
         }
 
         private readLineState() {
-            if (this.lineDetectors) return this.lineDetectors.lineState()
-            else return this.robot.lineState()
+            const state: number[] = [-1, -1, -1, -1, -1]
+            this.lineDetectors.lineState(state)
+            return state
         }
 
         private lineState(): RobotLineState {
-            const ls = this.readLineState()
+            const state = this.readLineState()
+            const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                ls === RobotLineState.Left || ls === RobotLineState.Right
-            if (ls !== this.currentLineState) {
+                state[drivers.LineDetectorIndex.Left] > threshold ||
+                state[drivers.LineDetectorIndex.Right] > threshold
+            if (state.some((v,i) => v !== this.currentLineState[i])) {
                 const prev = this.currentLineState
-                this.currentLineState = ls
+                this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
                 let msg: robot.robots.RobotCompactCommand

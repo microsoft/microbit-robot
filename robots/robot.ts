@@ -38,6 +38,10 @@ namespace robot.robots {
          */
         lineLostThreshold = 72
         /**
+         * Minimum value to consider a line detected
+         */
+        lineHighThreshold = 200
+        /**
          * LED configuration
          */
         leds?: drivers.LEDStrip
@@ -48,7 +52,7 @@ namespace robot.robots {
         /**
          * Line detector configuration
          */
-        lineDetectors?: drivers.LineDetectors
+        lineDetectors: drivers.LineDetectors
         /**
          * Robotic arm configuration
          */
@@ -123,14 +127,6 @@ namespace robot.robots {
          */
         ultrasonicDistance(maxCmDistance: number): number {
             return -1
-        }
-
-        /**
-         * Optional: Reads the line detection line
-         * @returns state of both line detectors
-         */
-        lineState(): RobotLineState {
-            return RobotLineState.None
         }
     }
 }

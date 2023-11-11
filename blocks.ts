@@ -103,12 +103,26 @@ namespace robot {
     /**
      * Checks the state of lines
      */
-    //% block="robot detect lines $state"
+    //% block="robot detect lines left $left right $right || middle $middle outer left $outerLeft outer right $outerRight"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    export function detectLines(state: RobotLineState): boolean {
+    //% left.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    //% middle.shadow=toggleOnOff
+    //% outerLeft.shadow=toggleOnOff
+    //% outerRight.shadow=toggleOnOff
+    export function detectLines(
+        left: boolean,
+        right: boolean,
+        middle?: boolean,
+        outerLeft?: boolean,
+        outerRight?: boolean
+    ): boolean {
         const robot = RobotDriver.instance()
-        return robot.currentLineState === state
+        const state = [!!left, !!right, !!middle, !!outerLeft, !!outerRight]
+        const threshold = robot.robot.lineHighThreshold
+        const current = robot.currentLineState
+        return state.every((v, i) => v === current[i] > threshold)
     }
 
     /**

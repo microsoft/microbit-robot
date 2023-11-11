@@ -18,7 +18,7 @@ namespace robot {
     class DFRobotMaqueenRobot extends robots.Robot {
         constructor() {
             super()
-            this.lineDetectors = new drivers.PinLineDetectors(
+            this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
                 false
