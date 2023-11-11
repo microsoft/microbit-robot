@@ -47,17 +47,40 @@ namespace robot {
         return result
     }
 
+    class SerialLineDetector implements drivers.LineDetectors {
+        sensorUpdated: number = 0
+        sensorValue: number[] = [0, 0, 0, 0, 0]
+        start(): void {
+        }
+        lineState(state: number[]): void {
+            const v = this.sensorValue
+            state[LineDetector.OuterLeft] = v[0]
+            state[LineDetector.Left] = v[1]
+            state[LineDetector.Middle] = v[2]
+            state[LineDetector.Right] = v[3]
+            state[LineDetector.OuterRight] = v[4]
+        }
+
+        parse(tmp: string[]) {
+            this.sensorValue[0] = parseIntFromDigits(tmp[1])
+            this.sensorValue[1] = parseIntFromDigits(tmp[2])
+            this.sensorValue[2] = parseIntFromDigits(tmp[3])
+            this.sensorValue[3] = parseIntFromDigits(tmp[4])
+            this.sensorValue[4] = parseIntFromDigits(tmp[5])
+            this.sensorUpdated = control.millis()
+        }
+    }
+
     class KittenbotMiniLFRRobot extends robots.Robot {
         //private mode: MiniLFRMode = MiniLFRMode.IDLE
-        private sensorUpdated: number = 0
         private ultrasonicUpdated: number = 0
 
         private ultrasonicValue: number = 0
-        private sensorValue: number[] = [0, 0, 0, 0, 0]
 
         constructor() {
             super()
-
+            this.lineDetectors = new SerialLineDetector()
+            this.lineHighThreshold = 200
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
                 {
                     turnRatio: -50,
@@ -82,12 +105,7 @@ namespace robot {
                     this.ultrasonicValue = parseIntFromDigits(tmp[1])
                     this.ultrasonicUpdated = control.millis()
                 } else if (tmp[0] === "M10") {
-                    this.sensorValue[0] = parseIntFromDigits(tmp[1])
-                    this.sensorValue[1] = parseIntFromDigits(tmp[2])
-                    this.sensorValue[2] = parseIntFromDigits(tmp[3])
-                    this.sensorValue[3] = parseIntFromDigits(tmp[4])
-                    this.sensorValue[4] = parseIntFromDigits(tmp[5])
-                    this.sensorUpdated = control.millis()
+                    (this.lineDetectors as SerialLineDetector).parse(tmp)
                 } else if (tmp[0] === "M33") {
                     //this.mode = MiniLFRMode.IDLE
                 }
@@ -95,7 +113,7 @@ namespace robot {
 
             basic.forever(() => {
                 // read line sensor
-                if (control.millis() - this.sensorUpdated > 100) {
+                if (control.millis() - (this.lineDetectors as SerialLineDetector).sensorUpdated > 100) {
                     writeCmd("M10")
                 }
                 basic.pause(50)
@@ -131,17 +149,6 @@ namespace robot {
 
         ultrasonicDistance(maxCmDistance: number): number {
             return this.ultrasonicValue
-        }
-
-        lineState(): RobotLineState {
-            // sensor returns from 0 to 1023 on black to white, a normal white surface reflects 500
-            if (this.sensorValue[0] < 200) return RobotLineState.LostLeft
-            else if (this.sensorValue[4] < 200) return RobotLineState.LostRight
-            else if (this.sensorValue[1] < 200) return RobotLineState.Left
-            else if (this.sensorValue[3] < 200) return RobotLineState.Right
-            else if (this.sensorValue[2] < 200) return RobotLineState.Both
-            // center
-            else return RobotLineState.None
         }
     }
 
