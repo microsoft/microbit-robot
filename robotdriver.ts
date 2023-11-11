@@ -368,31 +368,7 @@ namespace robot {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
-                // left, right, middle
-                let msg: robots.RobotCompactCommand =
-                    robots.RobotCompactCommand.LineState
-                if (prev[LineDetector.Middle] >= threshold)
-                    msg |=
-                        robots.RobotLineState.Left | robots.RobotLineState.Right
-                else {
-                    if (prev[LineDetector.Left] >= threshold)
-                        msg |= robots.RobotLineState.Left
-                    if (prev[LineDetector.Right] >= threshold)
-                        msg |= robots.RobotLineState.Right
-                }
-                // line lost
-                if (
-                    this.currentLineState.every(v => v < threshold) &&
-                    prev[LineDetector.Middle] < threshold
-                ) {
-                    if (prev[LineDetector.Left] > threshold)
-                        msg = robot.robots.RobotCompactCommand.LineLostLeft
-                    else if (prev[LineDetector.Right] > threshold)
-                        msg = robot.robots.RobotCompactCommand.LineLostRight
-                }
-
-                this.sendCompactCommand(msg)
-                robot.robots.raiseEvent(msg)
+                robot.robots.raiseEvent(robots.RobotCompactCommand.LineState)
             }
             if (!leftOrRight) this.lineLostCounter++
         }

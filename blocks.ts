@@ -143,11 +143,11 @@ namespace robot {
     /**
      * Registers an event to run when the line detection state changes
      */
-    //% block="robot on line $state detected"
+    //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines
     //% group="Input"
-    export function onLineDetected(state: RobotLineState, handler: () => void) {
-        const msg = robot.robots.RobotCompactCommand.LineState | state
+    export function onLineDetected(handler: () => void) {
+        const msg = robot.robots.RobotCompactCommand.LineState
         robot.robots.onEvent(msg, handler)
     }
 
