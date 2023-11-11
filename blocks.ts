@@ -119,10 +119,25 @@ namespace robot {
         outerRight?: boolean
     ): boolean {
         const robot = RobotDriver.instance()
-        const state = [!!left, !!right, !!middle, !!outerLeft, !!outerRight]
         const threshold = robot.robot.lineHighThreshold
         const current = robot.currentLineState
-        return state.every((v, i) => v === current[i] > threshold)
+        const state: boolean[] = [
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+        ]
+        state[LineDetector.Left] = !!left
+        state[LineDetector.Right] = !!right
+        if (middle !== undefined) state[LineDetector.Middle] = !!middle
+        if (outerLeft !== undefined) state[LineDetector.OuterLeft] = !!outerLeft
+        if (outerRight !== undefined)
+            state[LineDetector.OuterRight] = !!outerRight
+
+        return state.every(
+            (v, i) => v === undefined || v === current[i] > threshold
+        )
     }
 
     /**
