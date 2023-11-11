@@ -3,7 +3,7 @@ namespace robot.robots {
      * Starts a testing mode to be used when building a robot
      */
     export function startTestMode() {
-        robot.setLineAssist(false)
+        robot.setLineFollowAssist(false)
         input.onButtonPressed(Button.A, () => {
             const d = 1000
             robot.motorRun(200, 100)

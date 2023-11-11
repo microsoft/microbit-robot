@@ -127,13 +127,13 @@ namespace robot {
     /**
      * Enables or disables the line speed assistance.
      */
-    //% block="robot set line assist $enabled"
+    //% block="robot set line follow assist $enabled"
     //% blockid="mbitrobotsetlineassist"
     //% group="Configuration"
     //% enabled.shadow=toggleOnOff
-    export function setLineAssist(enabled: boolean): void {
+    export function setLineFollowAssist(enabled: boolean): void {
         const robot = RobotDriver.instance()
-        robot.lineAssist = !!enabled
+        robot.lineFollowAssist = !!enabled
     }
 
     /**

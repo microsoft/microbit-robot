@@ -18,7 +18,7 @@ namespace robot {
                 const command = driver.robot.commands[msg] || {}
                 const turnRatio = command.turnRatio || 0
                 const speed = command.speed || 0
-                driver.lineAssist =
+                driver.lineFollowAssist =
                     msg !== robot.robots.RobotCompactCommand.MotorRunForwardFast
                 driver.motorRun(turnRatio, speed)
                 break

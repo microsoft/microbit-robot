@@ -57,7 +57,7 @@ namespace robot {
         private lineLostCounter: number
 
         private stopToneMillis: number = 0
-        lineAssist = true
+        lineFollowAssist = true
         runDrift = 0
 
         private leds: drivers.LEDStrip
@@ -182,7 +182,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    this.lineAssist &&
+                    this.lineFollowAssist &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
