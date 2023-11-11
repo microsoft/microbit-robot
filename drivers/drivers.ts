@@ -3,21 +3,21 @@
  */
 enum LineDetector {
     /**
+     * block="outer left"
+     */
+    OuterLeft = 0,
+    /**
      * block="left"
      */
-    Left = 0,
-    /**
-     * block="right"
-     */
-    Right = 1,
+    Left = 1,
     /**
      * block="middle"
      */
     Middle = 2,
     /**
-     * block="outer left"
+     * block="right"
      */
-    OuterLeft = 3,
+    Right = 3,
     /**
      * block="outer right"
      */
