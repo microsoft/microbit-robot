@@ -361,8 +361,8 @@ namespace robot {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                state[LineDetector.Left] > threshold ||
-                state[LineDetector.Right] > threshold
+                state[LineDetector.Left] >= threshold ||
+                state[LineDetector.Right] >= threshold
             if (state.some((v, i) => v !== this.currentLineState[i])) {
                 const prev = this.currentLineState
                 this.currentLineState = state

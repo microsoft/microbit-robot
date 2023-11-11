@@ -81,9 +81,9 @@ namespace robot {
                 current.every(v => v < threshold) &&
                 prev[LineDetector.Middle] < threshold
             ) {
-                if (prev[LineDetector.Left] > threshold)
+                if (prev[LineDetector.Left] >= threshold)
                     msg = robots.RobotCompactCommand.LineLostLeft
-                else if (prev[LineDetector.Right] > threshold)
+                else if (prev[LineDetector.Right] >= threshold)
                     msg = robots.RobotCompactCommand.LineLostRight
             }
             sendCompactCommand(msg)

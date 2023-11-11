@@ -101,43 +101,16 @@ namespace robot {
     }
 
     /**
-     * Checks the state of lines
+     * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
-    //% block="robot detect lines left $left right $right || middle $middle outer left $outerLeft outer right $outerRight"
+    //% block="robot detect $line line"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    //% left.shadow=toggleOnOff
-    //% right.shadow=toggleOnOff
-    //% middle.shadow=toggleOnOff
-    //% outerLeft.shadow=toggleOnOff
-    //% outerRight.shadow=toggleOnOff
-    export function detectLines(
-        left: boolean,
-        right: boolean,
-        middle?: boolean,
-        outerLeft?: boolean,
-        outerRight?: boolean
-    ): boolean {
+    export function detectLines(detector: LineDetector): boolean {
         const robot = RobotDriver.instance()
         const threshold = robot.robot.lineHighThreshold
         const current = robot.currentLineState
-        const state: boolean[] = [
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-        ]
-        state[LineDetector.Left] = !!left
-        state[LineDetector.Right] = !!right
-        if (middle !== undefined) state[LineDetector.Middle] = !!middle
-        if (outerLeft !== undefined) state[LineDetector.OuterLeft] = !!outerLeft
-        if (outerRight !== undefined)
-            state[LineDetector.OuterRight] = !!outerRight
-
-        return state.every(
-            (v, i) => v === undefined || v === current[i] > threshold
-        )
+        return current[detector] >= threshold // returns false for missing
     }
 
     /**
