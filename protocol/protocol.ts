@@ -1,4 +1,3 @@
-
 namespace robot.robots {
     export const MAGIC = 0x8429
 
@@ -15,7 +14,7 @@ namespace robot.robots {
         LostLeft = None | 0x04,
         //% block="lost right"
         LostRight = None | 0x0a,
-    }    
+    }
 
     /**
      * Compact commands through radio numbers
@@ -71,16 +70,29 @@ namespace robot.robots {
         Obstacle = RobotCompactCommand.ObstacleState,
     }
 
-    export interface RobotSimState {
-        // static state
-        productId: number
+    /**
+     * state message is sent by the robot; sensors is sent by the world simulator
+     */
+    export interface RobotSimMessage {
+        type: "state" | "sensors"
+    }
 
-        // dynamic state
-        radioGRoup: number
+    export interface RobotSimStateMessage extends RobotSimMessage {
+        type: "state"
+        /**
+         * Product ID of the robot; allow to discover the hardware configuration
+         * of the robot
+         */
+        productId: number
         motorTurnRatio: number
         motorSpeed: number
-        lines: number[]
-        obstableDistance: number
+        armAperture: number
         color: number
+    }
+
+    export interface RobotSensorsMessage extends RobotSimMessage {
+        type: "sensors"
+        lineDetectors: number[]
+        obstacleDistance: number
     }
 }

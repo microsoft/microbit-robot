@@ -5,26 +5,40 @@ namespace robot.robots {
     //% shim=TD_NOOP
     export function sendSim() {
         const r = robot.RobotDriver.instance()
-        const msg = <RobotSimState>{
-            radioGRoup: r.radioGroup,
+        const msg = <RobotSimStateMessage>{
+            type: "state",
             motorSpeed: r.currentSpeed,
             motorTurnRatio: r.currentTurnRatio,
             color: r.currentColor,
-            obstableDistance: r.currentDistance,
-            lines: r.currentLineState,
+            armAperture: r.currentArmAperture,
         }
         if (r.robot.productId) msg.productId = r.robot.productId
         control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)))
     }
 
     /**
-     * Receives the robot state from the simulator
+     * Register simulator line sensor and sonar
      */
     //% shim=TD_NOOP
     export function registerSim() {
         const r = robot.RobotDriver.instance()
-        control.simmessages.onReceived("robot", (msg: Buffer) => {
-            const sim = <RobotSimState>JSON.parse(msg.toString())
+        const lines = new drivers.SimLineDetectors()
+        const sonar = new drivers.SimSonar()
+        r.robot.lineDetectors = lines
+        r.robot.sonar = sonar
+
+        control.simmessages.onReceived("robot", (b: Buffer) => {
+            const msg = <RobotSimMessage>JSON.parse(b.toString())
+            switch (msg.type) {
+                case "sensors": {
+                    const sensors = <RobotSensorsMessage>msg
+                    if (Array.isArray(sensors.lineDetectors))
+                        lines.current = sensors.lineDetectors
+                    if (!isNaN(sensors.obstacleDistance))
+                        sonar.current = sensors.obstacleDistance
+                    break
+                }
+            }
         })
     }
 }

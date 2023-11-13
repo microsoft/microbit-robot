@@ -45,7 +45,7 @@ namespace robot {
         configDrift: boolean = undefined
         private targetColor = 0
         currentColor = 0
-        private currentArmAperture: number = undefined
+        currentArmAperture: number = undefined
         currentSpeed: number = 0
         private targetSpeed: number = 0
         currentTurnRatio = 0
@@ -60,16 +60,10 @@ namespace robot {
         lineFollowAssist = true
         runDrift = 0
 
-        private leds: drivers.LEDStrip
-
-        private sonar: drivers.Sonar
-        private lineDetectors: drivers.LineDetectors
-        private arm: drivers.Arm
-
         /**
          * Maximum distance in cm for the ultrasonic sensor
          */
-        maxCmDistance = 40
+        readonly maxCmDistance = 40
 
         constructor(robot: robots.Robot) {
             this.robot = robot
@@ -102,14 +96,13 @@ namespace robot {
                 robot.__readCalibration(0) || radioGroupFromDeviceSerialNumber()
             this.runDrift = robot.__readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
-            this.leds = this.robot.leds
-            if (this.leds) this.leds.start()
-            this.lineDetectors = this.robot.lineDetectors
-            if (this.lineDetectors) this.lineDetectors.start()
-            this.sonar = this.robot.sonar
-            if (this.sonar) this.sonar.start()
-            this.arm = this.robot.arm
-            if (this.arm) this.arm.start()
+
+            robots.registerSim()
+
+            if (this.robot.leds) this.robot.leds.start()
+            if (this.robot.lineDetectors) this.robot.lineDetectors.start()
+            if (this.robot.sonar) this.robot.sonar.start()
+            if (this.robot.arm) this.robot.arm.start()
 
             // stop motors
             this.setColor(0x0000ff)
@@ -121,7 +114,6 @@ namespace robot {
             basic.forever(() => this.updateSonar()) // potentially slower
             control.inBackground(() => this.backgroundWork())
 
-            robots.registerSim()
             // notify the robot
             this.robot.onStarted(this)
         }
@@ -159,7 +151,7 @@ namespace robot {
 
             this.currentColor = (red << 16) | (green << 8) | blue
             this.robot.headlightsSetColor(red, green, blue)
-            if (this.leds) this.leds.setColor(red, green, blue)
+            if (this.robot.leds) this.robot.leds.setColor(red, green, blue)
         }
 
         private updateArm() {
@@ -341,7 +333,7 @@ namespace robot {
         }
 
         private ultrasonicDistanceOnce() {
-            if (this.sonar) return this.sonar.distance(this.maxCmDistance)
+            if (this.robot.sonar) return this.robot.sonar.distance(this.maxCmDistance)
             else return this.robot.ultrasonicDistance(this.maxCmDistance)
         }
 
@@ -355,7 +347,7 @@ namespace robot {
 
         private readLineState() {
             const state: number[] = [-1, -1, -1, -1, -1]
-            this.lineDetectors.lineState(state)
+            this.robot.lineDetectors.lineState(state)
             return state
         }
 

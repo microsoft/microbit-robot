@@ -25,6 +25,7 @@
         "drivers/pinlinedetectors.ts",
         "drivers/servoarm.ts",
         "drivers/kalmanfilter1d.ts",
+        "drivers/sim.ts",
         "robots/robot.ts",
         "robots/keystudiominismartrobot.ts",
         "robots/yahboomtinybit.ts",
