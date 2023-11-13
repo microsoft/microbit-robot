@@ -42,7 +42,7 @@ namespace robot.drivers {
         start(): void
         /**
          * Updates the state vector with the current line detector state.
-         * @param state a number of size 5, with 0 for white and 1 for black
+         * @param state a number of size 5, indexed by LineDetectors, with 0 for white and 1 for black
          */
         lineState(state: number[]): void
     }
