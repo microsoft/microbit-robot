@@ -91,7 +91,7 @@ namespace robot {
         constructor() {
             super()
             this.sonar = new drivers.SR04Sonar(ECHO_PIN, TRIG_PIN)
-            this.lineDetectors = new drivers.PinLineDetectors(
+            this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
                 true

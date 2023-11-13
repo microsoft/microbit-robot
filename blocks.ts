@@ -101,37 +101,39 @@ namespace robot {
     }
 
     /**
-     * Checks the state of lines
+     * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
-    //% block="robot detect lines $state"
+    //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    export function detectLines(state: RobotLineState): boolean {
+    export function detectLine(detector: LineDetector): boolean {
         const robot = RobotDriver.instance()
-        return robot.currentLineState === state
+        const threshold = robot.robot.lineHighThreshold
+        const current = robot.currentLineState
+        return current[detector] >= threshold // returns false for missing
     }
 
     /**
      * Registers an event to run when the line detection state changes
      */
-    //% block="robot on line $state detected"
+    //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines
     //% group="Input"
-    export function onLineDetected(state: RobotLineState, handler: () => void) {
-        const msg = robot.robots.RobotCompactCommand.LineState | state
+    export function onLineDetected(handler: () => void) {
+        const msg = robot.robots.RobotCompactCommand.LineState
         robot.robots.onEvent(msg, handler)
     }
 
     /**
      * Enables or disables the line speed assistance.
      */
-    //% block="robot set line assist $enabled"
+    //% block="robot set line follow assist $enabled"
     //% blockid="mbitrobotsetlineassist"
     //% group="Configuration"
     //% enabled.shadow=toggleOnOff
-    export function setLineAssist(enabled: boolean): void {
+    export function setLineFollowAssist(enabled: boolean): void {
         const robot = RobotDriver.instance()
-        robot.lineAssist = !!enabled
+        robot.lineFollowAssist = !!enabled
     }
 
     /**
@@ -173,9 +175,9 @@ namespace robot {
     //% group.max=25
     export function setRadioGroup(id: number) {
         const robot = RobotDriver.instance()
-        id = id >> 0
+        id = (id >> 0) & 0xff
         if (id === 0) return // not allowed
-        if (id < 0) id += MAX_GROUPS
+        while (id < 0) id += MAX_GROUPS
         id = id % MAX_GROUPS
         robot.setRadioGroup(id)
     }

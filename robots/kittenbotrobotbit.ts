@@ -133,7 +133,7 @@ namespace robot {
             super()
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 4)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P15, DigitalPin.P15)
-            this.lineDetectors = new drivers.PinLineDetectors(
+            this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 DigitalPin.P1,
                 DigitalPin.P2,
                 false

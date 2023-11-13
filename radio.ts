@@ -18,9 +18,8 @@ namespace robot {
                 const command = driver.robot.commands[msg] || {}
                 const turnRatio = command.turnRatio || 0
                 const speed = command.speed || 0
-                driver.lineAssist =
-                    msg !==
-                    robot.robots.RobotCompactCommand.MotorRunForwardFast
+                driver.lineFollowAssist =
+                    msg !== robot.robots.RobotCompactCommand.MotorRunForwardFast
                 driver.motorRun(turnRatio, speed)
                 break
             }
@@ -53,5 +52,52 @@ namespace robot {
         radio.setGroup(d.radioGroup)
         radio.onReceivedNumber(code => decodeRobotCompactCommand(d, code))
         d.useRadio = true
+
+        handleLineDetected()
+    }
+
+    function handleLineDetected() {
+        const d = RobotDriver.instance()
+        let prev: number[] = []
+        robot.robots.onEvent(robots.RobotCompactCommand.LineState, () => {
+            const robot = d.robot
+            const threshold = robot.lineHighThreshold
+            const current = d.currentLineState
+
+            // TODO refactor this out
+            // left, right, middle
+            let msg: robots.RobotCompactCommand =
+                robots.RobotCompactCommand.LineState
+            if (current[LineDetector.Middle] >= threshold)
+                msg |= robots.RobotLineState.Left | robots.RobotLineState.Right
+            else {
+                if (current[LineDetector.Left] >= threshold)
+                    msg |= robots.RobotLineState.Left
+                if (current[LineDetector.Right] >= threshold)
+                    msg |= robots.RobotLineState.Right
+            }
+            // line lost
+            if (
+                current.every(v => v < threshold) &&
+                prev[LineDetector.Middle] < threshold
+            ) {
+                if (prev[LineDetector.Left] >= threshold)
+                    msg = robots.RobotCompactCommand.LineLostLeft
+                else if (prev[LineDetector.Right] >= threshold)
+                    msg = robots.RobotCompactCommand.LineLostRight
+            }
+            sendCompactCommand(msg)
+            prev = current
+        })
+    }
+
+    //% shim=TD_NOOP
+    function nativeSendNumber(msg: number) {
+        radio.sendNumber(msg)
+    }
+
+    function sendCompactCommand(cmd: robot.robots.RobotCompactCommand) {
+        radio.sendNumber(cmd)
+        nativeSendNumber(cmd)
     }
 }

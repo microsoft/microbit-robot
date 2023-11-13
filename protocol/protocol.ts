@@ -1,20 +1,21 @@
-const enum RobotLineState {
-    //% block="none"
-    None = 0,
-    //% block="left"
-    Left = 0x01,
-    //% block="right"
-    Right = 0x02,
-    //% block="both"
-    Both = Left | Right,
-    //% block="lost left"
-    LostLeft = None | 0x04,
-    //% block="lost right"
-    LostRight = None | 0x0a,
-}
 
 namespace robot.robots {
     export const MAGIC = 0x8429
+
+    export const enum RobotLineState {
+        //% block="none"
+        None = 0,
+        //% block="left"
+        Left = 0x01,
+        //% block="right"
+        Right = 0x02,
+        //% block="both"
+        Both = Left | Right,
+        //% block="lost left"
+        LostLeft = None | 0x04,
+        //% block="lost right"
+        LostRight = None | 0x0a,
+    }    
 
     /**
      * Compact commands through radio numbers
@@ -68,5 +69,18 @@ namespace robot.robots {
         LED = RobotCompactCommand.LEDRed,
         Line = RobotCompactCommand.LineState,
         Obstacle = RobotCompactCommand.ObstacleState,
+    }
+
+    export interface RobotSimState {
+        // static state
+        productId: number
+
+        // dynamic state
+        radioGRoup: number
+        motorTurnRatio: number
+        motorSpeed: number
+        lines: number[]
+        obstableDistance: number
+        color: number
     }
 }

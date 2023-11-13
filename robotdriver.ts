@@ -44,23 +44,20 @@ namespace robot {
         showConfiguration: number = 0
         configDrift: boolean = undefined
         private targetColor = 0
-        private currentColor = 0
+        currentColor = 0
         private currentArmAperture: number = undefined
-        private currentSpeed: number = 0
+        currentSpeed: number = 0
         private targetSpeed: number = 0
-        private currentTurnRatio = 0
+        currentTurnRatio = 0
         private targetTurnRatio: number = 0
         radioGroup: number
         useRadio: boolean = false
 
-        /**
-         * Gets the latest line sensor state
-         */
-        currentLineState: RobotLineState = RobotLineState.None
+        currentLineState: number[] = [-1, -1, -1, -1, -1]
         private lineLostCounter: number
 
         private stopToneMillis: number = 0
-        lineAssist = true
+        lineFollowAssist = true
         runDrift = 0
 
         private leds: drivers.LEDStrip
@@ -119,11 +116,12 @@ namespace robot {
             this.motorRun(0, 0)
             // wake up sensors
             this.ultrasonicDistance()
-            this.lineState()
+            this.computeLineState()
 
             basic.forever(() => this.updateSonar()) // potentially slower
             control.inBackground(() => this.backgroundWork())
 
+            robots.registerSim()
             // notify the robot
             this.robot.onStarted(this)
         }
@@ -135,6 +133,7 @@ namespace robot {
                 this.updateColor()
                 this.updateSpeed()
                 this.updateArm()
+                robots.sendSim()
                 basic.pause(5)
             }
         }
@@ -185,7 +184,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    this.lineAssist &&
+                    this.lineFollowAssist &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
@@ -268,18 +267,23 @@ namespace robot {
         }
 
         private updateLineState() {
-            const lineState = this.lineState()
+            this.computeLineState()
+            this.showLineState()
+        }
+
+        private showLineState() {
             if (this.showConfiguration || !this.hud) return
 
             // render left/right lines
-            const left =
-                (lineState & RobotLineState.Left) === RobotLineState.Left
-            const right =
-                (lineState & RobotLineState.Right) === RobotLineState.Right
+            const threshold = this.robot.lineHighThreshold
+            const s = this.currentLineState
+            const left = s[LineDetector.Left] >= threshold
+            const right = s[LineDetector.Right] >= threshold
+            const middle = s[LineDetector.Middle] >= threshold
             for (let i = 0; i < 5; ++i) {
-                if (left) led.plot(4, i)
+                if (left || middle) led.plot(4, i)
                 else led.unplot(4, i)
-                if (right) led.plot(0, i)
+                if (right || middle) led.plot(0, i)
                 else led.unplot(0, i)
             }
         }
@@ -350,40 +354,24 @@ namespace robot {
         }
 
         private readLineState() {
-            if (this.lineDetectors) return this.lineDetectors.lineState()
-            else return this.robot.lineState()
+            const state: number[] = [-1, -1, -1, -1, -1]
+            this.lineDetectors.lineState(state)
+            return state
         }
 
-        private lineState(): RobotLineState {
-            const ls = this.readLineState()
+        private computeLineState(): void {
+            const state = this.readLineState()
+            const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                ls === RobotLineState.Left || ls === RobotLineState.Right
-            if (ls !== this.currentLineState) {
-                const prev = this.currentLineState
-                this.currentLineState = ls
+                state[LineDetector.Left] >= threshold ||
+                state[LineDetector.Right] >= threshold
+            if (state.some((v, i) => v !== this.currentLineState[i])) {
+                this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
-                let msg: robot.robots.RobotCompactCommand
-                if (
-                    this.currentLineState === RobotLineState.None &&
-                    prev === RobotLineState.Left
-                )
-                    msg = robot.robots.RobotCompactCommand.LineLostLeft
-                else if (
-                    this.currentLineState === RobotLineState.None &&
-                    prev === RobotLineState.Right
-                )
-                    msg = robot.robots.RobotCompactCommand.LineLostRight
-                else
-                    msg =
-                        robot.robots.RobotCompactCommand.LineState |
-                        this.currentLineState
-
-                this.sendCompactCommand(msg)
-                robot.robots.raiseEvent(msg)
+                robot.robots.raiseEvent(robots.RobotCompactCommand.LineState)
             }
             if (!leftOrRight) this.lineLostCounter++
-            return ls
         }
 
         playTone(frequency: number, duration: number) {
