@@ -9,7 +9,9 @@ namespace robot.drivers {
             right: DigitalPin,
             public lineHigh = false
         ) {
-            this.pins = [left, right]
+            this.pins = []
+            if (left) this.pins[LineDetector.Left] = left
+            if (right) this.pins[LineDetector.Right] = right
         }
 
         start() {
@@ -43,7 +45,9 @@ namespace robot.drivers {
             right: AnalogPin,
             public lineHigh = false
         ) {
-            this.pins = [left, right]
+            this.pins = []
+            if (left) this.pins[LineDetector.Left] = left
+            if (right) this.pins[LineDetector.Right] = right
         }
 
         start() {
