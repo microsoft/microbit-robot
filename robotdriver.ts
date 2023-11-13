@@ -44,11 +44,11 @@ namespace robot {
         showConfiguration: number = 0
         configDrift: boolean = undefined
         private targetColor = 0
-        private currentColor = 0
+        currentColor = 0
         private currentArmAperture: number = undefined
-        private currentSpeed: number = 0
+        currentSpeed: number = 0
         private targetSpeed: number = 0
-        private currentTurnRatio = 0
+        currentTurnRatio = 0
         private targetTurnRatio: number = 0
         radioGroup: number
         useRadio: boolean = false
@@ -121,6 +121,7 @@ namespace robot {
             basic.forever(() => this.updateSonar()) // potentially slower
             control.inBackground(() => this.backgroundWork())
 
+            robots.registerSim()
             // notify the robot
             this.robot.onStarted(this)
         }
@@ -132,6 +133,7 @@ namespace robot {
                 this.updateColor()
                 this.updateSpeed()
                 this.updateArm()
+                robots.sendSim()
                 basic.pause(5)
             }
         }

@@ -70,4 +70,17 @@ namespace robot.robots {
         Line = RobotCompactCommand.LineState,
         Obstacle = RobotCompactCommand.ObstacleState,
     }
+
+    export interface RobotSimState {
+        // static state
+        productId: number
+
+        // dynamic state
+        radioGRoup: number
+        motorTurnRatio: number
+        motorSpeed: number
+        lines: number[]
+        obstableDistance: number
+        color: number
+    }
 }

@@ -18,6 +18,7 @@
         "radio.ts",
         "calibration.ts",
         "tester.ts",
+        "sim.ts",
         "drivers/drivers.ts",
         "drivers/ws2812bleds.ts",
         "drivers/sr04sonar.ts",
