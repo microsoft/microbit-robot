@@ -7,6 +7,7 @@ namespace robot.robots {
         const r = robot.RobotDriver.instance()
         const msg = <RobotSimStateMessage>{
             type: "state",
+            deviceId: control.deviceSerialNumber(),
             motorSpeed: r.currentSpeed,
             motorTurnRatio: r.currentTurnRatio,
             color: r.currentColor,
@@ -32,6 +33,7 @@ namespace robot.robots {
             switch (msg.type) {
                 case "sensors": {
                     const sensors = <RobotSensorsMessage>msg
+                    if (sensors.deviceId != control.deviceSerialNumber()) return
                     if (Array.isArray(sensors.lineDetectors))
                         lines.current = sensors.lineDetectors
                     if (!isNaN(sensors.obstacleDistance))

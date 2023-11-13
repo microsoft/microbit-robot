@@ -75,6 +75,7 @@ namespace robot.robots {
      */
     export interface RobotSimMessage {
         type: "state" | "sensors"
+        deviceId: number
     }
 
     export interface RobotSimStateMessage extends RobotSimMessage {
