@@ -20,7 +20,7 @@ namespace robot {
     // https://github.com/DFRobot/pxt-DFRobot_MaqueenPlus_v20/blob/master/maqueenPlusV2.ts
     class DFRobotMaqueenPlusV2Robot extends robots.Robot {
         constructor() {
-            super()
+            super(0x3375036b)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 4)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P14, DigitalPin.P13)
         }

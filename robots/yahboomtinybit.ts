@@ -16,7 +16,7 @@ namespace robot {
 
     class YahboomTinybitRobot extends robots.Robot {
         constructor() {
-            super()
+            super(0x345f8369)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P15, DigitalPin.P16)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 DigitalPin.P13,

@@ -24,7 +24,7 @@ namespace robot {
 
     class InksmithK8Robot extends robots.Robot {
         constructor() {
-            super()
+            super(0x3b603322)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 IR_SENSOR_LEFT,
                 IR_SENSOR_RIGHT,

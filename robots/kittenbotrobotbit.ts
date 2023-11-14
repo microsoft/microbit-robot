@@ -130,7 +130,7 @@ namespace robot {
 
     class KittenbotRobotbitRobot extends robots.Robot {
         constructor() {
-            super()
+            super(0x3dd2ed30)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 4)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P15, DigitalPin.P15)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(

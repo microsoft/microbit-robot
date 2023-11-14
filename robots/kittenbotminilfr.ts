@@ -77,7 +77,7 @@ namespace robot {
         private ultrasonicValue: number = 0
 
         constructor() {
-            super()
+            super(0x320f9de2)
             this.lineDetectors = new SerialLineDetector()
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
                 turnRatio: -50,

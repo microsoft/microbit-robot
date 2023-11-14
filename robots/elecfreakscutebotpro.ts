@@ -129,7 +129,7 @@ namespace robot {
 
     class ElecfreaksCutebotProRobot extends robots.Robot {
         constructor() {
-            super()
+            super(0x31e95c0a)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 8)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
             this.lineDetectors = new I2CLineDetector()

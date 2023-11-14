@@ -1,10 +1,6 @@
 namespace robot.robots {
     export class Robot {
         /**
-         * Robot product identifier in Jacdac
-         */
-        productId?: number;
-        /**
          * Maximum speed while following a line with line assist
          */
         maxLineSpeed = 40
@@ -68,7 +64,7 @@ namespace robot.robots {
             [index: number]: { speed?: number; turnRatio?: number }
         } = {}
 
-        constructor() {
+        constructor(public readonly productId: number) {
             this.commands[
                 robot.robots.RobotCompactCommand.MotorRunForward
             ] = {

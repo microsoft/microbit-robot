@@ -4,7 +4,7 @@ namespace robot {
     //https://github.com/elecfreaks/pxt-cutebot/blob/master/cutebot.ts
     class ElecfreaksCutebotRobot extends robots.Robot {
         constructor() {
-            super()
+            super(0x3818d146)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 2)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(

@@ -17,7 +17,7 @@ namespace robot {
     // https://github.com/DFRobot/pxt-maqueen/blob/master/maqueen.ts
     class DFRobotMaqueenRobot extends robots.Robot {
         constructor() {
-            super()
+            super(0x325e1e40)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(
                 DigitalPin.P13,
                 DigitalPin.P14,
