@@ -18,7 +18,10 @@ namespace robot.drivers {
      * Simulator sonar; used to marshal simmessages into the robot driver
      */
     export class SimSonar implements Sonar {
-        current: number = -1
+        current: number
+        constructor() {
+            this.current = -1
+        }
         start(): void {}
         distance(maxCmDistance: number): number {
             return Math.min(this.current, maxCmDistance)

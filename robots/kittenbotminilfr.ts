@@ -48,8 +48,12 @@ namespace robot {
     }
 
     class SerialLineDetector implements drivers.LineDetectors {
-        sensorUpdated: number = 0
-        sensorValue: number[] = [-1, -1, -1, -1, -1]
+        sensorUpdated: number
+        sensorValue: number[]
+        constructor() {
+            this.sensorUpdated = 0
+        this.sensorValue = [-1, -1, -1, -1, -1]
+        }
         start(): void {}
         lineState(state: number[]): void {
             const v = this.sensorValue
