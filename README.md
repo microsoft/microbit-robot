@@ -130,7 +130,7 @@ robot.onLineDetected(RobotLineState.Left, function () {
 -   turn off robot screen
 
 ```blocks
-robot.setDisplay(false)
+robot.setAssist(RobotAssist.Display, false)
 ```
 
 -   configure the motor drift
@@ -142,7 +142,13 @@ robot.setMotorDrift(10)
 -   disable or enable line assist
 
 ```blocks
-robot.setLineAssist(false)
+robot.setAssist(RobotAssist.LineFollowing, false)
+```
+
+-   disable or speed smoothing assist
+
+```blocks
+robot.setAssist(RobotAssist.Speed, false)
 ```
 
 ## Usage with MicroCode
