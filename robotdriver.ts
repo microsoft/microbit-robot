@@ -58,6 +58,7 @@ namespace robot {
 
         private stopToneMillis: number = 0
         lineFollowAssist = true
+        speedAssist = true
         runDrift = 0
 
         /**
@@ -329,6 +330,11 @@ namespace robot {
             ) {
                 this.targetSpeed = speed
                 this.targetTurnRatio = turnRatio
+
+                if (!this.speedAssist) {
+                    this.currentSpeed = this.targetSpeed
+                    this.currentTurnRatio = this.targetTurnRatio
+                }
             }
         }
 

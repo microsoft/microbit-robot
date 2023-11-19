@@ -1,4 +1,16 @@
 /**
+ * Robot driver builtin assists
+ */
+enum RobotAssist {
+    //% block="line following"
+    LineFollowing,
+    //% block="speed smoothing"
+    Speed,
+    //% block="sensor and motor display"
+    Display
+}
+
+/**
  * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
@@ -125,18 +137,6 @@ namespace robot {
     }
 
     /**
-     * Enables or disables the line speed assistance.
-     */
-    //% block="robot set line follow assist $enabled"
-    //% blockid="mbitrobotsetlineassist"
-    //% group="Configuration"
-    //% enabled.shadow=toggleOnOff
-    export function setLineFollowAssist(enabled: boolean): void {
-        const robot = RobotDriver.instance()
-        robot.lineFollowAssist = !!enabled
-    }
-
-    /**
      * Sets a value that corrects the ratio of power between the left and the right motor to account for hardware differences.
      */
     //% block="robot set motor drift to %drift"
@@ -155,13 +155,17 @@ namespace robot {
      * Enables or disables the display of the robot state on the LED matrix.
      * @param enabled
      */
-    //% block="robot set display $enabled"
-    //% blockid="mbitrobotsetdisplay"
+    //% block="robot set $assist $enabled"
+    //% blockid="mbitrobotsetassist"
     //% group="Configuration"
     //% enabled.shadow=toggleOnOff
-    export function setDisplay(enabled: boolean) {
+    export function setAssist(assist: RobotAssist, enabled: boolean) {
         const robot = RobotDriver.instance()
-        robot.hud = !!enabled
+        switch (assist) {
+            case RobotAssist.LineFollowing: robot.lineFollowAssist = !!enabled; break;
+            case RobotAssist.Speed: robot.speedAssist = !!enabled; break;
+            case RobotAssist.Display: robot.hud = !!enabled; break;
+        }
     }
 
     /**
