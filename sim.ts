@@ -11,10 +11,30 @@ namespace robot.robots {
             motorSpeed: r.currentSpeed,
             motorTurnRatio: r.currentTurnRatio,
             color: r.currentColor,
-            armAperture: r.currentArmAperture,
         }
+        if (r.currentArmAperture !== undefined)
+            msg.armAperture = r.currentArmAperture
         if (r.robot.productId) msg.productId = r.robot.productId
         control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)))
+    }
+
+    function handleRobotMessage(b: Buffer) {
+        const s = b.toString()
+        const msg = <RobotSimMessage>JSON.parse(s)
+        if (msg && msg.type === "sensors") {
+            const sensors = <RobotSensorsMessage>msg
+            if (sensors.deviceId != control.deviceSerialNumber()) return
+
+            const r = robot.RobotDriver.instance().robot
+            if (Array.isArray(sensors.lineDetectors)) {
+                const lines = r.lineDetectors as drivers.SimLineDetectors
+                lines.current = sensors.lineDetectors
+            }
+            if (!isNaN(sensors.obstacleDistance)) {
+                const sonar = r.sonar as drivers.SimSonar
+                sonar.current = sensors.obstacleDistance
+            }
+        }
     }
 
     /**
@@ -27,20 +47,6 @@ namespace robot.robots {
         const sonar = new drivers.SimSonar()
         r.robot.lineDetectors = lines
         r.robot.sonar = sonar
-
-        control.simmessages.onReceived("robot", (b: Buffer) => {
-            const msg = <RobotSimMessage>JSON.parse(b.toString())
-            switch (msg.type) {
-                case "sensors": {
-                    const sensors = <RobotSensorsMessage>msg
-                    if (sensors.deviceId != control.deviceSerialNumber()) return
-                    if (Array.isArray(sensors.lineDetectors))
-                        lines.current = sensors.lineDetectors
-                    if (!isNaN(sensors.obstacleDistance))
-                        sonar.current = sensors.obstacleDistance
-                    break
-                }
-            }
-        })
+        control.simmessages.onReceived("robot", handleRobotMessage)
     }
 }

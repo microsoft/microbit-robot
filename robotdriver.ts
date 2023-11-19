@@ -93,7 +93,7 @@ namespace robot {
 
             // configuration of common hardware
             this.radioGroup =
-                robot.__readCalibration(0) || radioGroupFromDeviceSerialNumber()
+                __readCalibration(0) || radioGroupFromDeviceSerialNumber()
             this.runDrift = robot.__readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
 
