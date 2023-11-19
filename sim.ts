@@ -15,7 +15,7 @@ namespace robot.robots {
         if (r.currentArmAperture !== undefined)
             msg.armAperture = r.currentArmAperture
         if (r.robot.productId) msg.productId = r.robot.productId
-        control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)))
+        control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)), true)
     }
 
     function handleRobotMessage(b: Buffer) {
