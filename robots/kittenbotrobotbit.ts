@@ -65,17 +65,11 @@ namespace robot {
         return val
     }
 
-    function setFreq(freq: number): void {
-        // Constrain the frequency
-        let prescaleval = 25000000
-        prescaleval /= 4096
-        prescaleval /= freq
-        prescaleval -= 1
-        let prescale = prescaleval //Math.Floor(prescaleval + 0.5);
+    function setFreq(): void {
         let oldmode = i2cread(PCA9685_ADDRESS, MODE1)
         let newmode = (oldmode & 0x7f) | 0x10 // sleep
         i2cwrite(PCA9685_ADDRESS, MODE1, newmode) // go to sleep
-        i2cwrite(PCA9685_ADDRESS, PRESCALE, prescale) // set the prescaler
+        i2cwrite(PCA9685_ADDRESS, PRESCALE, 121) // set the prescaler
         i2cwrite(PCA9685_ADDRESS, MODE1, oldmode)
         control.waitMicros(5000)
         i2cwrite(PCA9685_ADDRESS, MODE1, oldmode | 0xa1)
@@ -83,7 +77,7 @@ namespace robot {
 
     function initPCA9685(): void {
         i2cwrite(PCA9685_ADDRESS, MODE1, 0x00)
-        setFreq(50)
+        setFreq()
         for (let idx = 0; idx < 16; idx++) {
             setPwm(idx, 0, 0)
         }
