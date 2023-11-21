@@ -100,6 +100,7 @@ namespace robot {
 
             robots.registerSim()
 
+            this.robot.start()
             if (this.robot.leds) this.robot.leds.start()
             if (this.robot.lineDetectors) this.robot.lineDetectors.start()
             if (this.robot.sonar) this.robot.sonar.start()

@@ -103,9 +103,15 @@ namespace robot.robots {
         }
 
         /**
+         * Starts the robot drivers
+         */
+        start() {}
+
+        /**
          * Called when the robot is started
          */
         onStarted(driver: RobotDriver) {}
+
         /*
         Makes the robot move at % `speed` ([-100, 100]). Negative goes backgward, 0 stops.
         */

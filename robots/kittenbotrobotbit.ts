@@ -128,7 +128,9 @@ namespace robot {
                 false
             )
             this.maxLineSpeed = 150
+        }
 
+        start() {
             initPCA9685()
         }
 

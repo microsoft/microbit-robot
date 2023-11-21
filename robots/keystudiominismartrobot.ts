@@ -96,6 +96,9 @@ namespace robot {
                 DigitalPin.P14,
                 true
             )
+        }
+
+        start() {
             this.init_PCA9685()
         }
 

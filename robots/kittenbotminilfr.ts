@@ -52,9 +52,9 @@ namespace robot {
         sensorValue: number[]
         constructor() {
             this.sensorUpdated = 0
-        this.sensorValue = [-1, -1, -1, -1, -1]
+            this.sensorValue = [-1, -1, -1, -1, -1]
         }
-        start(): void {}
+        start(): void { }
         lineState(state: number[]): void {
             const v = this.sensorValue
             state[LineDetector.OuterLeft] = v[0]
@@ -92,7 +92,9 @@ namespace robot {
                 turnRatio: 50,
                 speed: 40,
             }
+        }
 
+        start() {
             serial.redirect(SerialPin.P0, SerialPin.P1, 115200)
             serial.writeString("\n\n")
             serial.setRxBufferSize(64)
@@ -105,7 +107,7 @@ namespace robot {
                     this.ultrasonicValue = parseIntFromDigits(tmp[1])
                     this.ultrasonicUpdated = control.millis()
                 } else if (tmp[0] === "M10") {
-                    ;(this.lineDetectors as SerialLineDetector).parse(tmp)
+                    ; (this.lineDetectors as SerialLineDetector).parse(tmp)
                 } else if (tmp[0] === "M33") {
                     //this.mode = MiniLFRMode.IDLE
                 }
@@ -115,8 +117,8 @@ namespace robot {
                 // read line sensor
                 if (
                     control.millis() -
-                        (this.lineDetectors as SerialLineDetector)
-                            .sensorUpdated >
+                    (this.lineDetectors as SerialLineDetector)
+                        .sensorUpdated >
                     100
                 ) {
                     writeCmd("M10")

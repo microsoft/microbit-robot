@@ -26,7 +26,7 @@ enum LineDetector {
 
 namespace robot.drivers {
     /**
-     * A ws2812b LED strip
+     * A LED strip
      */
     export interface LEDStrip {
         start(): void

@@ -35,7 +35,7 @@ namespace robot {
             this.sonar = sonar
         }
 
-        onStarted(driver: RobotDriver): void {
+        start() {
             pins.analogSetPeriod(M1_PWR, 1024)
             pins.analogSetPeriod(M2_PWR, 1024)
         }
