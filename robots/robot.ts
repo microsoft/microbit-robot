@@ -60,10 +60,14 @@ namespace robot.robots {
         /**
          * A map from microcode command to speed, turn ratio values
          */
-        readonly commands: {
+        commands: {
             [index: number]: { speed?: number; turnRatio?: number }
         } = {}
 
+        /**
+         * Constructs a new robot instance and loads configuration.
+         * Do not start physical services like i2c, pins in the ctor, use start instead.
+         */
         constructor(public readonly productId: number) {
             this.commands[
                 robot.robots.RobotCompactCommand.MotorRunForward
@@ -103,14 +107,9 @@ namespace robot.robots {
         }
 
         /**
-         * Starts the robot drivers
+         * Starts the robot drivers, including i2c drivers, etc...
          */
         start() {}
-
-        /**
-         * Called when the robot is started
-         */
-        onStarted(driver: RobotDriver) {}
 
         /*
         Makes the robot move at % `speed` ([-100, 100]). Negative goes backgward, 0 stops.

@@ -33,7 +33,7 @@ namespace robot {
         /**
          * The robot instance
          */
-        readonly robot: robots.Robot
+        robot: robots.Robot
         /**
          * Gets the latest distance returned by the sensor
          */
@@ -115,9 +115,6 @@ namespace robot {
 
             basic.forever(() => this.updateSonar()) // potentially slower
             control.inBackground(() => this.backgroundWork())
-
-            // notify the robot
-            this.robot.onStarted(this)
         }
 
         private backgroundWork() {

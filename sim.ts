@@ -43,10 +43,8 @@ namespace robot.robots {
     //% shim=TD_NOOP
     export function registerSim() {
         const r = robot.RobotDriver.instance()
-        const lines = new drivers.SimLineDetectors()
-        const sonar = new drivers.SimSonar()
-        r.robot.lineDetectors = lines
-        r.robot.sonar = sonar
+        // replace pysical robot with simulator robot, before starting
+        r.robot = new robots.SimRobot(r.robot)
         control.simmessages.onReceived("robot", handleRobotMessage)
     }
 }
