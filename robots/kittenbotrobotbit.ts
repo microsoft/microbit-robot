@@ -96,13 +96,8 @@ namespace robot {
     }
 
     function MotorRun(index: Motors, speed: number): void {
-        speed = speed * 16 // map 255 to 4096
-        if (speed >= 4096) {
-            speed = 4095
-        }
-        if (speed <= -4096) {
-            speed = -4095
-        }
+        speed = Math.clamp(-4095, 4095, speed << 4)
+        
         if (index > 4 || index <= 0) return
         let pp = (index - 1) * 2
         let pn = (index - 1) * 2 + 1
@@ -143,7 +138,11 @@ namespace robot {
         }
 
         armOpen(aperture: number): void {
-            Servo(Servos.S1, aperture)
+            if (aperture > 50) {
+                Servo(Servos.S1, 0)
+            } else {
+                Servo(Servos.S1, 90)
+            }
         }
     }
 
