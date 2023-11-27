@@ -21,3 +21,10 @@ jobs:
         working-directory: botsim
       - run: npm run build
         working-directory: botsim
+      - name: github pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./botsim/build
+            force_orphan: true
