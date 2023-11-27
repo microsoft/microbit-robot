@@ -15,7 +15,7 @@ namespace robot.robots {
             color: r.currentColor,
         }
         if (r.robot.productId) msg.productId = r.robot.productId
-        control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)), true)
+        control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)), false)
     }
 
     function handleRobotMessage(b: Buffer) {
