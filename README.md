@@ -69,7 +69,7 @@ input.onButtonPressed(Button.A, () => {
 })
 ```
 
-The move block takes a ` steering`` and  `speed`parameters.
+The move block takes a `steering` and  `speed`parameters.
 The`steering`controls how much "turn",`speed` controls the throttle on the motors.
 
 -   stop the robot
@@ -80,11 +80,11 @@ input.onButtonPressed(Button.B, () => {
 })
 ```
 
--   open the claw/arm
+-   open a claw/arm (some robots support one or more servos)
 
 ```blocks
 input.onButtonPressed(Button.B, () => {
-    robot.armOpen(50)
+    robot.armOpen(0, 50)
 })
 ```
 
@@ -107,7 +107,7 @@ input.onButtonPressed(Button.A, function () {
 ### Input
 
 -   detect when an obstacle is changing
-    and read the current distance (in cm)
+and read the current distance (in cm)
 
 ```blocks
 let dist = 0
