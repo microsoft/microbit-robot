@@ -3,11 +3,11 @@
  */
 enum RobotAssist {
     //% block="line following"
-    LineFollowing,
+    LineFollowing = 1 << 0,
     //% block="speed smoothing"
-    Speed,
+    Speed = 1 << 1,
     //% block="sensor and motor display"
-    Display
+    Display = 2 << 1
 }
 
 /**
@@ -33,7 +33,7 @@ namespace robot {
     //% turnRatio.min=-200
     //% turnRatio.max=200
     export function motorRun(turnRatio: number, speed: number) {
-        const robot = RobotDriver.instance()
+        const robot = RobotDriver.instance()        
         robot.motorRun(turnRatio, speed)
     }
 
@@ -96,7 +96,7 @@ namespace robot {
     //% group="Input"
     export function obstacleDistance(): number {
         const robot = RobotDriver.instance()
-        return robot.currentDistance
+        return robot.obstacleDistance
     }
 
     /**
@@ -161,11 +161,7 @@ namespace robot {
     //% enabled.shadow=toggleOnOff
     export function setAssist(assist: RobotAssist, enabled: boolean) {
         const robot = RobotDriver.instance()
-        switch (assist) {
-            case RobotAssist.LineFollowing: robot.lineFollowAssist = !!enabled; break;
-            case RobotAssist.Speed: robot.speedAssist = !!enabled; break;
-            case RobotAssist.Display: robot.hud = !!enabled; break;
-        }
+        robot.setAssist(assist, enabled)
     }
 
     /**

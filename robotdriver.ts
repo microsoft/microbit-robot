@@ -40,7 +40,6 @@ namespace robot {
         private readonly sonarDistanceFilter = new drivers.KalmanFilter1D()
         private lastSonarValue = 0
 
-        hud = true
         showConfiguration: number = 0
         configDrift: boolean = undefined
         private targetColor = 0
@@ -57,9 +56,9 @@ namespace robot {
         private lineLostCounter: number
 
         private stopToneMillis: number = 0
-        lineFollowAssist = true
-        speedAssist = true
         runDrift = 0
+
+        assits: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
         /**
          * Maximum distance in cm for the ultrasonic sensor
@@ -73,8 +72,13 @@ namespace robot {
         /**
          * Gets the current measured distance in cm
          */
-        get currentDistance() {
+        get obstacleDistance() {
             return Math.round(this.sonarDistanceFilter.x)
+        }
+
+        setAssist(assist: RobotAssist, enabled: boolean) {
+            if (enabled) this.assits |= assist;
+            else this.assits = ~(~this.assits | assist)
         }
 
         /**
@@ -110,7 +114,7 @@ namespace robot {
             this.setColor(0x0000ff)
             this.motorRun(0, 0)
             // wake up sensors
-            this.ultrasonicDistance()
+            this.readUltrasonicDistance()
             this.computeLineState()
 
             basic.forever(() => this.updateSonar()) // potentially slower
@@ -175,7 +179,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    this.lineFollowAssist &&
+                    (this.assits & RobotAssist.LineFollowing) &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
@@ -239,7 +243,7 @@ namespace robot {
 
         private setMotorState(left: number, right: number) {
             this.robot.motorRun(left, right)
-            if (this.showConfiguration || !this.hud) return
+            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
             this.showSingleMotorState(3, left)
             this.showSingleMotorState(1, right)
         }
@@ -263,7 +267,7 @@ namespace robot {
         }
 
         private showLineState() {
-            if (this.showConfiguration || !this.hud) return
+            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
 
             // render left/right lines
             const threshold = this.robot.lineHighThreshold
@@ -280,7 +284,7 @@ namespace robot {
         }
 
         private updateSonar() {
-            const dist = this.ultrasonicDistance()
+            const dist = this.readUltrasonicDistance()
             const d = Math.clamp(1, 5, Math.ceil(dist / 5))
             if (d !== this.lastSonarValue) {
                 const prevd = this.lastSonarValue
@@ -303,7 +307,7 @@ namespace robot {
 
             if (
                 !this.showConfiguration &&
-                this.hud &&
+                (this.assits & RobotAssist.Display) &&
                 this.lastSonarValue !== undefined
             ) {
                 const d = this.lastSonarValue
@@ -329,7 +333,7 @@ namespace robot {
                 this.targetSpeed = speed
                 this.targetTurnRatio = turnRatio
 
-                if (!this.speedAssist) {
+                if (!(this.assits & RobotAssist.Speed)) {
                     this.currentSpeed = this.targetSpeed
                     this.currentTurnRatio = this.targetTurnRatio
                 }
@@ -341,7 +345,7 @@ namespace robot {
             else return this.robot.ultrasonicDistance(this.maxCmDistance)
         }
 
-        private ultrasonicDistance() {
+        private readUltrasonicDistance() {
             const dist = this.ultrasonicDistanceOnce()
             if (dist > this.robot.sonarMinReading)
                 this.sonarDistanceFilter.filter(dist)
