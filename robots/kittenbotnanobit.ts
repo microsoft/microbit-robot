@@ -65,6 +65,7 @@ namespace robot {
         constructor() {
             super(0x34e5f4f2)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 2)
+            this.arms = [new drivers.FixedServoArm(0, 90, AnalogPin.P1)]
         }
 
         start() {
@@ -92,16 +93,6 @@ namespace robot {
                 }
             } else {
                 motorSet4(-left, right, right, -left)
-            }
-        }
-
-        armOpen(aperture: number): void {
-            // fixed angle mappping to 3D printed arm
-            // servo degree 0: close, 90: close
-            if (aperture > 50) {
-                pins.servoWritePin(AnalogPin.P1, 0)
-            } else { 
-                pins.servoWritePin(AnalogPin.P1, 90)    
             }
         }
     }

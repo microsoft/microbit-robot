@@ -56,7 +56,7 @@ namespace robot.robots {
         /**
          * Robotic arm configuration
          */
-        arm?: drivers.Arm
+        arms?: drivers.Arm[]
         /**
          * A map from microcode command to speed, turn ratio values
          */
@@ -115,11 +115,6 @@ namespace robot.robots {
         Makes the robot move at % `speed` ([-100, 100]). Negative goes backgward, 0 stops.
         */
         motorRun(left: number, right: number): void {}
-
-        /**
-         * Optional: Open robotic arm if present, in %
-         */
-        armOpen(aperture: number) {}
 
         /**
          * Optional: sets the color on the LED array as a 24bit RGB color

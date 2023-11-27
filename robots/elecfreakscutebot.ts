@@ -12,7 +12,7 @@ namespace robot {
                 DigitalPin.P14,
                 false
             )
-            this.arm = new drivers.ServoArm(45, 135, AnalogPin.P1)
+            this.arms = [new drivers.ServoArm(45, 135, AnalogPin.P1), new drivers.ServoArm(45, 135, AnalogPin.P2)]
             this.maxLineSpeed = 28
         }
 

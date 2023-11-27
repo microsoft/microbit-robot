@@ -50,17 +50,19 @@ namespace robot {
     }
 
     /**
-     * Opens or closes the claw (if available).
+     * Opens or closes a claw (if available).
      * @param opening the opening of the claw, from 0 (closed) to 100 (open)
      */
     //% group="Output"
-    //% block="robot arm open $opening \\%"
+    //% block="robot arm $index open $opening \\%"
     //% blockid="mbitrobotarmopen"
+    //% index.min=0
+    //% index.max=1
     //% opening.min=0
     //% opening.max=100
-    export function armOpen(opening: number) {
+    export function armOpen(index: number, opening: number) {
         const robot = RobotDriver.instance()
-        robot.armOpen(opening)
+        robot.armOpen(index, opening)
     }
 
     /**

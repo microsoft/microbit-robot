@@ -44,7 +44,6 @@ namespace robot {
         configDrift: boolean = undefined
         private targetColor = 0
         currentColor = 0
-        currentArmAperture: number = undefined
         currentSpeed: number = 0
         private targetSpeed: number = 0
         currentTurnRatio = 0
@@ -108,7 +107,10 @@ namespace robot {
             if (this.robot.leds) this.robot.leds.start()
             if (this.robot.lineDetectors) this.robot.lineDetectors.start()
             if (this.robot.sonar) this.robot.sonar.start()
-            if (this.robot.arm) this.robot.arm.start()
+            if (this.robot.arms) {
+                for (let i = 0; i < this.robot.arms.length; ++i)
+                    this.robot.arms[i].start()
+            }
 
             // stop motors
             this.setColor(0x0000ff)
@@ -127,7 +129,6 @@ namespace robot {
                 this.updateLineState()
                 this.updateColor()
                 this.updateSpeed()
-                this.updateArm()
                 robots.sendSim()
                 basic.pause(5)
             }
@@ -155,15 +156,6 @@ namespace robot {
             this.currentColor = (red << 16) | (green << 8) | blue
             this.robot.headlightsSetColor(red, green, blue)
             if (this.robot.leds) this.robot.leds.setColor(red, green, blue)
-        }
-
-        private updateArm() {
-            if (isNaN(this.currentArmAperture) || this.currentArmAperture < 0)
-                return
-            const arm = this.robot.arm
-            if (arm) arm.open(this.currentArmAperture)
-            else this.robot.armOpen(this.currentArmAperture)
-            this.currentArmAperture = undefined
         }
 
         private updateSpeed() {
@@ -317,9 +309,21 @@ namespace robot {
             }
         }
 
-        armOpen(aperture: number) {
+        get armsLength() {
             this.start()
-            this.currentArmAperture = Math.clamp(-1, 100, Math.round(aperture))
+            const arms = this.robot.arms
+            return arms ? arms.length : 0
+        }
+
+        armOpen(index: number, aperture: number) {
+            this.start()
+            const a = Math.clamp(-1, 100, Math.round(aperture))
+            const arms = this.robot.arms
+            if (arms) {
+                const arm = arms[index]
+                if (arm)
+                    arm.open(a)
+            }
         }
 
         motorRun(turnRatio: number, speed: number) {

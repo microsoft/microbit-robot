@@ -34,12 +34,18 @@ namespace robot {
             case robot.robots.RobotCompactCommand.LEDOff:
                 driver.setColor(0x00000)
                 break
-            case robot.robots.RobotCompactCommand.ArmOpen:
-                driver.armOpen(100)
+            case robot.robots.RobotCompactCommand.ArmOpen: {
+                const n = driver.armsLength
+                for (let i = 0; i < driver.armsLength; ++i)
+                    driver.armOpen(i, 100)
                 break
-            case robot.robots.RobotCompactCommand.ArmClose:
-                driver.armOpen(0)
+            }
+            case robot.robots.RobotCompactCommand.ArmClose: {
+                const n = driver.armsLength
+                for (let i = 0; i < driver.armsLength; ++i)
+                    driver.armOpen(i , 0)
                 break
+            }
         }
     }
 

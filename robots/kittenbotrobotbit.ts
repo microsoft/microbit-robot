@@ -97,7 +97,7 @@ namespace robot {
 
     function MotorRun(index: Motors, speed: number): void {
         speed = Math.clamp(-4095, 4095, speed << 4)
-        
+
         if (index > 4 || index <= 0) return
         let pp = (index - 1) * 2
         let pn = (index - 1) * 2 + 1
@@ -117,6 +117,18 @@ namespace robot {
         setPwm(index + 7, 0, value)
     }
 
+    class PwmArm implements drivers.Arm {
+        constructor(public readonly servo: Servos) {}
+        start() { }
+        open(aperture: number) {
+            if (aperture > 50) {
+                Servo(this.servo, 0)
+            } else {
+                Servo(this.servo, 90)
+            }
+        }
+    }
+
     class KittenbotRobotbitRobot extends robots.Robot {
         constructor() {
             super(0x3dd2ed30)
@@ -128,6 +140,7 @@ namespace robot {
                 false
             )
             this.maxLineSpeed = 150
+            this.arms = [new PwmArm(Servos.S1)]
         }
 
         start() {
@@ -137,14 +150,6 @@ namespace robot {
         motorRun(left: number, right: number): void {
             MotorRun(Motors.M1A, left)
             MotorRun(Motors.M1B, -right)
-        }
-
-        armOpen(aperture: number): void {
-            if (aperture > 50) {
-                Servo(Servos.S1, 0)
-            } else {
-                Servo(Servos.S1, 90)
-            }
         }
     }
 
