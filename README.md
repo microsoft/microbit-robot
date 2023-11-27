@@ -25,11 +25,12 @@ The firmware is designed for popular rover robots found in the micro:bit ecosyst
 -   2 or more line sensors
 -   a distance sensor, typically an ultrasonic sensor
 
-The following features are found often but are optional:
+The following features are found often those robots:
 
--   RGB LEDs
+-   one or more servo connectors
 -   Buzzer
--   Programmable LED strip
+-   RGB LEDs (headlights)
+-   Programmable LED strip (undercarriage)
 
 ## Using this extension
 
