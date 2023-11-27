@@ -19,5 +19,5 @@ jobs:
             node-version: ${{ matrix.node-version }}      
       - run: npm ci
         working-directory: botsim
-      - run: npm build
+      - run: npm run build
         working-directory: botsim
