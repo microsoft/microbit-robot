@@ -10,6 +10,7 @@
     ],
     "exclude": [
         "built/**",
-        "pxt_modules/**/*test.ts"
+        "pxt_modules/**/*test.ts",
+        "botsim/**"
     ]
 }
