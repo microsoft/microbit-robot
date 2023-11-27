@@ -1,4 +1,6 @@
-.sim-container {
+.app {
     width: 100%;
-    overflow: hidden;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
