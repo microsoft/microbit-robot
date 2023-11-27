@@ -2,6 +2,7 @@
   "name": "@microbit-robot/botsim",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://microsoft.github.io/microbit-robot/",
   "dependencies": {
     "@types/node": "^16.18.61",
     "@types/react": "^18.2.37",
