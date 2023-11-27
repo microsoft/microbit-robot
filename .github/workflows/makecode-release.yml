@@ -1,4 +1,4 @@
-name: MakeCode Build
+name: MakeCode Release
 on:
   push:
       tags:

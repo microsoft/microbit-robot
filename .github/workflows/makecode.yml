@@ -1,6 +1,8 @@
 name: MakeCode Build
 on:
   push:
+    paths-ignore:
+      - "botsim/**"
   workflow_dispatch:
 
 jobs:
