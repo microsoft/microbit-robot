@@ -10,6 +10,8 @@ namespace robot.robots {
             deviceId: control.deviceSerialNumber(),
             motorSpeed: r.currentSpeed,
             motorTurnRatio: r.currentTurnRatio,
+            motorLeft: r.currentThrottle[0],
+            motorRight: r.currentThrottle[1],
             color: r.currentColor,
         }
         if (r.robot.productId) msg.productId = r.robot.productId

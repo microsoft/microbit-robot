@@ -48,6 +48,7 @@ namespace robot {
         private targetSpeed: number = 0
         currentTurnRatio = 0
         private targetTurnRatio: number = 0
+        currentThrottle: number[]
         radioGroup: number
         useRadio: boolean = false
 
@@ -95,6 +96,7 @@ namespace robot {
                 throw "Another robot has already been started."
             RobotDriver._instance = this
 
+            this.currentThrottle = [0, 0]
             // configuration of common hardware
             this.radioGroup =
                 __readCalibration(0) || radioGroupFromDeviceSerialNumber()
@@ -234,6 +236,8 @@ namespace robot {
         }
 
         private setMotorState(left: number, right: number) {
+            this.currentThrottle[0] = left
+            this.currentThrottle[1] = right
             this.robot.motorRun(left, right)
             if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
             this.showSingleMotorState(3, left)

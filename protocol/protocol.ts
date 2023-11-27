@@ -87,6 +87,8 @@ namespace robot.robots {
         productId: number
         motorTurnRatio: number
         motorSpeed: number
+        motorLeft: number
+        motorRight: number
         armAperture: number
         color: number
     }
