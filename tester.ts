@@ -1,37 +1,37 @@
-namespace robot.robots {
+namespace robot.test {
     /**
      * Starts a testing mode to be used when building a robot
      */
     export function startTestMode() {
-        robot.setAssist(RobotAssist.LineFollowing, false)
+        setAssist(RobotAssist.LineFollowing, false)
         input.onButtonPressed(Button.A, () => {
             const d = 1000
-            robot.playTone(200, 440)
-            robot.setColor(0xff0000)
-            robot.motorRun(200, 100)
+            playTone(200, 440)
+            setColor(0xff0000)
+            motorRun(200, 100)
             pause(d)
-            robot.playTone(200, 440)
-            robot.setColor(0xff0000)
-            robot.motorRun(-200, 100)
+            playTone(200, 440)
+            setColor(0xff0000)
+            motorRun(-200, 100)
             pause(d)
-            robot.playTone(200, 1240)
-            robot.setColor(0x000000)
-            robot.motorStop()
+            playTone(200, 1240)
+            setColor(0x000000)
+            motorStop()
         })
 
         input.onButtonPressed(Button.B, () => {
             const d = 1000
-            robot.motorRun(0, 100)
+            motorRun(0, 100)
             pause(d)
-            robot.motorRun(0, 50)
+            motorRun(0, 50)
             pause(d)
-            robot.motorRun(0, 0)
+            motorRun(0, 0)
             pause(d)
-            robot.motorRun(0, -50)
+            motorRun(0, -50)
             pause(d)
-            robot.motorRun(0, -100)
+            motorRun(0, -100)
             pause(d)
-            robot.motorStop()
+            motorStop()
         })
     }
 }

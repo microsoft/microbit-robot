@@ -332,9 +332,10 @@ namespace robot {
             this.start()
             turnRatio = Math.clamp(-200, 200, Math.round(turnRatio))
             speed = Math.clamp(-100, 100, Math.round(speed))
+
             if (
                 this.targetSpeed !== speed ||
-                this.currentTurnRatio !== turnRatio
+                this.targetTurnRatio !== turnRatio
             ) {
                 this.targetSpeed = speed
                 this.targetTurnRatio = turnRatio

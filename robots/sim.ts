@@ -16,7 +16,7 @@ namespace robot.robots {
             this.speedTransitionAlpha = p.speedTransitionAlpha
             this.speedBrakeTransitionAlpha = p.speedBrakeTransitionAlpha
             this.targetTurnRatioThreshold = p.targetTurnRatioThreshold
-            this.turnRatioTransitionAlpha = p.targetTurnRatioThreshold
+            this.turnRatioTransitionAlpha = p.turnRatioTransitionAlpha
             this.sonarMinReading = p.sonarMinReading
             this.lineLostThreshold = p.lineLostThreshold
             this.lineHighThreshold = p.lineHighThreshold
