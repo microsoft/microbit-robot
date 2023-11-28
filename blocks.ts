@@ -158,7 +158,7 @@ namespace robot {
     //% left.shadow=toggleOnOff
     //% middle.shawdow=toggleOnOff
     //% right.shadow=toggleOnOff
-    export function onLineLeftRightMiddleDetected(
+    export function onLineLeftMiddleRightDetected(
         left: boolean,
         middle: boolean,
         right: boolean,

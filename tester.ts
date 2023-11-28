@@ -8,7 +8,15 @@ namespace robot.test {
         onLineDetected(function () {
             playTone(600, 50)
         })
-
+        onLineLeftRightDetected(true, true, () => {
+            playTone(640, 50)
+        })
+        onLineLeftMiddleRightDetected(true, true, true, () => {
+            playTone(680, 50)
+        })
+        onLineOuterLeftLeftOuterRightDetected(true, true, true, true, () => {
+            playTone(720, 50)
+        })
         onObstacleDistanceChanged(function () {
             playTone(768, 50)
         })
