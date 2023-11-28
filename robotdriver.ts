@@ -58,11 +58,6 @@ namespace robot {
 
         assits: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
-        /**
-         * Maximum distance in cm for the ultrasonic sensor
-         */
-        readonly maxCmDistance = 40
-
         constructor(robot: robots.Robot) {
             this.robot = robot
         }
@@ -115,7 +110,9 @@ namespace robot {
             // stop motors
             this.setColor(0x0000ff)
             this.motorRun(0, 0)
+            this.playTone(0, 0)
             // wake up sensors
+            this.sonarDistanceFilter.x = configuration.MAX_SONAR_DISTANCE
             this.readUltrasonicDistance()
             this.computeLineState()
 
@@ -348,13 +345,13 @@ namespace robot {
         }
 
         private ultrasonicDistanceOnce() {
-            if (this.robot.sonar) return this.robot.sonar.distance(this.maxCmDistance)
-            else return this.robot.ultrasonicDistance(this.maxCmDistance)
+            if (this.robot.sonar) return this.robot.sonar.distance(configuration.MAX_SONAR_DISTANCE)
+            else return this.robot.ultrasonicDistance(configuration.MAX_SONAR_DISTANCE)
         }
 
         private readUltrasonicDistance() {
             const dist = this.ultrasonicDistanceOnce()
-            if (dist > this.robot.sonarMinReading)
+            if (!isNaN(dist) && dist > this.robot.sonarMinReading)
                 this.sonarDistanceFilter.filter(dist)
             const filtered = this.sonarDistanceFilter.x
             return filtered
@@ -382,8 +379,11 @@ namespace robot {
         }
 
         playTone(frequency: number, duration: number) {
-            this.stopToneMillis = control.millis() + duration
             pins.analogPitch(frequency, 0)
+            if (frequency)
+                this.stopToneMillis = control.millis() + duration
+            else
+                this.stopToneMillis = 0
         }
 
         private updateTone() {

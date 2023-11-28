@@ -6,24 +6,24 @@ namespace robot.test {
         setAssist(RobotAssist.LineFollowing, false)
 
         onLineDetected(function () {
-            playTone(100, 2000)
+            playTone(600, 50)
         })
 
         onObstacleDistanceChanged(function () {
-            playTone(100, 2400)
+            playTone(768, 50)
         })
 
         input.onButtonPressed(Button.A, () => {
             const d = 1000
-            playTone(200, 440)
+            playTone(440, 200)
             setColor(0xff0000)
             motorRun(200, 100)
             pause(d)
-            playTone(200, 440)
+            playTone(440, 200)
             setColor(0xff0000)
             motorRun(-200, 100)
             pause(d)
-            playTone(200, 1240)
+            playTone(840, 200)
             setColor(0x000000)
             motorStop()
         })
