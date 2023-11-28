@@ -14,7 +14,7 @@ import {
 import { Entity } from "../entity"
 import { Vec2Like } from "../../types/vec2"
 
-const KEYBOARD_CONTROL_ENABLED = true
+const KEYBOARD_CONTROL_ENABLED = false
 
 export class Bot {
     public entity: Entity
@@ -88,6 +88,7 @@ export class Bot {
     private handleInput() {
         const { input } = this.sim
 
+        // Hack: use first wheel's speed settings for all wheels
         const maxSpeed = this.botSpec.wheels[0]?.maxSpeed ?? 100
         const minSpeed = this.botSpec.wheels[0]?.minSpeed ?? -100
         let leftSpeed = 0
@@ -152,5 +153,10 @@ export class Bot {
         const wheel = this.wheels.get(label)
         if (!wheel) return
         wheel.setSpeed(speed)
+    }
+
+    public setMotors(left: number, right: number) {
+        this.setWheelSpeed("left", left)
+        this.setWheelSpeed("right", right)
     }
 }

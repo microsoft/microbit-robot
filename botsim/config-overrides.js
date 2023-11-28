@@ -17,8 +17,6 @@ module.exports = function (config, env) {
                 console: false,
             },
         },
-        devtool: "source-map", // notably speeds up matter.js in development builds
-        /*
         plugins: [
             ...config.plugins.filter((p) => !(p instanceof HtmlWebpackPlugin)),
             new NodePolyfillPlugin(),
@@ -48,7 +46,6 @@ module.exports = function (config, env) {
                 )
             ),
         ],
-        */
     };
     return config;
 };

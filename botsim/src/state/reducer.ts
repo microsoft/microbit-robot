@@ -1,6 +1,6 @@
 import { AppState } from "./state"
 import { Action } from "./actions"
-import * as storage from "../services/storage"
+import * as storage from "../services/localStorage"
 
 export default function reducer(state: AppState, action: Action): AppState {
     switch (action.type) {

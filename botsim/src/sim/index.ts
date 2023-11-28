@@ -16,7 +16,7 @@ import {
 import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
 import { Container } from "./container"
-import { InputState, registerInputState } from "../services/input"
+import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PIXELS_PER_CM } from "./constants"
 
@@ -216,8 +216,7 @@ export class Simulation extends Container {
             offset: { x: 0, y: 0 },
             brush: {
                 ...defaultColorBrush(),
-                borderColor: "white"
-                
+                borderColor: "white",
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -264,5 +263,10 @@ export class Simulation extends Container {
                 },
             ],
         })
+    }
+
+    public setMotors(deviceId: number, left: number, right: number) {
+        // TODO: Lookup or create bot by deviceId
+        this._bot?.setMotors(left, right)
     }
 }
