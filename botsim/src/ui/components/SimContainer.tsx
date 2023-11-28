@@ -16,15 +16,6 @@ export const SimContainer: React.FC<Props> = ({}) => {
         if (fetchSim.current) {
             fetchSim.current = false
             Simulation.getAsync().then((s) => {
-                const map = MAPS["Test Map"]
-                if (map) {
-                    s.loadMap(map)
-                }
-                const bot = BOTS["Test Bot"]
-                if (bot) {
-                    s.createBot(bot)
-                }
-                s.start()
                 setSim(s)
             })
         }
