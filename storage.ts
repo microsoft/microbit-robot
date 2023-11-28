@@ -1,6 +1,6 @@
-namespace robot {
-    //% shim=robot::__writeCalibration
-    export function __writeCalibration(
+namespace robot.configuration {
+    //% shim=robot::writeCalibration
+    export function writeCalibration(
         radioGroup: number,
         drift: number
     ): void {
@@ -8,8 +8,8 @@ namespace robot {
         console.log("run drift: " + drift)
     }
 
-    //% shim=robot::__readCalibration
-    export function __readCalibration(field: number): number {
+    //% shim=robot::readCalibration
+    export function readCalibration(field: number): number {
         // read run drift
         return 0
     }

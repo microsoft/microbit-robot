@@ -1,6 +1,4 @@
 namespace robot {
-    export const SCROLL_SPEED = 50
-
     function radioGroupFromDeviceSerialNumber() {
         const sn = control.deviceLongSerialNumber()
         return (sn.hash(10) % 9) + 1
@@ -99,8 +97,8 @@ namespace robot {
             this.currentThrottle = [0, 0]
             // configuration of common hardware
             this.radioGroup =
-                __readCalibration(0) || radioGroupFromDeviceSerialNumber()
-            this.runDrift = robot.__readCalibration(1)
+                configuration.readCalibration(0) || radioGroupFromDeviceSerialNumber()
+            this.runDrift = configuration.readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
 
             robots.registerSim()
@@ -397,7 +395,7 @@ namespace robot {
         setRunDrift(runDrift: number) {
             if (!isNaN(runDrift)) {
                 this.runDrift = runDrift >> 0
-                __writeCalibration(this.radioGroup, this.runDrift)
+                configuration.writeCalibration(this.radioGroup, this.runDrift)
                 led.stopAnimation()
             }
         }
@@ -409,7 +407,7 @@ namespace robot {
             this.start()
             this.radioGroup = newGroup & 0xff
             radio.setGroup(this.radioGroup)
-            __writeCalibration(this.radioGroup, this.runDrift)
+            configuration.writeCalibration(this.radioGroup, this.runDrift)
             led.stopAnimation()
         }
 

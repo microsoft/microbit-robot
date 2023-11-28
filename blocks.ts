@@ -16,8 +16,6 @@ enum RobotAssist {
 //% color="#ff6800" icon="\uf1b9" weight=15
 //% groups='["Robot", "Output", "Input", "Configuration"]'
 namespace robot {
-    const MAX_GROUPS = 25
-
     /**
      * Moves the robot.
      */
@@ -179,8 +177,8 @@ namespace robot {
         const robot = RobotDriver.instance()
         id = (id >> 0) & 0xff
         if (id === 0) return // not allowed
-        while (id < 0) id += MAX_GROUPS
-        id = id % MAX_GROUPS
+        while (id < 0) id += configuration.MAX_GROUPS
+        id = id % configuration.MAX_GROUPS
         robot.setRadioGroup(id)
     }
 }
