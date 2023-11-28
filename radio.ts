@@ -64,10 +64,13 @@ namespace robot {
     function handleLineDetected() {
         const d = RobotDriver.instance()
         let prev: number[] = []
-        robot.robots.onEvent(robots.RobotCompactCommand.LineState, () => {
+        messages.onEvent(messages.RobotEvents.LineAny, robots.RobotCompactCommand.LineState, () => {
             const robot = d.robot
             const threshold = robot.lineHighThreshold
             const current = d.currentLineState
+
+            if (current.length === prev.length && current.every((v,i) => prev[i] === v))
+                return; // unchanged
 
             // TODO refactor this out
             // left, right, middle

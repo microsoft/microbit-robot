@@ -297,7 +297,9 @@ namespace robot {
                         robot.robots.RobotCompactCommand.ObstacleState | di
                     this.sendCompactCommand(msg)
                 }
-                robot.robots.raiseEvent(
+
+                robot.messages.raiseEvent(
+                    messages.RobotEvents.ObstacleDistance,
                     robot.robots.RobotCompactCommand.ObstacleState
                 )
             }
@@ -372,14 +374,21 @@ namespace robot {
         private computeLineState(): void {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
+            const changed = state.map((v, i) => (v >= threshold) !== (this.currentLineState[i] >= threshold))
             const leftOrRight =
                 state[RobotLineDetector.Left] >= threshold ||
                 state[RobotLineDetector.Right] >= threshold
-            if (state.some((v, i) => v !== this.currentLineState[i])) {
+            if (changed.some(v => v)) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
-                robot.robots.raiseEvent(robots.RobotCompactCommand.LineState)
+                messages.raiseEvent(messages.RobotEvents.LineAny, robots.RobotCompactCommand.LineState)
+                if (changed[RobotLineDetector.Left] || changed[RobotLineDetector.Right])
+                    messages.raiseEvent(messages.RobotEvents.LineLeftRight, robots.RobotCompactCommand.LineState)
+                if (changed[RobotLineDetector.Left] || changed[RobotLineDetector.Right] || changed[RobotLineDetector.Middle])
+                    messages.raiseEvent(messages.RobotEvents.LineLeftMiddleRight, robots.RobotCompactCommand.LineState)
+                if (changed[RobotLineDetector.OuterLeft] || changed[RobotLineDetector.Left] || changed[RobotLineDetector.Right] || changed[RobotLineDetector.OuterRight])
+                    messages.raiseEvent(messages.RobotEvents.LineOuterLeftLeftRightOuterRight, robots.RobotCompactCommand.LineState)
             }
             if (!leftOrRight) this.lineLostCounter++
         }

@@ -39,6 +39,7 @@ namespace robot {
      * Opens or closes a claw (if available).
      * @param opening the opening of the claw, from 0 (closed) to 100 (open)
      */
+    //% weight=40
     //% group="Output"
     //% block="robot arm $index open $opening \\%"
     //% blockid="mbitrobotarmopen"
@@ -95,7 +96,8 @@ namespace robot {
     //% blockId=microcoderobotobstacledistancechanged
     //% group="Input"
     export function onObstacleDistanceChanged(handler: () => void) {
-        robot.robots.onEvent(
+        messages.onEvent(
+            messages.RobotEvents.ObstacleDistance,
             robot.robots.RobotCompactCommand.ObstacleState,
             handler
         )
@@ -108,9 +110,9 @@ namespace robot {
     //% blockId=microcoderobotdetectlines
     //% group="Input"
     export function detectLine(detector: RobotLineDetector): boolean {
-        const robot = RobotDriver.instance()
-        const threshold = robot.robot.lineHighThreshold
-        const current = robot.currentLineState
+        const r = RobotDriver.instance()
+        const threshold = r.robot.lineHighThreshold
+        const current = r.currentLineState
         return current[detector] >= threshold // returns false for missing
     }
 
@@ -123,7 +125,7 @@ namespace robot {
     //% group="Input"
     export function onLineDetected(handler: () => void) {
         const msg = robot.robots.RobotCompactCommand.LineState
-        robot.robots.onEvent(msg, handler)
+        messages.onEvent(messages.RobotEvents.LineAny, msg, handler)
     }
 
     /**
