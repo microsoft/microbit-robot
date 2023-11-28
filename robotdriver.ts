@@ -1,7 +1,7 @@
 namespace robot {
     function radioGroupFromDeviceSerialNumber() {
         const sn = control.deviceLongSerialNumber()
-        return (sn.hash(10) % 9) + 1
+        return (sn.hash(configuration.MAX_DEFAULT_GROUPS) % (configuration.MAX_DEFAULT_GROUPS - 1)) + 1
     }
 
     //% shim=TD_NOOP
