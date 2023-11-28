@@ -62,12 +62,14 @@ async function applyRobotStateAsync(
 }
 
 async function handleRobotMessageAsync(buf: any) {
-    const data = new TextDecoder().decode(new Uint8Array(buf))
+    let data = new TextDecoder().decode(new Uint8Array(buf))
+    // TEMP: Replace Infinity with 0
+    data = data.replace(/-?Infinity/g, "0")
     const msg = JSON.parse(data) as protocol.RobotSimMessage
     switch (msg.type) {
         case "state":
             const state = msg as protocol.RobotSimStateMessage
-            //console.log(`robot state: ${JSON.stringify(state)}`)
+            console.log(`robot state: ${JSON.stringify(state)}`)
             const { deviceId, motorLeft, motorRight, armAperture, color } =
                 state
             await applyRobotStateAsync(
