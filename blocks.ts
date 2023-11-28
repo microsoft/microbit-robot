@@ -2,13 +2,13 @@
  * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
-//% groups='["Robot", "Output", "Input", "Configuration"]'
+//% groups='["Robot", "Motors", "Accessories", "Lines", "Obstacles", "Configuration"]'
 namespace robot {
     /**
      * Moves the robot.
      */
     //% weight=98
-    //% group="Output"
+    //% group="Motors"
     //% block="robot motor run with steering $turnRatio at speed $speed \\%"
     //% blockid="mbitrobotmotorturn"
     //% speed.defl=100
@@ -27,7 +27,7 @@ namespace robot {
      * Stops the robot.
      */
     //% weight=50
-    //% group="Output"
+    //% group="Motors"
     //% block="robot motor stop"
     //% blockid="mbitrobotmotorstop"
     export function motorStop() {
@@ -39,8 +39,8 @@ namespace robot {
      * Opens or closes a claw (if available).
      * @param opening the opening of the claw, from 0 (closed) to 100 (open)
      */
-    //% weight=40
-    //% group="Output"
+    //% weight=5
+    //% group="Accessories"
     //% block="robot arm $index open $opening \\%"
     //% blockid="mbitrobotarmopen"
     //% index.min=0
@@ -56,8 +56,8 @@ namespace robot {
      * Sets the LED color
      */
     //% blockid="mbitrobotsetcolor" block="robot set color $rgb"
-    //% group="Output"
-    //% weight=10
+    //% group="Accessories"
+    //% weight=98
     //% rgb.shadow=colorNumberPicker
     export function setColor(rgb: number) {
         const robot = RobotDriver.instance()
@@ -68,7 +68,7 @@ namespace robot {
      * Play a tone through the robot speaker
      */
     //% blockid="mbitrobotplaytone" block="robot play tone $frequency for $duration"
-    //% group="Output"
+    //% group="Accessories"
     //% weight=10
     //% frequency.shadow=device_note
     //% duration.shadow=device_beat
@@ -82,7 +82,7 @@ namespace robot {
      */
     //% block="robot obstacle distance (cm)"
     //% blockId=microcoderobotobstacledistance
-    //% group="Input"
+    //% group="Obstacles"
     export function obstacleDistance(): number {
         const robot = RobotDriver.instance()
         return robot.obstacleDistance
@@ -94,7 +94,7 @@ namespace robot {
      */
     //% block="robot on obstacle distance changed"
     //% blockId=microcoderobotobstacledistancechanged
-    //% group="Input"
+    //% group="Obstacles"
     export function onObstacleDistanceChanged(handler: () => void) {
         messages.onEvent(
             messages.RobotEvents.ObstacleDistance,
@@ -106,9 +106,10 @@ namespace robot {
     /**
      * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
+    //% weight=40
     //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
-    //% group="Input"
+    //% group="Lines"
     export function detectLine(detector: RobotLineDetector): boolean {
         const r = RobotDriver.instance()
         const threshold = r.robot.lineHighThreshold
@@ -120,9 +121,10 @@ namespace robot {
      * Registers an event to run when any line detector
      * changes state
      */
+    //% weight=50
     //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines
-    //% group="Input"
+    //% group="Lines"
     export function onLineDetected(handler: () => void) {
         const msg = robot.robots.RobotCompactCommand.LineAnyState
         messages.onEvent(messages.RobotEvents.LineAny, msg, handler)
@@ -132,9 +134,10 @@ namespace robot {
      * Registers an event to run when the left or right detectors
      * changes state
      */
+    //% weight=99
     //% block="robot on line $left $right"
     //% blockId=microcoderobotondetectlinesleftright
-    //% group="Input"
+    //% group="Lines"
     //% left.shadow=toggleOnOff
     //% right.shadow=toggleOnOff
     export function onLineLeftRightDetected(
@@ -152,11 +155,12 @@ namespace robot {
      * Registers an event to run when the left, middle or right detectors
      * changes state
      */
+    //% weight=61
     //% block="robot on line $left $middle $right"
     //% blockId=microcoderobotondetectlinesleftrightmid
-    //% group="Input"
+    //% group="Lines"
     //% left.shadow=toggleOnOff
-    //% middle.shawdow=toggleOnOff
+    //% middle.shadow=toggleOnOff
     //% right.shadow=toggleOnOff
     export function onLineLeftMiddleRightDetected(
         left: boolean,
@@ -175,9 +179,10 @@ namespace robot {
      * Registers an event to run when the outer left, left, right, outerRight detectors
      * changes state
      */
+    //% weight=60
     //% block="robot on line $outerLeft $left $right $outerRight"
     //% blockId=microcoderobotondetectlinesouterleftleftrightouterright
-    //% group="Input"
+    //% group="Lines"
     //% outerLeft.shadow=toggleOnOff
     //% right.shadow=toggleOnOff
     //% left.shadow=toggleOnOff
