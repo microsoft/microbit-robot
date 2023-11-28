@@ -19,7 +19,7 @@ module.exports = function (config, env) {
         },
         plugins: [
             ...config.plugins.filter((p) => !(p instanceof HtmlWebpackPlugin)),
-            new NodePolyfillPlugin(),
+            //new NodePolyfillPlugin(),
             new HtmlWebpackPlugin(
                 Object.assign(
                     {},
