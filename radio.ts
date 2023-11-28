@@ -73,22 +73,22 @@ namespace robot {
             // left, right, middle
             let msg: robots.RobotCompactCommand =
                 robots.RobotCompactCommand.LineState
-            if (current[LineDetector.Middle] >= threshold)
+            if (current[RobotLineDetector.Middle] >= threshold)
                 msg |= robots.RobotLineState.Left | robots.RobotLineState.Right
             else {
-                if (current[LineDetector.Left] >= threshold)
+                if (current[RobotLineDetector.Left] >= threshold)
                     msg |= robots.RobotLineState.Left
-                if (current[LineDetector.Right] >= threshold)
+                if (current[RobotLineDetector.Right] >= threshold)
                     msg |= robots.RobotLineState.Right
             }
             // line lost
             if (
                 current.every(v => v < threshold) &&
-                prev[LineDetector.Middle] < threshold
+                prev[RobotLineDetector.Middle] < threshold
             ) {
-                if (prev[LineDetector.Left] >= threshold)
+                if (prev[RobotLineDetector.Left] >= threshold)
                     msg = robots.RobotCompactCommand.LineLostLeft
-                else if (prev[LineDetector.Right] >= threshold)
+                else if (prev[RobotLineDetector.Right] >= threshold)
                     msg = robots.RobotCompactCommand.LineLostRight
             }
             sendCompactCommand(msg)

@@ -56,7 +56,7 @@ namespace robot {
         private stopToneMillis: number = 0
         runDrift = 0
 
-        assits: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
+        assists: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
         constructor(robot: robots.Robot) {
             this.robot = robot
@@ -70,8 +70,8 @@ namespace robot {
         }
 
         setAssist(assist: RobotAssist, enabled: boolean) {
-            if (enabled) this.assits |= assist;
-            else this.assits = ~(~this.assits | assist)
+            if (enabled) this.assists |= assist;
+            else this.assists = ~(~this.assists | assist)
         }
 
         /**
@@ -168,7 +168,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    (this.assits & RobotAssist.LineFollowing) &&
+                    (this.assists & RobotAssist.LineFollowing) &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
@@ -234,7 +234,7 @@ namespace robot {
             this.currentThrottle[0] = left
             this.currentThrottle[1] = right
             this.robot.motorRun(left, right)
-            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
             this.showSingleMotorState(3, left)
             this.showSingleMotorState(1, right)
         }
@@ -258,14 +258,14 @@ namespace robot {
         }
 
         private showLineState() {
-            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
 
             // render left/right lines
             const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
-            const left = s[LineDetector.Left] >= threshold
-            const right = s[LineDetector.Right] >= threshold
-            const middle = s[LineDetector.Middle] >= threshold
+            const left = s[RobotLineDetector.Left] >= threshold
+            const right = s[RobotLineDetector.Right] >= threshold
+            const middle = s[RobotLineDetector.Middle] >= threshold
             for (let i = 0; i < 5; ++i) {
                 if (left || middle) led.plot(4, i)
                 else led.unplot(4, i)
@@ -298,7 +298,7 @@ namespace robot {
 
             if (
                 !this.showConfiguration &&
-                (this.assits & RobotAssist.Display) &&
+                (this.assists & RobotAssist.Display) &&
                 this.lastSonarValue !== undefined
             ) {
                 const d = this.lastSonarValue
@@ -337,7 +337,7 @@ namespace robot {
                 this.targetSpeed = speed
                 this.targetTurnRatio = turnRatio
 
-                if (!(this.assits & RobotAssist.Speed)) {
+                if (!(this.assists & RobotAssist.Speed)) {
                     this.currentSpeed = this.targetSpeed
                     this.currentTurnRatio = this.targetTurnRatio
                 }
@@ -367,8 +367,8 @@ namespace robot {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                state[LineDetector.Left] >= threshold ||
-                state[LineDetector.Right] >= threshold
+                state[RobotLineDetector.Left] >= threshold ||
+                state[RobotLineDetector.Right] >= threshold
             if (state.some((v, i) => v !== this.currentLineState[i])) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0

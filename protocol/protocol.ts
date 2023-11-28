@@ -1,3 +1,41 @@
+/**
+ * Index of the line detectors
+ */
+enum RobotLineDetector {
+    /**
+     * block="outer left"
+     */
+    OuterLeft = 0,
+    /**
+     * block="left"
+     */
+    Left = 1,
+    /**
+     * block="middle"
+     */
+    Middle = 2,
+    /**
+     * block="right"
+     */
+    Right = 3,
+    /**
+     * block="outer right"
+     */
+    OuterRight = 4,
+}
+
+/**
+ * Robot driver builtin assists
+ */
+enum RobotAssist {
+    //% block="line following"
+    LineFollowing = 1 << 0,
+    //% block="speed smoothing"
+    Speed = 1 << 1,
+    //% block="sensor and motor display"
+    Display = 2 << 1
+}
+
 namespace robot.robots {
     export const MAGIC = 0x8429
 
@@ -90,7 +128,14 @@ namespace robot.robots {
         motorLeft: number
         motorRight: number
         armAperture: number
+        /**
+         * RGB 24bit color
+         */
         color: number
+        /**
+         * Assistance enabled on the robot
+         */
+        assists: RobotAssist
     }
 
     export interface RobotSensorsMessage extends RobotSimMessage {

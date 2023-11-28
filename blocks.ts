@@ -1,16 +1,4 @@
 /**
- * Robot driver builtin assists
- */
-enum RobotAssist {
-    //% block="line following"
-    LineFollowing = 1 << 0,
-    //% block="speed smoothing"
-    Speed = 1 << 1,
-    //% block="sensor and motor display"
-    Display = 2 << 1
-}
-
-/**
  * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
@@ -119,7 +107,7 @@ namespace robot {
     //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    export function detectLine(detector: LineDetector): boolean {
+    export function detectLine(detector: RobotLineDetector): boolean {
         const robot = RobotDriver.instance()
         const threshold = robot.robot.lineHighThreshold
         const current = robot.currentLineState

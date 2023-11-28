@@ -13,6 +13,7 @@ namespace robot.robots {
             motorLeft: r.currentThrottle[0],
             motorRight: r.currentThrottle[1],
             color: r.currentColor,
+            assists: r.assists,
         }
         if (r.robot.productId) msg.productId = r.robot.productId
         control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)), false)

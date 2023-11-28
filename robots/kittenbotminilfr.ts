@@ -57,11 +57,11 @@ namespace robot {
         start(): void { }
         lineState(state: number[]): void {
             const v = this.sensorValue
-            state[LineDetector.OuterLeft] = v[0]
-            state[LineDetector.Left] = v[1]
-            state[LineDetector.Middle] = v[2]
-            state[LineDetector.Right] = v[3]
-            state[LineDetector.OuterRight] = v[4]
+            state[RobotLineDetector.OuterLeft] = v[0]
+            state[RobotLineDetector.Left] = v[1]
+            state[RobotLineDetector.Middle] = v[2]
+            state[RobotLineDetector.Right] = v[3]
+            state[RobotLineDetector.OuterRight] = v[4]
         }
 
         parse(tmp: string[]) {

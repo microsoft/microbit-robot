@@ -103,14 +103,14 @@ namespace robot {
         start(): void {}
         lineState(state: number[]): void {
             const v = this.trackbitStateValue()
-            state[LineDetector.Left] =
-                v & TrackbitStateType.Tracking_State_11 ? 1 : 0
-            state[LineDetector.Right] =
-                v & TrackbitStateType.Tracking_State_14 ? 1 : 0
-            state[LineDetector.OuterLeft] =
-                v & TrackbitStateType.Tracking_State_8 ? 1 : 0
-            state[LineDetector.OuterRight] =
-                v & TrackbitStateType.Tracking_State_12 ? 1 : 0
+            state[RobotLineDetector.Left] =
+                v & TrackbitStateType.Tracking_State_11 ? 1023 : 0
+            state[RobotLineDetector.Right] =
+                v & TrackbitStateType.Tracking_State_14 ? 1023 : 0
+            state[RobotLineDetector.OuterLeft] =
+                v & TrackbitStateType.Tracking_State_8 ? 1023 : 0
+            state[RobotLineDetector.OuterRight] =
+                v & TrackbitStateType.Tracking_State_12 ? 1023 : 0
         }
 
         private trackbitStateValue() {
