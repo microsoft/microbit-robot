@@ -5,11 +5,11 @@ namespace robot.test {
     export function startTestMode() {
         setAssist(RobotAssist.LineFollowing, false)
 
-        robot.onLineDetected(function () {
+        onLineDetected(function () {
             playTone(100, 2000)
         })
 
-        robot.onObstacleDistanceChanged(function () {
+        onObstacleDistanceChanged(function () {
             playTone(100, 2400)
         })
 
