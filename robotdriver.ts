@@ -332,7 +332,7 @@ namespace robot {
 
         motorRun(turnRatio: number, speed: number) {
             this.start()
-            turnRatio = Math.clamp(-200, 200, turnRatio)
+            turnRatio = Math.clamp(-200, 200, Math.round(turnRatio))
             speed = Math.clamp(-100, 100, Math.round(speed))
             if (
                 this.targetSpeed !== speed ||
