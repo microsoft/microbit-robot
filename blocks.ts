@@ -19,7 +19,7 @@ namespace robot {
     //% turnRatio.min=-200
     //% turnRatio.max=200
     export function motorRun(turnRatio: number, speed: number) {
-        const robot = RobotDriver.instance()        
+        const robot = RobotDriver.instance()
         robot.motorRun(turnRatio, speed)
     }
 
@@ -124,7 +124,7 @@ namespace robot {
     //% blockId=microcoderobotondetectlines
     //% group="Input"
     export function onLineDetected(handler: () => void) {
-        const msg = robot.robots.RobotCompactCommand.LineState
+        const msg = robot.robots.RobotCompactCommand.LineAnyState
         messages.onEvent(messages.RobotEvents.LineAny, msg, handler)
     }
 
