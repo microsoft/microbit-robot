@@ -100,12 +100,13 @@ namespace robot {
     }
 
     /**
-     * Gets the distance reported by the distance sensor
+     * Register a handler to run when the obstacle distance
+     * changes by a minimum threshold
      */
-    //% block="robot on obstacle changed"
+    //% block="robot on obstacle distance changed"
     //% blockId=microcoderobotobstacledistancechanged
     //% group="Input"
-    export function onObstacleChanged(handler: () => void) {
+    export function onObstacleDistanceChanged(handler: () => void) {
         robot.robots.onEvent(
             robot.robots.RobotCompactCommand.ObstacleState,
             handler
@@ -126,7 +127,8 @@ namespace robot {
     }
 
     /**
-     * Registers an event to run when the line detection state changes
+     * Registers an event to run when any line detector
+     * changes state
      */
     //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines

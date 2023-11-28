@@ -112,7 +112,7 @@ and read the current distance (in cm)
 
 ```blocks
 let dist = 0
-robot.onObstacleChanged(function () {
+robot.onObstacleDistanceChanged(function () {
     dist = robot.obstacleDistance()
 })
 ```
@@ -121,7 +121,7 @@ robot.onObstacleChanged(function () {
 
 ```blocks
 let left = false
-robot.onLineDetected(RobotLineState.Left, function () {
+robot.onLineDetected(function () {
     left = robot.detectLines(RobotLineState.Left)
 })
 ```
