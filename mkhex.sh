@@ -1,32 +1,32 @@
-makecode
-makecode -c mkc-elecfreakscutebot.json
+makecode -f size
+makecode -c mkc-elecfreakscutebot.json -f size
 cp ./built/mbdal-binary.hex ./assets/elecfreaks-cutebot-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/elecfreaks-cutebot-for-microbit-v2.hex
-makecode -c mkc-elecfreakscutebotpro.json
+makecode -c mkc-elecfreakscutebotpro.json -f size
 cp ./built/mbdal-binary.hex ./assets/elecfreaks-cutebotpro-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/elecfreaks-cutebotpro-for-microbit-v2.hex
-makecode -c mkc-yahboomtinybit.json
+makecode -c mkc-yahboomtinybit.json -f size
 cp ./built/mbdal-binary.hex ./assets/yahboom-tinybit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/yahboom-tinybit-for-microbit-v2.hex
-makecode -c mkc-keystudiominismartrobot.json
+makecode -c mkc-keystudiominismartrobot.json -f size
 cp ./built/mbdal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v2.hex
-makecode -c mkc-dfrobotmaqueen.json
+makecode -c mkc-dfrobotmaqueen.json -f size
 cp ./built/mbdal-binary.hex ./assets/dfrobot-maqueen-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/dfrobot-maqueen-for-microbit-v2.hex
-makecode -c mkc-dfrobotmaqueenplusv2.json
+makecode -c mkc-dfrobotmaqueenplusv2.json -f size
 cp ./built/mbdal-binary.hex ./assets/dfrobot-maqueen-plus-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/dfrobot-maqueen-plus-for-microbit-v2.hex
-makecode -c mkc-kittenbotminilfr.json
+makecode -c mkc-kittenbotminilfr.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-minilfr-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-minilfr-for-microbit-v2.hex
-makecode -c mkc-kittenbotnanobit.json
+makecode -c mkc-kittenbotnanobit.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v2.hex
-makecode -c mkc-kittenbotrobotbit.json
+makecode -c mkc-kittenbotrobotbit.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-robotbit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-robotbit-for-microbit-v2.hex
-makecode -c mkc-inksmithk8.json
+makecode -c mkc-inksmithk8.json -f size
 cp ./built/mbdal-binary.hex ./assets/inksmith-k8-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/inksmith-k8-for-microbit-v2.hex
 
