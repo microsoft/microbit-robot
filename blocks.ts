@@ -129,6 +129,81 @@ namespace robot {
     }
 
     /**
+     * Registers an event to run when the left or right detectors
+     * changes state
+     */
+    //% block="robot on line $left $right"
+    //% blockId=microcoderobotondetectlinesleftright
+    //% group="Input"
+    //% left.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    export function onLineLeftRightDetected(
+        left: boolean,
+        right: boolean,
+        handler: () => void
+    ) {
+        let msg = robot.robots.RobotCompactCommand.LineLeftRightState
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (right) msg |= 1 << RobotLineDetector.Right
+        messages.onEvent(messages.RobotEvents.LineLeftRight, msg, handler)
+    }
+
+    /**
+     * Registers an event to run when the left, middle or right detectors
+     * changes state
+     */
+    //% block="robot on line $left $middle $right"
+    //% blockId=microcoderobotondetectlinesleftrightmid
+    //% group="Input"
+    //% left.shadow=toggleOnOff
+    //% middle.shawdow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    export function onLineLeftRightMiddleDetected(
+        left: boolean,
+        middle: boolean,
+        right: boolean,
+        handler: () => void
+    ) {
+        let msg = robot.robots.RobotCompactCommand.LineLeftRightMiddleState
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (middle) msg |= 1 << RobotLineDetector.Middle
+        if (right) msg |= 1 << RobotLineDetector.Right
+        messages.onEvent(messages.RobotEvents.LineLeftMiddleRight, msg, handler)
+    }
+
+    /**
+     * Registers an event to run when the outer left, left, right, outerRight detectors
+     * changes state
+     */
+    //% block="robot on line $outerLeft $left $right $outerRight"
+    //% blockId=microcoderobotondetectlinesouterleftleftrightouterright
+    //% group="Input"
+    //% outerLeft.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    //% left.shadow=toggleOnOff
+    //% outerRight.shadow=toggleOnOff
+    export function onLineOuterLeftLeftOuterRightDetected(
+        outerLeft: boolean,
+        left: boolean,
+        right: boolean,
+        outerRight: boolean,
+        handler: () => void
+    ) {
+        let msg =
+            robot.robots.RobotCompactCommand
+                .LineOuterLeftLeftRightOuterRightState
+        if (outerLeft) msg |= 1 << RobotLineDetector.OuterLeft
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (right) msg |= 1 << RobotLineDetector.Right
+        if (outerRight) msg |= 1 << RobotLineDetector.OuterRight
+        messages.onEvent(
+            messages.RobotEvents.LineOuterLeftLeftRightOuterRight,
+            msg,
+            handler
+        )
+    }
+
+    /**
      * Sets a value that corrects the ratio of power between the left and the right motor to account for hardware differences.
      */
     //% block="robot set motor drift to %drift"
