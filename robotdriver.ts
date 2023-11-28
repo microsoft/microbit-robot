@@ -58,7 +58,13 @@ namespace robot {
 
         assists: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
+        /**
+         * Random identifier for the current run
+         */
+        readonly id: string;
+
         constructor(robot: robots.Robot) {
+            this.id = (Math.random() + "").slice(2)
             this.robot = robot
         }
 

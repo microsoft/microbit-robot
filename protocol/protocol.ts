@@ -113,6 +113,13 @@ namespace robot.robots {
      */
     export interface RobotSimMessage {
         type: "state" | "sensors"
+        /**
+         * Identifier for the current run
+         */
+        id: string
+        /**
+         * Device serial identifier
+         */
         deviceId: number
     }
 
