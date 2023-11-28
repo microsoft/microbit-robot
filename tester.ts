@@ -4,6 +4,15 @@ namespace robot.test {
      */
     export function startTestMode() {
         setAssist(RobotAssist.LineFollowing, false)
+
+        robot.onLineDetected(function () {
+            playTone(100, 2000)
+        })
+
+        robot.onObstacleDistanceChanged(function () {
+            playTone(100, 2400)
+        })
+
         input.onButtonPressed(Button.A, () => {
             const d = 1000
             playTone(200, 440)
