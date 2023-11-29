@@ -7,10 +7,29 @@ namespace protocol {
     // Meantime, keep these in sync with that file
 
     /**
+     * Robot driver builtin assists
+     */
+    enum RobotAssist {
+        //% block="line following"
+        LineFollowing = 1 << 0,
+        //% block="speed smoothing"
+        Speed = 1 << 1,
+        //% block="sensor and motor display"
+        Display = 2 << 1,
+    }
+
+    /**
      * state message is sent by the robot; sensors is sent by the world simulator
      */
     export interface RobotSimMessage {
         type: "state" | "sensors"
+        /**
+         * Identifier for the current run
+         */
+        id: string
+        /**
+         * Device serial identifier
+         */
         deviceId: number
     }
 
@@ -26,9 +45,25 @@ namespace protocol {
         motorLeft: number
         motorRight: number
         armAperture: number
+        /**
+         * RGB 24bit color
+         */
         color: number
+        /**
+         * Assistance enabled on the robot
+         */
+        assists: RobotAssist
+    }
+
+    export interface RobotSensorsMessage extends RobotSimMessage {
+        type: "sensors"
+        lineDetectors: number[]
+        obstacleDistance: number
     }
 }
+
+// TODO: Move this to simulation?
+let currRunId: string | undefined
 
 async function stopSimAsync() {
     const sim = await Simulation.getAsync()
@@ -70,8 +105,18 @@ async function handleRobotMessageAsync(buf: any) {
         case "state":
             const state = msg as protocol.RobotSimStateMessage
             console.log(`robot state: ${JSON.stringify(state)}`)
-            const { deviceId, motorLeft, motorRight, armAperture, color } =
-                state
+            const {
+                deviceId,
+                motorLeft,
+                motorRight,
+                armAperture,
+                color,
+                id: runId,
+            } = state
+            if (currRunId !== runId) {
+                currRunId = runId
+                await runSimAsync()
+            }
             await applyRobotStateAsync(
                 deviceId,
                 motorLeft,
@@ -109,7 +154,7 @@ export function init() {
                 case "stop":
                     return await handleStopMessageAsync(ev.data)
                 case "run":
-                    return await handleRunMessageAsync(ev.data)
+                //return await handleRunMessageAsync(ev.data)
             }
             console.log(`unknown message: ${JSON.stringify(ev.data)}`)
         } catch (e) {
