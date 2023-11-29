@@ -13,7 +13,7 @@ import {
 const boxBrush: BrushSpec = {
     ...defaultColorBrush(),
     fillColor: "#DC965A",
-    borderColor: "FBFBFF",
+    borderColor: "#D85E44",
     borderWidth: 0.5,
 }
 
@@ -26,10 +26,10 @@ const boxPhysics: ShapePhysicsSpec = {
 const spec: MapSpec = {
     name: "Test Map",
     size: { x: 90 * MAP_ASPECT_RATIO, y: 90 }, // about 3 feet square (30cm ~ 1ft)
-    color: "#50C878",
+    color: "#fff",
     spawn: {
-        pos: { x: 10, y: 10 },
-        angle: 30,
+        pos: { x: 20, y: 45 },
+        angle: 0,
     },
     entities: [
         // This entity is a group of static boxes. Alternatively, each box could

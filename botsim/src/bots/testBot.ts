@@ -14,7 +14,7 @@ const spec: BotSpec = {
             // TODO: Make this a texture
             ...defaultColorBrush(),
             fillColor: "#11B5E4",
-            borderColor: "#EDF2EF",
+            borderColor: "#555",
         },
     },
     wheels: [
