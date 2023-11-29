@@ -1,7 +1,11 @@
 namespace robot {
     function radioGroupFromDeviceSerialNumber() {
         const sn = control.deviceLongSerialNumber()
-        return (sn.hash(configuration.MAX_DEFAULT_GROUPS) % (configuration.MAX_DEFAULT_GROUPS - 1)) + 1
+        return (
+            (sn.hash(configuration.MAX_DEFAULT_GROUPS) %
+                (configuration.MAX_DEFAULT_GROUPS - 1)) +
+            1
+        )
     }
 
     //% shim=TD_NOOP
@@ -56,12 +60,13 @@ namespace robot {
         private stopToneMillis: number = 0
         runDrift = 0
 
-        assists: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
+        assists: RobotAssist =
+            RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
         /**
          * Random identifier for the current run
          */
-        readonly id: string;
+        readonly id: string
 
         constructor(robot: robots.Robot) {
             this.id = (Math.random() + "").slice(2)
@@ -76,7 +81,7 @@ namespace robot {
         }
 
         setAssist(assist: RobotAssist, enabled: boolean) {
-            if (enabled) this.assists |= assist;
+            if (enabled) this.assists |= assist
             else this.assists = ~(~this.assists | assist)
         }
 
@@ -98,7 +103,8 @@ namespace robot {
             this.currentThrottle = [0, 0]
             // configuration of common hardware
             this.radioGroup =
-                configuration.readCalibration(0) || radioGroupFromDeviceSerialNumber()
+                configuration.readCalibration(0) ||
+                radioGroupFromDeviceSerialNumber()
             this.runDrift = configuration.readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
 
@@ -174,7 +180,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    (this.assists & RobotAssist.LineFollowing) &&
+                    this.assists & RobotAssist.LineFollowing &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
@@ -240,7 +246,8 @@ namespace robot {
             this.currentThrottle[0] = left
             this.currentThrottle[1] = right
             this.robot.motorRun(left, right)
-            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display))
+                return
             this.showSingleMotorState(3, left)
             this.showSingleMotorState(1, right)
         }
@@ -264,7 +271,8 @@ namespace robot {
         }
 
         private showLineState() {
-            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display))
+                return
 
             // render left/right lines
             const threshold = this.robot.lineHighThreshold
@@ -297,14 +305,16 @@ namespace robot {
                         robot.robots.RobotCompactCommand.ObstacleState | di
                     this.sendCompactCommand(msg)
                 }
-                robot.robots.raiseEvent(
+
+                robot.messages.raiseEvent(
+                    messages.RobotEvents.ObstacleDistance,
                     robot.robots.RobotCompactCommand.ObstacleState
                 )
             }
 
             if (
                 !this.showConfiguration &&
-                (this.assists & RobotAssist.Display) &&
+                this.assists & RobotAssist.Display &&
                 this.lastSonarValue !== undefined
             ) {
                 const d = this.lastSonarValue
@@ -326,8 +336,7 @@ namespace robot {
             const arms = this.robot.arms
             if (arms) {
                 const arm = arms[index]
-                if (arm)
-                    arm.open(a)
+                if (arm) arm.open(a)
             }
         }
 
@@ -351,8 +360,14 @@ namespace robot {
         }
 
         private ultrasonicDistanceOnce() {
-            if (this.robot.sonar) return this.robot.sonar.distance(configuration.MAX_SONAR_DISTANCE)
-            else return this.robot.ultrasonicDistance(configuration.MAX_SONAR_DISTANCE)
+            if (this.robot.sonar)
+                return this.robot.sonar.distance(
+                    configuration.MAX_SONAR_DISTANCE
+                )
+            else
+                return this.robot.ultrasonicDistance(
+                    configuration.MAX_SONAR_DISTANCE
+                )
         }
 
         private readUltrasonicDistance() {
@@ -372,24 +387,66 @@ namespace robot {
         private computeLineState(): void {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
+            const changed = state.map(
+                (v, i) =>
+                    v >= threshold !== this.currentLineState[i] >= threshold
+            )
             const leftOrRight =
                 state[RobotLineDetector.Left] >= threshold ||
                 state[RobotLineDetector.Right] >= threshold
-            if (state.some((v, i) => v !== this.currentLineState[i])) {
+
+            const sendChanged = (
+                event: messages.RobotEvents,
+                detectors: RobotLineDetector,
+                code: robots.RobotCompactCommand
+            ) => {
+                let send = false
+                for (let i = 0; i < 5; ++i) {
+                    if (changed[i] && detectors & (1 << i)) {
+                        send = true
+                        if (state[i] >= threshold) code |= 1 << i
+                    }
+                }
+                if (send) messages.raiseEvent(event, code)
+            }
+
+            if (changed.some(v => v)) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
-                robot.robots.raiseEvent(robots.RobotCompactCommand.LineState)
+                messages.raiseEvent(
+                    messages.RobotEvents.LineAny,
+                    robots.RobotCompactCommand.LineAnyState
+                )
+                sendChanged(
+                    messages.RobotEvents.LineLeftRight,
+                    RobotLineDetector.Left | RobotLineDetector.Right,
+                    robots.RobotCompactCommand.LineLeftRightState
+                )
+                sendChanged(
+                    messages.RobotEvents.LineLeftMiddleRight,
+                    RobotLineDetector.Left |
+                        RobotLineDetector.Right |
+                        RobotLineDetector.Middle,
+                    robots.RobotCompactCommand.LineLeftRightMiddleState
+                )
+                sendChanged(
+                    messages.RobotEvents.LineOuterLeftLeftRightOuterRight,
+                    RobotLineDetector.OuterLeft |
+                        RobotLineDetector.Left |
+                        RobotLineDetector.Right |
+                        RobotLineDetector.OuterRight,
+                    robots.RobotCompactCommand
+                        .LineOuterLeftLeftRightOuterRightState
+                )
             }
             if (!leftOrRight) this.lineLostCounter++
         }
 
         playTone(frequency: number, duration: number) {
             pins.analogPitch(frequency, 0)
-            if (frequency)
-                this.stopToneMillis = control.millis() + duration
-            else
-                this.stopToneMillis = 0
+            if (frequency) this.stopToneMillis = control.millis() + duration
+            else this.stopToneMillis = 0
         }
 
         private updateTone() {

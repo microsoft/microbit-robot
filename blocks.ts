@@ -2,13 +2,13 @@
  * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
-//% groups='["Robot", "Output", "Input", "Configuration"]'
+//% groups='["Robot", "Motors", "Accessories", "Lines", "Obstacles", "Configuration"]'
 namespace robot {
     /**
      * Moves the robot.
      */
     //% weight=98
-    //% group="Output"
+    //% group="Motors"
     //% block="robot motor run with steering $turnRatio at speed $speed \\%"
     //% blockid="mbitrobotmotorturn"
     //% speed.defl=100
@@ -19,7 +19,7 @@ namespace robot {
     //% turnRatio.min=-200
     //% turnRatio.max=200
     export function motorRun(turnRatio: number, speed: number) {
-        const robot = RobotDriver.instance()        
+        const robot = RobotDriver.instance()
         robot.motorRun(turnRatio, speed)
     }
 
@@ -27,7 +27,7 @@ namespace robot {
      * Stops the robot.
      */
     //% weight=50
-    //% group="Output"
+    //% group="Motors"
     //% block="robot motor stop"
     //% blockid="mbitrobotmotorstop"
     export function motorStop() {
@@ -39,7 +39,8 @@ namespace robot {
      * Opens or closes a claw (if available).
      * @param opening the opening of the claw, from 0 (closed) to 100 (open)
      */
-    //% group="Output"
+    //% weight=5
+    //% group="Accessories"
     //% block="robot arm $index open $opening \\%"
     //% blockid="mbitrobotarmopen"
     //% index.min=0
@@ -55,8 +56,8 @@ namespace robot {
      * Sets the LED color
      */
     //% blockid="mbitrobotsetcolor" block="robot set color $rgb"
-    //% group="Output"
-    //% weight=10
+    //% group="Accessories"
+    //% weight=98
     //% rgb.shadow=colorNumberPicker
     export function setColor(rgb: number) {
         const robot = RobotDriver.instance()
@@ -67,7 +68,7 @@ namespace robot {
      * Play a tone through the robot speaker
      */
     //% blockid="mbitrobotplaytone" block="robot play tone $frequency for $duration"
-    //% group="Output"
+    //% group="Accessories"
     //% weight=10
     //% frequency.shadow=device_note
     //% duration.shadow=device_beat
@@ -81,7 +82,7 @@ namespace robot {
      */
     //% block="robot obstacle distance (cm)"
     //% blockId=microcoderobotobstacledistance
-    //% group="Input"
+    //% group="Obstacles"
     export function obstacleDistance(): number {
         const robot = RobotDriver.instance()
         return robot.obstacleDistance
@@ -93,9 +94,10 @@ namespace robot {
      */
     //% block="robot on obstacle distance changed"
     //% blockId=microcoderobotobstacledistancechanged
-    //% group="Input"
+    //% group="Obstacles"
     export function onObstacleDistanceChanged(handler: () => void) {
-        robot.robots.onEvent(
+        messages.onEvent(
+            messages.RobotEvents.ObstacleDistance,
             robot.robots.RobotCompactCommand.ObstacleState,
             handler
         )
@@ -104,13 +106,14 @@ namespace robot {
     /**
      * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
+    //% weight=40
     //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
-    //% group="Input"
+    //% group="Lines"
     export function detectLine(detector: RobotLineDetector): boolean {
-        const robot = RobotDriver.instance()
-        const threshold = robot.robot.lineHighThreshold
-        const current = robot.currentLineState
+        const r = RobotDriver.instance()
+        const threshold = r.robot.lineHighThreshold
+        const current = r.currentLineState
         return current[detector] >= threshold // returns false for missing
     }
 
@@ -118,12 +121,91 @@ namespace robot {
      * Registers an event to run when any line detector
      * changes state
      */
+    //% weight=50
     //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines
-    //% group="Input"
+    //% group="Lines"
     export function onLineDetected(handler: () => void) {
-        const msg = robot.robots.RobotCompactCommand.LineState
-        robot.robots.onEvent(msg, handler)
+        const msg = robot.robots.RobotCompactCommand.LineAnyState
+        messages.onEvent(messages.RobotEvents.LineAny, msg, handler)
+    }
+
+    /**
+     * Registers an event to run when the left or right detectors
+     * changes state
+     */
+    //% weight=99
+    //% block="robot on line $left $right"
+    //% blockId=microcoderobotondetectlinesleftright
+    //% group="Lines"
+    //% left.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    export function onLineLeftRightDetected(
+        left: boolean,
+        right: boolean,
+        handler: () => void
+    ) {
+        let msg = robot.robots.RobotCompactCommand.LineLeftRightState
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (right) msg |= 1 << RobotLineDetector.Right
+        messages.onEvent(messages.RobotEvents.LineLeftRight, msg, handler)
+    }
+
+    /**
+     * Registers an event to run when the left, middle or right detectors
+     * changes state
+     */
+    //% weight=61
+    //% block="robot on line $left $middle $right"
+    //% blockId=microcoderobotondetectlinesleftrightmid
+    //% group="Lines"
+    //% left.shadow=toggleOnOff
+    //% middle.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    export function onLineLeftMiddleRightDetected(
+        left: boolean,
+        middle: boolean,
+        right: boolean,
+        handler: () => void
+    ) {
+        let msg = robot.robots.RobotCompactCommand.LineLeftRightMiddleState
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (middle) msg |= 1 << RobotLineDetector.Middle
+        if (right) msg |= 1 << RobotLineDetector.Right
+        messages.onEvent(messages.RobotEvents.LineLeftMiddleRight, msg, handler)
+    }
+
+    /**
+     * Registers an event to run when the outer left, left, right, outerRight detectors
+     * changes state
+     */
+    //% weight=60
+    //% block="robot on line $outerLeft $left $right $outerRight"
+    //% blockId=microcoderobotondetectlinesouterleftleftrightouterright
+    //% group="Lines"
+    //% outerLeft.shadow=toggleOnOff
+    //% right.shadow=toggleOnOff
+    //% left.shadow=toggleOnOff
+    //% outerRight.shadow=toggleOnOff
+    export function onLineOuterLeftLeftOuterRightDetected(
+        outerLeft: boolean,
+        left: boolean,
+        right: boolean,
+        outerRight: boolean,
+        handler: () => void
+    ) {
+        let msg =
+            robot.robots.RobotCompactCommand
+                .LineOuterLeftLeftRightOuterRightState
+        if (outerLeft) msg |= 1 << RobotLineDetector.OuterLeft
+        if (left) msg |= 1 << RobotLineDetector.Left
+        if (right) msg |= 1 << RobotLineDetector.Right
+        if (outerRight) msg |= 1 << RobotLineDetector.OuterRight
+        messages.onEvent(
+            messages.RobotEvents.LineOuterLeftLeftRightOuterRight,
+            msg,
+            handler
+        )
     }
 
     /**

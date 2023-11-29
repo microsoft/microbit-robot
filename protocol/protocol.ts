@@ -33,7 +33,7 @@ enum RobotAssist {
     //% block="speed smoothing"
     Speed = 1 << 1,
     //% block="sensor and motor display"
-    Display = 2 << 1
+    Display = 2 << 1,
 }
 
 namespace robot.robots {
@@ -98,6 +98,11 @@ namespace robot.robots {
         LineNone = LineState | RobotLineState.None,
         LineLostLeft = LineState | RobotLineState.LostLeft,
         LineLostRight = LineState | RobotLineState.LostRight,
+
+        LineAnyState = 0xfffff50,
+        LineLeftRightState = 0xfffff60,
+        LineLeftRightMiddleState = 0xfffff70,
+        LineOuterLeftLeftRightOuterRightState = 0xfffff80,
     }
 
     export const enum RobotCommand {
