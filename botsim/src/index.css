@@ -20,10 +20,6 @@ body {
     height: 100vh;  
 }
 
-canvas {
-    border-radius: 20px; /* TODO update rendering area instead */
-}
-
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
