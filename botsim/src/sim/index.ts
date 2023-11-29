@@ -216,7 +216,7 @@ export class Simulation extends Container {
             offset: { x: 0, y: 0 },
             brush: {
                 ...defaultColorBrush(),
-                borderColor: "#000",
+                borderColor: "#fff",
             },
             physics: {
                 ...defaultShapePhysics(),
