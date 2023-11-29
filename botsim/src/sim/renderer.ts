@@ -19,6 +19,7 @@ import {
 } from "../maps/specs"
 import { Entity } from "./entity"
 import { toRadians } from "../types/math"
+import { MAP_ASPECT_RATIO } from "./constants"
 
 export default class Renderer {
     private pixi: Pixi.Application
@@ -32,7 +33,7 @@ export default class Renderer {
     }
 
     constructor(private sim: Simulation) {
-        this._size = new Vec2(10, 10)
+        this._size = new Vec2(10 * MAP_ASPECT_RATIO, 10)
         this.pixi = new Pixi.Application({
             width: toCm(this._size.x),
             height: toCm(this._size.y),

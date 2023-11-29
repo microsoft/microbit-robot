@@ -1,3 +1,4 @@
+import { MAP_ASPECT_RATIO } from "../sim/constants"
 import {
     BrushSpec,
     MapSpec,
@@ -24,7 +25,7 @@ const boxPhysics: ShapePhysicsSpec = {
 
 const spec: MapSpec = {
     name: "Test Map",
-    size: { x: 90, y: 90 }, // about 3 feet square (30cm ~ 1ft)
+    size: { x: 90 * MAP_ASPECT_RATIO, y: 90 }, // about 3 feet square (30cm ~ 1ft)
     color: "#50C878",
     spawn: {
         pos: { x: 10, y: 10 },
