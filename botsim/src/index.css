@@ -13,7 +13,7 @@ body {
     background-color: transparent;
 }
 
-.root {
+#root {
     display: flex;
     justify-content: center; /* Centers horizontally */
     align-items: center;     /* Centers vertically */
