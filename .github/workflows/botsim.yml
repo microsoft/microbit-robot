@@ -1,30 +1,33 @@
 name: Botsim build
 on:
-  push:
-    paths:
-      - "botsim/**"
-  workflow_dispatch:
+    push:
+        paths:
+            - "botsim/**"
+            - "assets/**"
+    workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-        matrix:
-            node-version: [18.x]    
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-            node-version: ${{ matrix.node-version }}      
-      - run: npm ci
-        working-directory: botsim
-      - run: npm run build
-        working-directory: botsim
-      - name: github pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./botsim/build
-            force_orphan: true
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [18.x]
+        steps:
+            - uses: actions/checkout@v3
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: npm ci
+              working-directory: botsim
+            - run: npm run assets
+              working-directory: botsim
+            - run: npm run build
+              working-directory: botsim
+            - name: github pages
+              uses: peaceiris/actions-gh-pages@v3
+              if: ${{ github.ref == 'refs/heads/main' }}
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./botsim/build
+                  force_orphan: true

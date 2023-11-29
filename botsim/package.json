@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
+    "assets": "cp -r ../assets ./public/assets",
     "build": "react-app-rewired build",
     "prettier": "prettier --write ./src"
   },
