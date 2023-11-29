@@ -10,7 +10,18 @@ body {
         "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: darkgray;
+    background-color: transparent;
+}
+
+.root {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    height: 100vh;  
+}
+
+canvas {
+    border-radius: 20px; /* TODO update rendering area instead */
 }
 
 code {
