@@ -1,23 +1,9 @@
 /**
- * Robot driver builtin assists
- */
-enum RobotAssist {
-    //% block="line following"
-    LineFollowing = 1 << 0,
-    //% block="speed smoothing"
-    Speed = 1 << 1,
-    //% block="sensor and motor display"
-    Display = 2 << 1
-}
-
-/**
  * Robot
  */
 //% color="#ff6800" icon="\uf1b9" weight=15
 //% groups='["Robot", "Output", "Input", "Configuration"]'
 namespace robot {
-    const MAX_GROUPS = 25
-
     /**
      * Moves the robot.
      */
@@ -102,12 +88,13 @@ namespace robot {
     }
 
     /**
-     * Gets the distance reported by the distance sensor
+     * Register a handler to run when the obstacle distance
+     * changes by a minimum threshold
      */
-    //% block="robot on obstacle changed"
+    //% block="robot on obstacle distance changed"
     //% blockId=microcoderobotobstacledistancechanged
     //% group="Input"
-    export function onObstacleChanged(handler: () => void) {
+    export function onObstacleDistanceChanged(handler: () => void) {
         robot.robots.onEvent(
             robot.robots.RobotCompactCommand.ObstacleState,
             handler
@@ -120,7 +107,7 @@ namespace robot {
     //% block="robot detect line $line"
     //% blockId=microcoderobotdetectlines
     //% group="Input"
-    export function detectLine(detector: LineDetector): boolean {
+    export function detectLine(detector: RobotLineDetector): boolean {
         const robot = RobotDriver.instance()
         const threshold = robot.robot.lineHighThreshold
         const current = robot.currentLineState
@@ -128,7 +115,8 @@ namespace robot {
     }
 
     /**
-     * Registers an event to run when the line detection state changes
+     * Registers an event to run when any line detector
+     * changes state
      */
     //% block="robot on line detected"
     //% blockId=microcoderobotondetectlines
@@ -179,8 +167,8 @@ namespace robot {
         const robot = RobotDriver.instance()
         id = (id >> 0) & 0xff
         if (id === 0) return // not allowed
-        while (id < 0) id += MAX_GROUPS
-        id = id % MAX_GROUPS
+        while (id < 0) id += configuration.MAX_GROUPS
+        id = id % configuration.MAX_GROUPS
         robot.setRadioGroup(id)
     }
 }

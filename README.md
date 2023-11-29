@@ -3,6 +3,8 @@
 This extension contains **blocks for most 2 wheeled robots available for the micro:bit**.
 This library is compatible with micro:bit V1 and V2.
 
+> The library is still in beta and is subject to changes. **Use https://makecode.microbit.org/beta to have access to the robot simulator.**
+
 ![3 micro:bit robots](https://microsoft.github.io/microbit-robot/assets/images/robots.jpg)
 
 -   [DFRobot Maqueen](#dfrobot-maq)
@@ -112,7 +114,7 @@ and read the current distance (in cm)
 
 ```blocks
 let dist = 0
-robot.onObstacleChanged(function () {
+robot.onObstacleDistanceChanged(function () {
     dist = robot.obstacleDistance()
 })
 ```
@@ -121,8 +123,8 @@ robot.onObstacleChanged(function () {
 
 ```blocks
 let left = false
-robot.onLineDetected(RobotLineState.Left, function () {
-    left = robot.detectLines(RobotLineState.Left)
+robot.onLineDetected(function () {
+    left = robot.detectLines(RobotLineDetector.Left)
 })
 ```
 

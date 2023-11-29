@@ -1,9 +1,7 @@
 namespace robot {
-    export const SCROLL_SPEED = 50
-
     function radioGroupFromDeviceSerialNumber() {
         const sn = control.deviceLongSerialNumber()
-        return (sn.hash(10) % 9) + 1
+        return (sn.hash(configuration.MAX_DEFAULT_GROUPS) % (configuration.MAX_DEFAULT_GROUPS - 1)) + 1
     }
 
     //% shim=TD_NOOP
@@ -58,14 +56,15 @@ namespace robot {
         private stopToneMillis: number = 0
         runDrift = 0
 
-        assits: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
+        assists: RobotAssist = RobotAssist.LineFollowing | RobotAssist.Speed | RobotAssist.Display
 
         /**
-         * Maximum distance in cm for the ultrasonic sensor
+         * Random identifier for the current run
          */
-        readonly maxCmDistance = 40
+        readonly id: string;
 
         constructor(robot: robots.Robot) {
+            this.id = (Math.random() + "").slice(2)
             this.robot = robot
         }
 
@@ -77,8 +76,8 @@ namespace robot {
         }
 
         setAssist(assist: RobotAssist, enabled: boolean) {
-            if (enabled) this.assits |= assist;
-            else this.assits = ~(~this.assits | assist)
+            if (enabled) this.assists |= assist;
+            else this.assists = ~(~this.assists | assist)
         }
 
         /**
@@ -99,8 +98,8 @@ namespace robot {
             this.currentThrottle = [0, 0]
             // configuration of common hardware
             this.radioGroup =
-                __readCalibration(0) || radioGroupFromDeviceSerialNumber()
-            this.runDrift = robot.__readCalibration(1)
+                configuration.readCalibration(0) || radioGroupFromDeviceSerialNumber()
+            this.runDrift = configuration.readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
 
             robots.registerSim()
@@ -117,7 +116,9 @@ namespace robot {
             // stop motors
             this.setColor(0x0000ff)
             this.motorRun(0, 0)
+            this.playTone(0, 0)
             // wake up sensors
+            this.sonarDistanceFilter.x = configuration.MAX_SONAR_DISTANCE
             this.readUltrasonicDistance()
             this.computeLineState()
 
@@ -173,7 +174,7 @@ namespace robot {
 
                 // apply line assist
                 if (
-                    (this.assits & RobotAssist.LineFollowing) &&
+                    (this.assists & RobotAssist.LineFollowing) &&
                     this.lineLostCounter < this.robot.lineLostThreshold
                 ) {
                     // recently lost line
@@ -239,7 +240,7 @@ namespace robot {
             this.currentThrottle[0] = left
             this.currentThrottle[1] = right
             this.robot.motorRun(left, right)
-            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
             this.showSingleMotorState(3, left)
             this.showSingleMotorState(1, right)
         }
@@ -263,14 +264,14 @@ namespace robot {
         }
 
         private showLineState() {
-            if (this.showConfiguration || !(this.assits & RobotAssist.Display)) return
+            if (this.showConfiguration || !(this.assists & RobotAssist.Display)) return
 
             // render left/right lines
             const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
-            const left = s[LineDetector.Left] >= threshold
-            const right = s[LineDetector.Right] >= threshold
-            const middle = s[LineDetector.Middle] >= threshold
+            const left = s[RobotLineDetector.Left] >= threshold
+            const right = s[RobotLineDetector.Right] >= threshold
+            const middle = s[RobotLineDetector.Middle] >= threshold
             for (let i = 0; i < 5; ++i) {
                 if (left || middle) led.plot(4, i)
                 else led.unplot(4, i)
@@ -303,7 +304,7 @@ namespace robot {
 
             if (
                 !this.showConfiguration &&
-                (this.assits & RobotAssist.Display) &&
+                (this.assists & RobotAssist.Display) &&
                 this.lastSonarValue !== undefined
             ) {
                 const d = this.lastSonarValue
@@ -332,16 +333,17 @@ namespace robot {
 
         motorRun(turnRatio: number, speed: number) {
             this.start()
-            turnRatio = Math.clamp(-200, 200, turnRatio)
+            turnRatio = Math.clamp(-200, 200, Math.round(turnRatio))
             speed = Math.clamp(-100, 100, Math.round(speed))
+
             if (
                 this.targetSpeed !== speed ||
-                this.currentTurnRatio !== turnRatio
+                this.targetTurnRatio !== turnRatio
             ) {
                 this.targetSpeed = speed
                 this.targetTurnRatio = turnRatio
 
-                if (!(this.assits & RobotAssist.Speed)) {
+                if (!(this.assists & RobotAssist.Speed)) {
                     this.currentSpeed = this.targetSpeed
                     this.currentTurnRatio = this.targetTurnRatio
                 }
@@ -349,13 +351,13 @@ namespace robot {
         }
 
         private ultrasonicDistanceOnce() {
-            if (this.robot.sonar) return this.robot.sonar.distance(this.maxCmDistance)
-            else return this.robot.ultrasonicDistance(this.maxCmDistance)
+            if (this.robot.sonar) return this.robot.sonar.distance(configuration.MAX_SONAR_DISTANCE)
+            else return this.robot.ultrasonicDistance(configuration.MAX_SONAR_DISTANCE)
         }
 
         private readUltrasonicDistance() {
             const dist = this.ultrasonicDistanceOnce()
-            if (dist > this.robot.sonarMinReading)
+            if (!isNaN(dist) && dist > this.robot.sonarMinReading)
                 this.sonarDistanceFilter.filter(dist)
             const filtered = this.sonarDistanceFilter.x
             return filtered
@@ -371,8 +373,8 @@ namespace robot {
             const state = this.readLineState()
             const threshold = this.robot.lineHighThreshold
             const leftOrRight =
-                state[LineDetector.Left] >= threshold ||
-                state[LineDetector.Right] >= threshold
+                state[RobotLineDetector.Left] >= threshold ||
+                state[RobotLineDetector.Right] >= threshold
             if (state.some((v, i) => v !== this.currentLineState[i])) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
@@ -383,8 +385,11 @@ namespace robot {
         }
 
         playTone(frequency: number, duration: number) {
-            this.stopToneMillis = control.millis() + duration
             pins.analogPitch(frequency, 0)
+            if (frequency)
+                this.stopToneMillis = control.millis() + duration
+            else
+                this.stopToneMillis = 0
         }
 
         private updateTone() {
@@ -397,7 +402,7 @@ namespace robot {
         setRunDrift(runDrift: number) {
             if (!isNaN(runDrift)) {
                 this.runDrift = runDrift >> 0
-                __writeCalibration(this.radioGroup, this.runDrift)
+                configuration.writeCalibration(this.radioGroup, this.runDrift)
                 led.stopAnimation()
             }
         }
@@ -409,7 +414,7 @@ namespace robot {
             this.start()
             this.radioGroup = newGroup & 0xff
             radio.setGroup(this.radioGroup)
-            __writeCalibration(this.radioGroup, this.runDrift)
+            configuration.writeCalibration(this.radioGroup, this.runDrift)
             led.stopAnimation()
         }
 

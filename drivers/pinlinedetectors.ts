@@ -10,8 +10,8 @@ namespace robot.drivers {
             public lineHigh = false
         ) {
             this.pins = []
-            if (left) this.pins[LineDetector.Left] = left
-            if (right) this.pins[LineDetector.Right] = right
+            if (left) this.pins[RobotLineDetector.Left] = left
+            if (right) this.pins[RobotLineDetector.Right] = right
         }
 
         start() {
@@ -46,8 +46,8 @@ namespace robot.drivers {
             public lineHigh = false
         ) {
             this.pins = []
-            if (left) this.pins[LineDetector.Left] = left
-            if (right) this.pins[LineDetector.Right] = right
+            if (left) this.pins[RobotLineDetector.Left] = left
+            if (right) this.pins[RobotLineDetector.Right] = right
         }
 
         start() {

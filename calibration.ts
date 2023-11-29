@@ -40,12 +40,12 @@ namespace robot {
             if (d.configDrift === undefined) {
                 basic.showString(
                     `RADIO ${d.radioGroup} DRIFT ${d.runDrift}`,
-                    SCROLL_SPEED
+                    configuration.SCROLL_SPEED
                 )
             } else {
                 const title = d.configDrift ? "DRIFT" : "RADIO"
                 const value = d.configDrift ? d.runDrift : d.radioGroup
-                basic.showString(title + " " + value, SCROLL_SPEED)
+                basic.showString(title + " " + value, configuration.SCROLL_SPEED)
             }
         } finally {
             d.showConfiguration--

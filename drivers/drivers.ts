@@ -1,29 +1,3 @@
-/**
- * Index of the line detectors
- */
-enum LineDetector {
-    /**
-     * block="outer left"
-     */
-    OuterLeft = 0,
-    /**
-     * block="left"
-     */
-    Left = 1,
-    /**
-     * block="middle"
-     */
-    Middle = 2,
-    /**
-     * block="right"
-     */
-    Right = 3,
-    /**
-     * block="outer right"
-     */
-    OuterRight = 4,
-}
-
 namespace robot.drivers {
     /**
      * A LED strip

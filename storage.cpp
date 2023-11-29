@@ -9,7 +9,7 @@ namespace robot {
     };
 
     //%
-    void __writeCalibration(int radioGroup, int drift) {
+    void writeCalibration(int radioGroup, int drift) {
         Calibration cal;
         cal.radioGroup = radioGroup;
         cal.drift = drift;
@@ -17,7 +17,7 @@ namespace robot {
     }
 
     //%
-    int __readCalibration(int field) {
+    int readCalibration(int field) {
         KeyValuePair* kv = uBit.storage.get(CALIBRATION_KEY);
         int value = 0;
         if (NULL != kv) {
