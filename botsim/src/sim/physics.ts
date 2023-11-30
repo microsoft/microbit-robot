@@ -1,6 +1,15 @@
 import Planck from "planck-js"
 import { Vec2, Vec2Like } from "../types/vec2"
-import { boxToVertices, makeCategoryBits, makeMaskBits, toCm } from "./util"
+import {
+    boxToVertices,
+    makeBoxVertices,
+    catmullRom,
+    samplePath,
+    calcMidVectors,
+    makeCategoryBits,
+    makeMaskBits,
+    toCm,
+} from "./util"
 import { Simulation } from "."
 import {
     EntitySpec,
@@ -342,7 +351,42 @@ function addPathFixture(
     spec: EntityPathShapeSpec,
     phys: ShapePhysicsSpec
 ) {
-    // TODO: implement
+    const { verts: pathVerts, closed } = spec
+    if (pathVerts.length < 4) {
+        return
+    }
+    const samples = samplePath(
+        catmullRom,
+        pathVerts,
+        closed,
+        0,
+        pathVerts.length,
+        0.2
+    )
+
+    // Might have to use use this if box fixtures exhibit issues with exposed corners.
+    // Mid-vectors will allow us to create polygon fixtures that match up on edge.
+    // const mids = calcMidVectors(samples)
+
+    for (let i = 0; i < samples.length - 1; i++) {
+        const s0 = samples[i]
+        const s1 = samples[i + 1]
+        const delta = Vec2.sub(s1, s0)
+        const len = Vec2.len(delta)
+        const angle = Vec2.angleDeg(delta)
+        addBoxFixture(
+            body,
+            {
+                type: "box",
+                offset: s0,
+                angle: angle,
+                size: { x: len, y: spec.width },
+                physics: spec.physics,
+                brush: spec.brush,
+            },
+            phys
+        )
+    }
 }
 
 function addPolygonFixture(

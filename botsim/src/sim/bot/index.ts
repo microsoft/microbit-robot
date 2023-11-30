@@ -156,6 +156,7 @@ export class Bot {
     }
 
     public setMotors(left: number, right: number) {
+        if (KEYBOARD_CONTROL_ENABLED) return
         this.setWheelSpeed("left", left)
         this.setWheelSpeed("right", right)
     }

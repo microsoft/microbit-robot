@@ -1,66 +1,7 @@
 import { Simulation } from "../sim"
 import { MAPS } from "../maps"
 import { BOTS } from "../bots"
-
-namespace protocol {
-    // TODO: Import protocol messages from /protocol/protocol.ts
-    // Meantime, keep these in sync with that file
-
-    /**
-     * Robot driver builtin assists
-     */
-    enum RobotAssist {
-        //% block="line following"
-        LineFollowing = 1 << 0,
-        //% block="speed smoothing"
-        Speed = 1 << 1,
-        //% block="sensor and motor display"
-        Display = 2 << 1,
-    }
-
-    /**
-     * state message is sent by the robot; sensors is sent by the world simulator
-     */
-    export interface RobotSimMessage {
-        type: "state" | "sensors"
-        /**
-         * Identifier for the current run
-         */
-        id: string
-        /**
-         * Device serial identifier
-         */
-        deviceId: number
-    }
-
-    export interface RobotSimStateMessage extends RobotSimMessage {
-        type: "state"
-        /**
-         * Product ID of the robot; allow to discover the hardware configuration
-         * of the robot
-         */
-        productId: number
-        motorTurnRatio: number
-        motorSpeed: number
-        motorLeft: number
-        motorRight: number
-        armAperture: number
-        /**
-         * RGB 24bit color
-         */
-        color: number
-        /**
-         * Assistance enabled on the robot
-         */
-        assists: RobotAssist
-    }
-
-    export interface RobotSensorsMessage extends RobotSimMessage {
-        type: "sensors"
-        lineDetectors: number[]
-        obstacleDistance: number
-    }
-}
+import * as Protocol from "../external/protocol"
 
 // TODO: Move this to simulation?
 let currRunId: string | undefined
@@ -100,10 +41,10 @@ async function handleRobotMessageAsync(buf: any) {
     let data = new TextDecoder().decode(new Uint8Array(buf))
     // TEMP: Replace Infinity with 0
     data = data.replace(/-?Infinity/g, "0")
-    const msg = JSON.parse(data) as protocol.RobotSimMessage
+    const msg = JSON.parse(data) as Protocol.robot.robots.RobotSimMessage
     switch (msg.type) {
         case "state":
-            const state = msg as protocol.RobotSimStateMessage
+            const state = msg as Protocol.robot.robots.RobotSimStateMessage
             console.log(`robot state: ${JSON.stringify(state)}`)
             const {
                 deviceId,
@@ -113,6 +54,7 @@ async function handleRobotMessageAsync(buf: any) {
                 color,
                 id: runId,
             } = state
+            // If the runId has changed, restart the simulation
             if (currRunId !== runId) {
                 currRunId = runId
                 await runSimAsync()
@@ -161,6 +103,4 @@ export function init() {
             console.error(e)
         }
     })
-    // TODO: Remove this once we are receiving a startup message from the host
-    /*await*/ runSimAsync()
 }

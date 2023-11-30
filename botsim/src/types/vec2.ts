@@ -19,6 +19,10 @@ export class Vec2 implements Vec2Like {
         this.y = v.y
     }
 
+    public equals(v: Vec2Like) {
+        return this.x === v.x && this.y === v.y
+    }
+
     public static from(v: Vec2Like): Vec2 {
         return new Vec2(v.x, v.y)
     }
@@ -59,8 +63,16 @@ export class Vec2 implements Vec2Like {
         return a.x * b.x + a.y * b.y
     }
 
-    public static normal(v: Vec2Like): Vec2 {
+    /**
+     * Returns the normal of the vector, or throws an error if the vector is
+     * zero and no fallback is provided
+     */
+    public static normal(v: Vec2Like, fallback?: Vec2Like): Vec2 {
         const len = Vec2.len(v)
+        if (len === 0) {
+            if (fallback) return Vec2.from(fallback)
+            throw new Error("Cannot normalize zero vector")
+        }
         return new Vec2(v.x / len, v.y / len)
     }
 
@@ -68,8 +80,16 @@ export class Vec2 implements Vec2Like {
         return Vec2.len(Vec2.sub(a, b))
     }
 
+    public static transpose(v: Vec2Like): Vec2 {
+        return new Vec2(v.y, v.x)
+    }
+
     public static angle(v: Vec2Like): number {
         return Math.atan2(v.y, v.x)
+    }
+
+    public static angleDeg(v: Vec2Like): number {
+        return (Vec2.angle(v) * 180) / Math.PI
     }
 
     public static fromAngle(angle: number): Vec2 {
@@ -99,11 +119,11 @@ export class Vec2 implements Vec2Like {
     }
 
     public static up(): Vec2 {
-        return new Vec2(0, 1)
+        return new Vec2(0, -1)
     }
 
     public static down(): Vec2 {
-        return new Vec2(0, -1)
+        return new Vec2(0, 1)
     }
 
     public static left(): Vec2 {

@@ -1,5 +1,5 @@
 import * as Pixi from "pixi.js"
-import { boxToVertices, toColor, toCm } from "./util"
+import { boxToVertices, toColor, toCm, samplePath, catmullRom } from "./util"
 import { Simulation } from "."
 import { Vec2, Vec2Like } from "../types/vec2"
 import {
@@ -242,8 +242,35 @@ function createColorPathGraphics(
     shape: EntityPathShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.Graphics {
-    // TODO: implement
-    return new Pixi.Graphics()
+    const g = new Pixi.Graphics()
+    const { verts: pathVerts, closed } = shape
+    if (pathVerts.length < 4) {
+        return g
+    }
+    const verts = samplePath(
+        catmullRom,
+        pathVerts,
+        closed,
+        0,
+        pathVerts.length,
+        0.2
+    )
+    //const borderColor = toColor(brush.borderColor)
+    const lineColor = toColor(brush.fillColor)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
+    g.angle = shape.angle
+    g.lineStyle({
+        width: toCm(shape.width),
+        color: lineColor,
+        alignment: 0.5,
+    })
+    //g.beginFill(0, 0)
+    g.moveTo(toCm(verts[0].x), toCm(verts[0].y))
+    for (let i = 1; i < verts.length; i++) {
+        g.lineTo(toCm(verts[i].x), toCm(verts[i].y))
+    }
+    return g
 }
 
 function createPatternPathGraphics(

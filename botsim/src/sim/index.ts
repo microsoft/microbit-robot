@@ -165,12 +165,14 @@ export class Simulation extends Container {
 
     public loadMap(map: MapSpec) {
         this.clear()
-        this.resize(map.size)
+        const height = map.width / map.aspectRatio;
+        const size = new Vec2(map.width, height)
+        this.resize(size)
         this.renderer.color(map.color)
         this._spawn = map.spawn ?? {
             pos: {
-                x: map.size.x / 2,
-                y: map.size.y / 2,
+                x: size.x / 2,
+                y: size.y / 2,
             },
             angle: 90,
         }

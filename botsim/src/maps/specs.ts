@@ -32,12 +32,21 @@ export type PathShapeSpec = ShapeCommonSpec & {
     type: "path"
     verts: Vec2Like[]
     width: number // cm
+    closed: boolean // if true, the path is closed
 }
 
 export const defaultPathShape = (): PathShapeSpec => ({
     type: "path",
-    verts: [], // TODO: make an interesting default
+    verts: [
+        // default to a box shape
+        // TODO: Default to an "S" shape
+        { x: 0, y: 0 },
+        { x: 30, y: 0 },
+        { x: 30, y: 30 },
+        { x: 0, y: 30 },
+    ],
     width: 5,
+    closed: true,
 })
 
 export type BoxShapeSpec = ShapeCommonSpec & {
@@ -240,7 +249,8 @@ export type PatternBrushSpec = BrushCommonSpec & {
 
 export type MapSpec = {
     name: string
-    size: Vec2Like // cm
+    width: number // cm
+    aspectRatio: number // width / height
     color: string // background color
     spawn: SpawnSpec // robot spawn location
     entities: EntitySpec[] // obstacles, etc.
