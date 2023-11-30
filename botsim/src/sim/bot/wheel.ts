@@ -30,7 +30,7 @@ export class Wheel {
             ...defaultBoxShape(),
             label: spec.label,
             offset: Vec2.zero(),
-            size: { x: spec.radius * 2, y: spec.width },
+            size: { y: spec.radius * 2, x: spec.width },
             brush: {
                 ...spec.brush,
                 zIndex: 1,

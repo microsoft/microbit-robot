@@ -87,7 +87,7 @@ export class PhysicsObject {
         this.body.setAngle(toRadians(angle))
     }
     public get forward(): Vec2Like {
-        return this.body.getWorldVector(Planck.Vec2(Vec2.right()))
+        return this.body.getWorldVector(Planck.Vec2(Vec2.up()))
     }
 
     constructor(

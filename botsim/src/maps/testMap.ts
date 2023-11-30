@@ -86,7 +86,7 @@ const spec: MapSpec = {
                 }
             ]
         },
-        /*
+        
         // This entity is a group of static boxes. Alternatively, each box could
         // be specified as an individual entity.
         {
@@ -125,7 +125,7 @@ const spec: MapSpec = {
                 },
             ],
         },
-        */
+        
     ],
 }
 

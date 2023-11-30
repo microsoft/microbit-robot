@@ -22,7 +22,7 @@ const spec: BotSpec = {
             label: "left",
             minSpeed: -100,
             maxSpeed: 100,
-            pos: { x: -1.5, y: -3.8 },
+            pos: { x: -3.8, y: 1.5 },
             width: 1.3,
             radius: 3.6 / 2,
             brush: {
@@ -38,7 +38,7 @@ const spec: BotSpec = {
             label: "right",
             minSpeed: -100,
             maxSpeed: 100,
-            pos: { x: -1.5, y: 3.8 },
+            pos: { x: 3.8, y: 1.5 },
             width: 1.3,
             radius: 3.6 / 2,
             brush: {
