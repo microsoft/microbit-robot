@@ -50,5 +50,13 @@ namespace robot.test {
             pause(d)
             motorStop()
         })
+
+        input.onButtonPressed(Button.AB, () => {
+            onLineLeftRightDetected(true, true, () => motorRun(0, 100))
+            onLineLeftRightDetected(false, false, () => motorRun(200, 100))
+            onLineLeftRightDetected(true, false, () => motorRun(-100, 100))
+            onLineLeftRightDetected(false, true, () => motorRun(100, 100))
+            motorRun(0, 100)
+        })
     }
 }
