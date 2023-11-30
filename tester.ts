@@ -52,6 +52,7 @@ namespace robot.test {
         })
 
         input.onButtonPressed(Button.AB, () => {
+            setAssist(RobotAssist.LineFollowing, true)
             onLineLeftRightDetected(true, true, () => motorRun(0, 100))
             onLineLeftRightDetected(false, false, () => motorRun(200, 100))
             onLineLeftRightDetected(true, false, () => motorRun(-100, 100))
