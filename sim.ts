@@ -32,7 +32,10 @@ namespace robot.robots {
             const rob = r.robot
             if (Array.isArray(sensors.lineDetectors)) {
                 const lines = rob.lineDetectors as drivers.SimLineDetectors
+                const old = lines.current
                 lines.current = sensors.lineDetectors
+                if (old.join(",") !== lines.current.join(","))
+                    console.log(`lines ${lines.current.join(", ")}`)
             }
             if (!isNaN(sensors.obstacleDistance)) {
                 const sonar = rob.sonar as drivers.SimSonar
