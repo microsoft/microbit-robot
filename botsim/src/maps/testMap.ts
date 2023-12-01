@@ -45,7 +45,7 @@ const spec: MapSpec = {
                     ...defaultPathShape(),
                     offset: { x: 0, y: 0 },
                     angle: 0,
-                    width: 1.5, // cm
+                    width: 3, // cm
                     verts: [
                         { x: 25, y: 10 },
                         { x: 55, y: 10 },
