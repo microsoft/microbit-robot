@@ -30,8 +30,8 @@ const spec: MapSpec = {
     aspectRatio: MAP_ASPECT_RATIO, // width / height
     color: "#ffffff",
     spawn: {
-        pos: { x: 45, y: 45 / MAP_ASPECT_RATIO },
-        angle: 0,
+        pos: { x: 25, y: 10 },
+        angle: 80,
     },
     entities: [
         {
@@ -87,6 +87,7 @@ const spec: MapSpec = {
 
         // This entity is a group of static boxes. Alternatively, each box could
         // be specified as an individual entity.
+        /*
         {
             ...defaultEntity(),
             label: "boxes",
@@ -123,6 +124,7 @@ const spec: MapSpec = {
                 },
             ],
         },
+        */
     ],
 }
 
