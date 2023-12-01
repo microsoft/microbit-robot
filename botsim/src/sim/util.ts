@@ -1,9 +1,17 @@
-import { BoxShapeSpec } from "../maps/specs"
+import {
+    BoxShapeSpec,
+    HorizontalAlignment,
+    VerticalAlignment,
+} from "../maps/specs"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PHYS_CAT_DECORATION, PIXELS_PER_CM } from "./constants"
 import * as Pixi from "pixi.js"
 
-export function makeBoxVertices(size: Vec2Like): Vec2[] {
+export function makeBoxVertices(
+    size: Vec2Like,
+    halign: HorizontalAlignment,
+    valign: VerticalAlignment
+): Vec2[] {
     const halfW = size.x / 2
     const halfH = size.y / 2
     const verts = [
@@ -12,11 +20,31 @@ export function makeBoxVertices(size: Vec2Like): Vec2[] {
         new Vec2(halfW, halfH),
         new Vec2(-halfW, halfH),
     ]
+    switch (halign) {
+        case "left":
+            verts.forEach((v) => (v.x -= halfW))
+            break
+        case "center":
+            break
+        case "right":
+            verts.forEach((v) => (v.x += halfW))
+            break
+    }
+    switch (valign) {
+        case "top":
+            verts.forEach((v) => (v.y -= halfH))
+            break
+        case "center":
+            break
+        case "bottom":
+            verts.forEach((v) => (v.y += halfH))
+            break
+    }
     return verts
 }
 
 export function boxToVertices(box: BoxShapeSpec): Vec2[] {
-    return makeBoxVertices(box.size)
+    return makeBoxVertices(box.size, box.halign, box.valign)
 }
 
 // https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Interpolation_on_the_unit_interval_with_matched_derivatives_at_endpoints

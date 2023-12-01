@@ -50,14 +50,21 @@ export const defaultPathShape = (): PathShapeSpec => ({
     label: "path",
 })
 
+export type HorizontalAlignment = "left" | "center" | "right"
+export type VerticalAlignment = "top" | "center" | "bottom"
+
 export type BoxShapeSpec = ShapeCommonSpec & {
     type: "box"
     size: Vec2Like // cm
+    halign: HorizontalAlignment
+    valign: VerticalAlignment
 }
 
 export const defaultBoxShape = (): BoxShapeSpec => ({
     type: "box",
     size: { x: 20, y: 20 },
+    halign: "center",
+    valign: "center",
 })
 
 export type CircleShapeSpec = ShapeCommonSpec & {

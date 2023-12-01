@@ -18,7 +18,6 @@ import { Bot } from "./bot"
 import { Container } from "./container"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
-import { PIXELS_PER_CM } from "./constants"
 
 export type LineSensorValues = {
     ["outer-left"]: number
@@ -50,6 +49,8 @@ export class Simulation extends Container {
     private _bot?: Bot
     private walls?: Entity
 
+    public debugDraw = false
+
     public get renderer() {
         return this._renderer
     }
@@ -68,6 +69,7 @@ export class Simulation extends Container {
 
     private constructor() {
         super()
+        //this.debugDraw = true;
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
         this._spawn = defaultSpawn()
@@ -215,6 +217,7 @@ export class Simulation extends Container {
         super.addChild(ent)
         this.physics.add(ent.physicsObj)
         this.renderer.add(ent.renderObj)
+        //this.renderer.addDebugObj(ent.physicsObj.debugRenderObj as any)
     }
 
     public resize(size: Vec2Like) {

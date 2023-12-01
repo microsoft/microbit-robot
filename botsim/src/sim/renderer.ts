@@ -24,12 +24,16 @@ import { MAP_ASPECT_RATIO } from "./constants"
 export default class Renderer {
     private pixi: Pixi.Application
     private _size: Vec2
+    private _debugLayer: Pixi.Container
 
     public get handle() {
         return this.pixi.view
     }
     public get size() {
         return this._size
+    }
+    public get debugLayer() {
+        return this._debugLayer
     }
 
     constructor(private sim: Simulation) {
@@ -43,6 +47,10 @@ export default class Renderer {
             this.pixi.view.style.width = "100%"
             this.pixi.view.style.height = "100%"
         }
+
+        // Create a debug layer
+        this._debugLayer = new Pixi.Container()
+        this.pixi.stage.addChild(this._debugLayer as any)
     }
 
     public destroy() {
@@ -51,6 +59,9 @@ export default class Renderer {
         } catch (e: any) {
             console.error(e.toString())
         }
+    }
+
+    public update(dt: number) {
     }
 
     public resize(size: Vec2Like) {
@@ -65,6 +76,10 @@ export default class Renderer {
 
     public add(renderObj: RenderObject) {
         this.pixi.stage?.addChild(renderObj.handle as any)
+    }
+
+    public addDebugObj(obj: Pixi.DisplayObject) {
+        this._debugLayer.addChild(obj)
     }
 
     public remove(renderObj: RenderObject) {
@@ -253,9 +268,8 @@ function createColorPathGraphics(
         closed,
         0,
         pathVerts.length,
-        0.2
+        0.25
     )
-    //const borderColor = toColor(brush.borderColor)
     const lineColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0
     g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
@@ -265,7 +279,6 @@ function createColorPathGraphics(
         color: lineColor,
         alignment: 0.5,
     })
-    //g.beginFill(0, 0)
     g.moveTo(toCm(verts[0].x), toCm(verts[0].y))
     for (let i = 1; i < verts.length; i++) {
         g.lineTo(toCm(verts[i].x), toCm(verts[i].y))

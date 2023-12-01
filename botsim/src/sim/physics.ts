@@ -27,29 +27,19 @@ import {
 import { Entity } from "./entity"
 import { PHYS_TIMESTEP_MS, PHYS_TIMESTEP_SECS } from "./constants"
 import { toDegrees, toRadians } from "../types/math"
+import * as Pixi from "pixi.js" // Add this import statement
 
 export default class Physics {
     private _world: Planck.World
-    //private _surface: Planck.Body;
-    private _debugDraw = false
 
     public get world() {
         return this._world
-    }
-
-    public get debugDraw() {
-        return this._debugDraw
-    }
-    public set debugDraw(v: boolean) {
-        this._debugDraw = v
-        // TODO: enable debug draw of physics bodies, fixtures, and joints
     }
 
     constructor(private sim: Simulation) {
         this._world = Planck.World({
             gravity: Planck.Vec2(0, 0),
         })
-        //this._surface = this._world.createBody();
     }
 
     public update(dtMs: number): number {
@@ -67,9 +57,16 @@ export default class Physics {
         //physicsObj.body.setAngle(0);
         physicsObj.body.setActive(true)
     }
+
+    public debugDraw(canvas: HTMLCanvasElement) {}
 }
 
 export class PhysicsObject {
+    private _debugRenderObj: Pixi.Container
+
+    public get debugRenderObj() {
+        return this._debugRenderObj
+    }
     public get body() {
         return this._body
     }
@@ -94,11 +91,60 @@ export class PhysicsObject {
         private _entity: Entity,
         private _body: Planck.Body,
         private _jointSpec?: JointSpec // when this object is added to another, this is the kind of joint to use
-    ) {}
+    ) {
+        this._debugRenderObj = new Pixi.Graphics()
+    }
 
     public beforePhysicsStep(dtSecs: number) {}
 
-    public afterPhysicsStep(dtSecs: number) {}
+    public afterPhysicsStep(dtSecs: number) {
+        if (!this._entity.sim.debugDraw) return;
+        this._debugRenderObj.removeChildren()
+        for (
+            let fixt = this._body.getFixtureList();
+            !!fixt;
+            fixt = fixt.getNext()
+        ) {
+            const type = fixt.getShape().getType()
+            switch (type) {
+                case "polygon":
+                    const poly = fixt.getShape() as Planck.Polygon
+                    const verts = poly.m_vertices
+                    const pos = this._body.getPosition()
+                    const angle = this._body.getAngle()
+                    const worldVerts = verts.map((v) => {
+                        return Vec2.rotateDeg(
+                            Vec2.add(
+                                new Vec2(v.x, v.y),
+                                new Vec2(pos.x, pos.y)
+                            ),
+                            angle
+                        )
+                    })
+                    const graphics = new Pixi.Graphics();
+                    this._debugRenderObj.addChild(graphics as any)
+                    graphics.lineStyle(1, 0xff0000, 1)
+                    graphics.beginFill(0xff0000)
+                    graphics.drawPolygon(worldVerts)
+                    graphics.endFill()
+                    break
+                case "circle":
+                    const circle = fixt.getShape() as Planck.Circle
+                    const pos2 = this._body.getPosition()
+                    const graphics3 = new Pixi.Graphics();
+                    this._debugRenderObj.addChild(graphics3 as any)
+                    graphics3.lineStyle(1, 0xff0000, 1)
+                    graphics3.beginFill(0xff0000)
+                    graphics3.drawCircle(pos2.x, pos2.y, circle.m_radius)
+                    graphics3.endFill()
+                    break
+                case "edge":
+                    break
+                case "chain":
+                    break
+            }
+        }
+    }
 
     public update(dtSecs: number) {}
 
@@ -363,7 +409,7 @@ function addPathFixture(
         closed,
         0,
         pathVerts.length,
-        0.2
+        .25
     )
 
     // Might have to use use this if box fixtures exhibit issues with exposed corners.
@@ -381,6 +427,8 @@ function addPathFixture(
             label: spec.label + ".seg." + i,
             offset: s0,
             angle: angle,
+            halign: "right",
+            valign: "center",
             size: { x: len, y: spec.width },
             physics: spec.physics,
             brush: spec.brush,
