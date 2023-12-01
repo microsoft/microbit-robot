@@ -43,12 +43,10 @@ const spec: MapSpec = {
             shapes: [
                 {
                     ...defaultPathShape(),
-                    label: "path shape",
                     offset: { x: 0, y: 0 },
                     angle: 0,
                     width: 1.5, // cm
                     verts: [
-                    
                         { x: 25, y: 10 },
                         { x: 55, y: 10 },
                         { x: 70, y: 20 },
@@ -57,7 +55,7 @@ const spec: MapSpec = {
                         { x: 25, y: 60 },
                         { x: 10, y: 50 },
                         { x: 10, y: 20 },
-                        
+
                         /*
                         { x: 25, y: 10 },
                         { x: 30, y: 10 },
@@ -83,10 +81,10 @@ const spec: MapSpec = {
                         ...defaultShapePhysics(),
                         sensor: true,
                     },
-                }
-            ]
+                },
+            ],
         },
-        
+
         // This entity is a group of static boxes. Alternatively, each box could
         // be specified as an individual entity.
         {
@@ -125,7 +123,6 @@ const spec: MapSpec = {
                 },
             ],
         },
-        
     ],
 }
 

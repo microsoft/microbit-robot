@@ -62,18 +62,24 @@ const spec: BotSpec = {
     lineSensors: [
         {
             label: "left",
-            pos: { x: 5, y: 1 },
+            pos: { x: -0.58, y: -2.74 },
             brush: {
-                // TODO
+                // TODO make look nice
                 ...defaultColorBrush(),
+                fillColor: "red",
+                borderColor: "black",
+                borderWidth: 0.1,
             },
         },
         {
             label: "right",
-            pos: { x: 5, y: -1 },
+            pos: { x: 0.58, y: -2.74 },
             brush: {
-                // TODO
+                // TODO make look nice
                 ...defaultColorBrush(),
+                fillColor: "red",
+                borderColor: "black",
+                borderWidth: 0.1,
             },
         },
     ],

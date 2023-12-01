@@ -20,6 +20,22 @@ import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PIXELS_PER_CM } from "./constants"
 
+export type LineSensorValues = {
+    ["outer-left"]: number
+    ["left"]: number
+    ["middle"]: number
+    ["right"]: number
+    ["outer-right"]: number
+}
+
+export const defaultLineSensorValues = (): LineSensorValues => ({
+    ["outer-left"]: -1,
+    ["left"]: -1,
+    ["middle"]: -1,
+    ["right"]: -1,
+    ["outer-right"]: -1,
+})
+
 export class Simulation extends Container {
     private paused = false
     private running = false
@@ -165,7 +181,7 @@ export class Simulation extends Container {
 
     public loadMap(map: MapSpec) {
         this.clear()
-        const height = map.width / map.aspectRatio;
+        const height = map.width / map.aspectRatio
         const size = new Vec2(map.width, height)
         this.resize(size)
         this.renderer.color(map.color)
@@ -270,5 +286,21 @@ export class Simulation extends Container {
     public setMotors(deviceId: number, left: number, right: number) {
         // TODO: Lookup or create bot by deviceId
         this._bot?.setMotors(left, right)
+    }
+
+    public readLineSensors(deviceId: number): LineSensorValues {
+        if (this.bot) {
+            return this.bot.readLineSensors()
+        } else {
+            return defaultLineSensorValues()
+        }
+    }
+
+    public readRangeSensor(deviceId: number): number {
+        if (this.bot) {
+            return this.bot.readRangeSensor()
+        } else {
+            return -1
+        }
     }
 }

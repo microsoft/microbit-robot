@@ -47,6 +47,7 @@ export const defaultPathShape = (): PathShapeSpec => ({
     ],
     width: 5,
     closed: true,
+    label: "path",
 })
 
 export type BoxShapeSpec = ShapeCommonSpec & {

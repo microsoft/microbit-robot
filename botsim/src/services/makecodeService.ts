@@ -1,4 +1,4 @@
-import { Simulation } from "../sim"
+import { LineSensorValues, Simulation, defaultLineSensorValues } from "../sim"
 import { MAPS } from "../maps"
 import { BOTS } from "../bots"
 import * as Protocol from "../external/protocol"
@@ -37,6 +37,30 @@ async function applyRobotStateAsync(
     sim?.setMotors(deviceId, motorLeft, motorRight)
 }
 
+async function readRobotLineSensorsAsync(
+    deviceId: number
+): Promise<LineSensorValues> {
+    const sim = await Simulation.getAsync()
+    return sim?.readLineSensors(deviceId) ?? defaultLineSensorValues()
+}
+
+async function readRobotRangeSensorAsync(deviceId: number): Promise<number> {
+    const sim = await Simulation.getAsync()
+    return sim?.readRangeSensor(deviceId) ?? 0
+}
+
+function postMessagePacket(msg: any) {
+    const payload = new TextEncoder().encode(JSON.stringify(msg))
+    window.parent.postMessage(
+        {
+            type: "messagepacket",
+            channel: "robot",
+            data: payload,
+        },
+        "*"
+    )
+}
+
 async function handleRobotMessageAsync(buf: any) {
     let data = new TextDecoder().decode(new Uint8Array(buf))
     // TEMP: Replace Infinity with 0
@@ -45,7 +69,7 @@ async function handleRobotMessageAsync(buf: any) {
     switch (msg.type) {
         case "state":
             const state = msg as Protocol.robot.robots.RobotSimStateMessage
-            console.log(`robot state: ${JSON.stringify(state)}`)
+            //console.log(`robot state: ${JSON.stringify(state)}`)
             const {
                 deviceId,
                 motorLeft,
@@ -66,7 +90,25 @@ async function handleRobotMessageAsync(buf: any) {
                 armAperture,
                 color
             )
+            const lineSensors = await readRobotLineSensorsAsync(deviceId)
+            const rangeSensor = await readRobotRangeSensorAsync(deviceId)
+            const sensorMessage: Protocol.robot.robots.RobotSensorsMessage = {
+                type: "sensors",
+                id: runId,
+                deviceId,
+                lineDetectors: [
+                    lineSensors["outer-left"],
+                    lineSensors["left"],
+                    lineSensors["middle"],
+                    lineSensors["right"],
+                    lineSensors["outer-right"],
+                ],
+                obstacleDistance: rangeSensor,
+            }
+            postMessagePacket(sensorMessage)
             break
+        default:
+            console.log(`unknown robot message: ${JSON.stringify(msg)}`)
     }
 }
 

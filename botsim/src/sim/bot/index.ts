@@ -1,4 +1,4 @@
-import { Simulation } from ".."
+import { LineSensorValues, Simulation } from ".."
 import { BotSpec } from "../../bots/specs"
 import { Chassis } from "./chassis"
 import { Wheel } from "./wheel"
@@ -35,6 +35,14 @@ export class Bot {
         const chassisShape = Chassis.makeShapeSpec(botSpec)
         const ballastShape = makeBallastSpec(botSpec)
 
+        botSpec.lineSensors?.forEach((sensorSpec) => {
+            const sensor = new LineSensor(this, sensorSpec)
+            this.lineSensors.set(sensorSpec.label, sensor)
+        })
+        const lineSensorShapes = Array.from(this.lineSensors.values()).map(
+            (sensor) => sensor.shapeSpecs
+        )
+
         const entitySpec: EntitySpec = {
             ...defaultEntity(),
             pos: { ...this.sim.spawn.pos },
@@ -42,22 +50,24 @@ export class Bot {
             physics: {
                 ...defaultDynamicPhysics(),
             },
-            shapes: [chassisShape, ballastShape],
+            shapes: [chassisShape, ballastShape, ...lineSensorShapes.flat()],
         }
 
         this.entity = sim.createEntity(entitySpec)
         this.chassis = new Chassis(this, botSpec.chassis)
-        botSpec.wheels.forEach((wheel) =>
-            this.wheels.set(wheel.label, new Wheel(this, wheel))
+        botSpec.wheels.forEach((wheelSpec) =>
+            this.wheels.set(wheelSpec.label, new Wheel(this, wheelSpec))
         )
         if (botSpec.rangeSensor)
             this.rangeSensor = new RangeSensor(this, botSpec.rangeSensor)
-        botSpec.lineSensors?.forEach((sensor) =>
-            this.lineSensors.set(sensor.label, new LineSensor(this, sensor))
-        )
+
         botSpec.leds?.forEach((led) =>
             this.leds.set(led.label, new LED(this, led))
         )
+
+        // init everything once the entity is created
+
+        this.lineSensors.forEach((sensor) => sensor.init())
     }
 
     public destroy() {
@@ -159,5 +169,19 @@ export class Bot {
         if (KEYBOARD_CONTROL_ENABLED) return
         this.setWheelSpeed("left", left)
         this.setWheelSpeed("right", right)
+    }
+
+    public readLineSensors(): LineSensorValues {
+        return {
+            ["outer-left"]: this.lineSensors.get("outer-left")?.value ?? -1,
+            ["left"]: this.lineSensors.get("left")?.value ?? -1,
+            ["middle"]: this.lineSensors.get("middle")?.value ?? -1,
+            ["right"]: this.lineSensors.get("right")?.value ?? -1,
+            ["outer-right"]: this.lineSensors.get("outer-right")?.value ?? -1,
+        }
+    }
+
+    public readRangeSensor(): number {
+        return -1
     }
 }

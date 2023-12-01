@@ -52,3 +52,11 @@ export type BotSpec = {
     leds?: LEDSpec[]
     ballast: BallastSpec
 }
+
+export const LINE_SENSORS = {
+    ["outer-left"]: 0,
+    ["left"]: 1,
+    ["middle"]: 2,
+    ["right"]: 3,
+    ["outer-right"]: 4,
+}

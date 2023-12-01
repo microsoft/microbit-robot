@@ -335,6 +335,7 @@ function addBoxFixture(
     })
     const shape = Planck.Polygon(verts)
     const fixt = body.createFixture(shape, fixtureOptions(phys))
+    fixt.setUserData(spec)
 }
 
 function addCircleFixture(
@@ -344,6 +345,7 @@ function addCircleFixture(
 ) {
     const shape = Planck.Circle(Planck.Vec2(spec.offset), toCm(spec.radius))
     const fixt = body.createFixture(shape, fixtureOptions(phys))
+    fixt.setUserData(spec)
 }
 
 function addPathFixture(
@@ -374,18 +376,16 @@ function addPathFixture(
         const delta = Vec2.sub(s1, s0)
         const len = Vec2.len(delta)
         const angle = Vec2.angleDeg(delta)
-        addBoxFixture(
-            body,
-            {
-                type: "box",
-                offset: s0,
-                angle: angle,
-                size: { x: len, y: spec.width },
-                physics: spec.physics,
-                brush: spec.brush,
-            },
-            phys
-        )
+        const segSpec: EntityBoxShapeSpec = {
+            type: "box",
+            label: spec.label + ".seg." + i,
+            offset: s0,
+            angle: angle,
+            size: { x: len, y: spec.width },
+            physics: spec.physics,
+            brush: spec.brush,
+        }
+        addBoxFixture(body, segSpec, phys)
     }
 }
 
@@ -407,6 +407,7 @@ function addPolygonFixture(
         restitution: phys.restitution ?? 0.2,
         isSensor: phys.sensor ?? false,
     })
+    fixt.setUserData(spec)
 }
 
 function addEdgeFixture(
@@ -437,6 +438,7 @@ function addEdgeFixture(
     }
 
     const fixt = body.createFixture(shape, fixtureOptions(phys))
+    fixt.setUserData(spec)
 }
 
 function createBody(world: Planck.World, spec: EntitySpec): Planck.Body {
