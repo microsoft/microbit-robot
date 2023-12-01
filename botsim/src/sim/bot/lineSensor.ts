@@ -28,7 +28,7 @@ export class LineSensor {
             ...defaultCircleShape(),
             label: spec.label,
             offset: spec.pos,
-            radius: 0.25,
+            radius: 0.5,
             brush: {
                 ...spec.brush,
                 zIndex: 1,
