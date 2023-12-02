@@ -26,6 +26,7 @@ export type ShapeType = "path" | "box" | "circle" | "polygon" | "edge"
 type ShapeCommonSpec = {
     type: ShapeType
     label?: string
+    roles: string[]
 }
 
 export type PathShapeSpec = ShapeCommonSpec & {
@@ -47,7 +48,7 @@ export const defaultPathShape = (): PathShapeSpec => ({
     ],
     width: 5,
     closed: true,
-    label: "path",
+    roles: [],
 })
 
 export type HorizontalAlignment = "left" | "center" | "right"
@@ -65,6 +66,7 @@ export const defaultBoxShape = (): BoxShapeSpec => ({
     size: { x: 20, y: 20 },
     halign: "center",
     valign: "center",
+    roles: [],
 })
 
 export type CircleShapeSpec = ShapeCommonSpec & {
@@ -75,6 +77,7 @@ export type CircleShapeSpec = ShapeCommonSpec & {
 export const defaultCircleShape = (): CircleShapeSpec => ({
     type: "circle",
     radius: 10,
+    roles: [],
 })
 
 export type PolygonShapeSpec = ShapeCommonSpec & {
@@ -85,6 +88,7 @@ export type PolygonShapeSpec = ShapeCommonSpec & {
 export const defaultPolygonShape = (): PolygonShapeSpec => ({
     type: "polygon",
     verts: [], // TODO: make an interesting default
+    roles: [],
 })
 
 export type EdgeShapeSpec = ShapeCommonSpec & {
@@ -99,6 +103,7 @@ export const defaultEdgeShape = (): EdgeShapeSpec => ({
     type: "edge",
     v0: { x: 0, y: 0 },
     v1: { x: 20, y: 20 },
+    roles: [],
 })
 
 /// Physical shapes
@@ -240,7 +245,7 @@ export type TextureBrushSpec = BrushCommonSpec & {
     // TODOL u, v, wrap, etc.
 }
 
-export type PatternType = "lines" | "grid" | "hatch" | "blobs"
+export type PatternType = "lines" | "grid" | "hatch" | "blobs" | "maze"
 
 export type PatternBrushSpec = BrushCommonSpec & {
     type: "pattern"

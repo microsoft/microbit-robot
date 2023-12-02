@@ -432,6 +432,7 @@ function addPathFixture(
             size: { x: len, y: spec.width },
             physics: spec.physics,
             brush: spec.brush,
+            roles: spec.roles,
         }
         addBoxFixture(body, segSpec, phys)
     }

@@ -72,6 +72,7 @@ export class LineSensor {
             label: "line." + spec.label + ".sensor",
             offset: spec.pos,
             radius: 0.1,
+            roles: ["line-sensor"],
             brush: {
                 ...defaultColorBrush(),
                 fillColor: "transparent",
@@ -112,20 +113,22 @@ export class LineSensor {
             ce;
             ce = ce.next ?? null
         ) {
+            // TODO: Support multiple bots in the scene. As implemented, this
+            // doesn't work in that scenario.
             const contact = ce.contact
             const fixtureA = contact.getFixtureA()
             const fixtureB = contact.getFixtureB()
             const userDataA = fixtureA.getUserData() as EntityShapeSpec
             const userDataB = fixtureB.getUserData() as EntityShapeSpec
             if (userDataA && userDataB) {
-                const labelA = userDataA.label
-                const labelB = userDataB.label
-                if (labelA === "line." + this.spec.label + ".sensor") {
-                    if (labelB?.startsWith("path.")) {
+                const rolesA = userDataA.roles
+                const rolesB = userDataB.roles
+                if (rolesA.includes("line-sensor")) {
+                    if (rolesB.includes("follow-line")) {
                         this.setDetecting(true)
                     }
-                } else if (labelB === "line." + this.spec.label + ".sensor") {
-                    if (labelA?.startsWith("path.")) {
+                } else if (rolesB.includes("line-sensor")) {
+                    if (rolesA.includes("follow-line")) {
                         this.setDetecting(true)
                     }
                 }

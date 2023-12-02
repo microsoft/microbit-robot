@@ -36,7 +36,7 @@ const spec: MapSpec = {
     entities: [
         {
             ...defaultEntity(),
-            label: "path entity",
+            label: "path",
             pos: { x: 0, y: 0 },
             angle: 0,
             physics: defaultStaticPhysics(),
@@ -45,6 +45,7 @@ const spec: MapSpec = {
                     ...defaultPathShape(),
                     offset: { x: 0, y: 0 },
                     angle: 0,
+                    roles: ["follow-line"],
                     width: 3, // cm
                     verts: [
                         { x: 25, y: 10 },
