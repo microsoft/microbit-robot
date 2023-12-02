@@ -18,7 +18,7 @@ import {
     EntityEdgeShapeSpec,
 } from "../maps/specs"
 import { Entity } from "./entity"
-import { toRadians } from "../types/math"
+import { toRadians } from "../util"
 import { MAP_ASPECT_RATIO } from "./constants"
 import { nextId } from "../util"
 

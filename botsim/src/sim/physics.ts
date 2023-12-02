@@ -26,7 +26,7 @@ import {
 } from "../maps/specs"
 import { Entity } from "./entity"
 import { PHYS_TIMESTEP_MS, PHYS_TIMESTEP_SECS } from "./constants"
-import { toDegrees, toRadians } from "../types/math"
+import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js" // Add this import statement
 
 export default class Physics {

@@ -1,8 +1,6 @@
 import * as React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Simulation } from "../../sim"
-import { MAPS } from "../../maps"
-import { BOTS } from "../../bots"
+import { Simulation } from "../sim"
 
 type Props = {}
 
