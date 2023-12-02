@@ -3,7 +3,7 @@
 This extension contains **blocks for most 2 wheeled robots available for the micro:bit**.
 This library is compatible with micro:bit V1 and V2.
 
-> The library is still in beta and is subject to changes. **Use https://makecode.microbit.org/beta to have access to the robot simulator.**
+> The library is still in beta and is subject to changes.
 
 ![3 micro:bit robots](https://microsoft.github.io/microbit-robot/assets/images/robots.jpg)
 
