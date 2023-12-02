@@ -9,7 +9,6 @@ import {
 } from "../../maps/specs"
 import { PHYS_CAT_ROBOT } from "../constants"
 import { makeCategoryBits, makeMaskBits } from "../util"
-import Planck from "planck-js"
 
 export class LineSensor {
     _shapeSpecs: EntityShapeSpec[]
@@ -100,20 +99,39 @@ export class LineSensor {
         this._value = 0
     }
 
-    public init() {
-        this.bot.entity.physicsObj.body
-            .getWorld()
-            .on("begin-contact", this.contactStart)
-        this.bot.entity.physicsObj.body
-            .getWorld()
-            .on("end-contact", this.contactEnd)
-    }
+    public init() {}
 
     public destroy() {}
 
     public beforePhysicsStep(dtSecs: number) {}
 
-    public update(dtSecs: number) {}
+    public update(dtSecs: number) {
+        this.setDetecting(false)
+        for (
+            let ce = this.bot.entity.physicsObj.body.getContactList();
+            ce;
+            ce = ce.next ?? null
+        ) {
+            const contact = ce.contact
+            const fixtureA = contact.getFixtureA()
+            const fixtureB = contact.getFixtureB()
+            const userDataA = fixtureA.getUserData() as EntityShapeSpec
+            const userDataB = fixtureB.getUserData() as EntityShapeSpec
+            if (userDataA && userDataB) {
+                const labelA = userDataA.label
+                const labelB = userDataB.label
+                if (labelA === "line." + this.spec.label + ".sensor") {
+                    if (labelB?.startsWith("path.")) {
+                        this.setDetecting(true)
+                    }
+                } else if (labelB === "line." + this.spec.label + ".sensor") {
+                    if (labelA?.startsWith("path.")) {
+                        this.setDetecting(true)
+                    }
+                }
+            }
+        }
+    }
 
     public setDetecting(detecting: boolean) {
         this._value = detecting ? 1023 : 0
@@ -125,46 +143,5 @@ export class LineSensor {
         )
         if (onShape) onShape.visible = detecting
         if (offShape) offShape.visible = !detecting
-    }
-
-    contactStart = (contact: Planck.Contact) => {
-        const fixtureA = contact.getFixtureA()
-        const fixtureB = contact.getFixtureB()
-        const userDataA = fixtureA.getUserData() as EntityShapeSpec
-        const userDataB = fixtureB.getUserData() as EntityShapeSpec
-        if (userDataA && userDataB) {
-            const labelA = userDataA.label
-            const labelB = userDataB.label
-            //console.log("contactStart", labelA, labelB)
-            if (labelA === "line." + this.spec.label + ".sensor") {
-                if (labelB?.startsWith("path.")) {
-                    this.setDetecting(true)
-                }
-            } else if (labelB === "line." + this.spec.label + ".sensor") {
-                if (labelA?.startsWith("path.")) {
-                    this.setDetecting(true)
-                }
-            }
-        }
-    }
-    contactEnd = (contact: Planck.Contact) => {
-        const fixtureA = contact.getFixtureA()
-        const fixtureB = contact.getFixtureB()
-        const userDataA = fixtureA.getUserData() as EntityShapeSpec
-        const userDataB = fixtureB.getUserData() as EntityShapeSpec
-        if (userDataA && userDataB) {
-            const labelA = userDataA.label
-            const labelB = userDataB.label
-            //console.log("contactStart", labelA, labelB)
-            if (labelA === "line." + this.spec.label + ".sensor") {
-                if (labelB?.startsWith("path.")) {
-                    this.setDetecting(false)
-                }
-            } else if (labelB === "line." + this.spec.label + ".sensor") {
-                if (labelA?.startsWith("path.")) {
-                    this.setDetecting(false)
-                }
-            }
-        }
     }
 }
