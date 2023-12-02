@@ -23,14 +23,16 @@ export class LineSensor {
     }
 
     private makeShapeSpecs(spec: LineSensorSpec): EntityShapeSpec[] {
-        const visualSpec: EntityShapeSpec = {
+        // The visual representation of the sensor (larger than actual size)
+        const onLineSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: spec.label,
+            label: "line." + spec.label + ".on",
             offset: spec.pos,
             radius: 0.5,
             brush: {
-                ...spec.brush,
+                ...spec.brush.on,
+                visible: false,
                 zIndex: 1,
             },
             physics: {
@@ -43,6 +45,28 @@ export class LineSensor {
                 maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
+        const offLineSpec: EntityShapeSpec = {
+            ...defaultEntityShape(),
+            ...defaultCircleShape(),
+            label: "line." + spec.label + ".off",
+            offset: spec.pos,
+            radius: 0.5,
+            brush: {
+                ...spec.brush.off,
+                visible: true,
+                zIndex: 1,
+            },
+            physics: {
+                ...defaultShapePhysics(),
+                friction: 0,
+                restitution: 0,
+                density: 0.001,
+                sensor: true,
+                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
+                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
+            },
+        }
+        // The actual sensor (very small)
         const sensorSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
@@ -65,7 +89,7 @@ export class LineSensor {
                 maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
-        return [visualSpec, sensorSpec]
+        return [onLineSpec, offLineSpec, sensorSpec]
     }
 
     constructor(
@@ -91,6 +115,18 @@ export class LineSensor {
 
     public update(dtSecs: number) {}
 
+    public setDetecting(detecting: boolean) {
+        this._value = detecting ? 1023 : 0
+        const onShape = this.bot.entity.renderObj.shapes.get(
+            "line." + this.spec.label + ".on"
+        )
+        const offShape = this.bot.entity.renderObj.shapes.get(
+            "line." + this.spec.label + ".off"
+        )
+        if (onShape) onShape.visible = detecting
+        if (offShape) offShape.visible = !detecting
+    }
+
     contactStart = (contact: Planck.Contact) => {
         const fixtureA = contact.getFixtureA()
         const fixtureB = contact.getFixtureB()
@@ -102,11 +138,11 @@ export class LineSensor {
             //console.log("contactStart", labelA, labelB)
             if (labelA === "line." + this.spec.label + ".sensor") {
                 if (labelB?.startsWith("path.")) {
-                    this._value = 1023
+                    this.setDetecting(true)
                 }
             } else if (labelB === "line." + this.spec.label + ".sensor") {
                 if (labelA?.startsWith("path.")) {
-                    this._value = 1023
+                    this.setDetecting(true)
                 }
             }
         }
@@ -122,11 +158,11 @@ export class LineSensor {
             //console.log("contactStart", labelA, labelB)
             if (labelA === "line." + this.spec.label + ".sensor") {
                 if (labelB?.startsWith("path.")) {
-                    this._value = 0
+                    this.setDetecting(false)
                 }
             } else if (labelB === "line." + this.spec.label + ".sensor") {
                 if (labelA?.startsWith("path.")) {
-                    this._value = 0
+                    this.setDetecting(false)
                 }
             }
         }

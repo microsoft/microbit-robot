@@ -5,6 +5,12 @@ import { Simulation } from "."
 import { Container } from "./container"
 import { EntitySpec } from "../maps/specs"
 
+/**
+ * An Entity is a container for a RenderObject and a PhysicsObject. These two
+ * objects represent the visual and physical aspects of the entity,
+ * respectively. The Entity class is responsible for keeping these two objects
+ * in sync with each other, and for managing the entity's children.
+ */
 export class Entity extends Container {
     parent: Container | undefined
 

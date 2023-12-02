@@ -70,11 +70,19 @@ const spec: MapSpec = {
                         { x: 30, y: 30 },
                         { x: 40, y: 40 },
                         */
+                        /*
+                        { x: 10, y: 10 },
+                        { x: 20, y: 10 },
+                        { x: 30, y: 10 },
+                        { x: 40, y: 10 },
+                        { x: 50, y: 10 },
+                        { x: 60, y: 10 },
+                        */
                     ],
                     closed: true,
                     brush: {
                         ...defaultColorBrush(),
-                        fillColor: "#2A2B2E",
+                        fillColor: "#666666",
                         zIndex: -5,
                     },
                     physics: {

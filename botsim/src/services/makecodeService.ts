@@ -105,6 +105,7 @@ async function handleRobotMessageAsync(buf: any) {
                 ],
                 obstacleDistance: rangeSensor,
             }
+            console.log(`robot sensors: ${JSON.stringify(sensorMessage)}`)
             postMessagePacket(sensorMessage)
             break
         default:

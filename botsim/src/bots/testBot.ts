@@ -13,7 +13,7 @@ const spec: BotSpec = {
         brush: {
             // TODO: Make this a texture
             ...defaultColorBrush(),
-            fillColor: "#11B5E477",
+            fillColor: "#11B5E499",
             borderColor: "#555555",
         },
     },
@@ -64,22 +64,40 @@ const spec: BotSpec = {
             label: "left",
             pos: { x: -0.58, y: -2.74 },
             brush: {
-                // TODO make look nice
-                ...defaultColorBrush(),
-                fillColor: "red",
-                borderColor: "black",
-                borderWidth: 0.1,
+                on: {
+                    // TODO make look nice
+                    ...defaultColorBrush(),
+                    fillColor: "white",
+                    borderColor: "white",
+                    borderWidth: 0.1,
+                },
+                off: {
+                    // TODO make look nice
+                    ...defaultColorBrush(),
+                    fillColor: "black",
+                    borderColor: "black",
+                    borderWidth: 0.1,
+                },
             },
         },
         {
             label: "right",
             pos: { x: 0.58, y: -2.74 },
             brush: {
-                // TODO make look nice
-                ...defaultColorBrush(),
-                fillColor: "red",
-                borderColor: "black",
-                borderWidth: 0.1,
+                on: {
+                    // TODO make look nice
+                    ...defaultColorBrush(),
+                    fillColor: "white",
+                    borderColor: "white",
+                    borderWidth: 0.1,
+                },
+                off: {
+                    // TODO make look nice
+                    ...defaultColorBrush(),
+                    fillColor: "black",
+                    borderColor: "black",
+                    borderWidth: 0.1,
+                },
             },
         },
     ],

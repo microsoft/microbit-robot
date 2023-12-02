@@ -20,6 +20,7 @@ import {
 import { Entity } from "./entity"
 import { toRadians } from "../types/math"
 import { MAP_ASPECT_RATIO } from "./constants"
+import { nextId } from "../util"
 
 export default class Renderer {
     private pixi: Pixi.Application
@@ -41,6 +42,7 @@ export default class Renderer {
         this.pixi = new Pixi.Application({
             width: toCm(this._size.x),
             height: toCm(this._size.y),
+            antialias: true,
         })
         if (this.pixi.view.style) {
             // Stretch to fill parent container
@@ -61,8 +63,7 @@ export default class Renderer {
         }
     }
 
-    public update(dt: number) {
-    }
+    public update(dt: number) {}
 
     public resize(size: Vec2Like) {
         this._size = Vec2.from(size)
@@ -87,18 +88,41 @@ export default class Renderer {
     }
 }
 
+class RenderShape {
+    public get visible() {
+        return this.graphics.visible
+    }
+    public set visible(v: boolean) {
+        this.graphics.visible = v
+    }
+    constructor(
+        public spec: EntityShapeSpec,
+        public graphics: Pixi.Graphics
+    ) {}
+}
+
+/**
+ * A RenderObject represents the visual representation of an Entity. It can
+ * contain multiple Shapes, which are keyed by spec.label, if specified, or a
+ * randomly assigned key otherwise.
+ */
 export class RenderObject {
     private _container = new Pixi.Container<any>()
 
     public get handle() {
         return this._container
     }
+    public get shapes() {
+        return this._shapes
+    }
 
     public constructor(
         private entity: Entity,
-        private graphics: Pixi.Graphics[]
+        private _shapes: Map<string, RenderShape>
     ) {
-        this.graphics.forEach((g) => this._container.addChild(g))
+        Array.from(this.shapes.values()).forEach((s) =>
+            this._container.addChild(s.graphics)
+        )
     }
 
     public update(dtSecs: number) {}
@@ -234,6 +258,7 @@ function createColorCircleGraphics(
     })
     g.beginFill(fillColor)
     g.drawCircle(0, 0, toCm(shape.radius))
+    g.visible = brush.visible
     return g
 }
 
@@ -283,6 +308,7 @@ function createColorPathGraphics(
     for (let i = 1; i < verts.length; i++) {
         g.lineTo(toCm(verts[i].x), toCm(verts[i].y))
     }
+    g.visible = brush.visible
     return g
 }
 
@@ -324,6 +350,7 @@ function createColorBoxGraphics(
     g.lineTo(toCm(verts[2].x), toCm(verts[2].y))
     g.lineTo(toCm(verts[3].x), toCm(verts[3].y))
     g.closePath()
+    g.visible = brush.visible
     return g
 }
 
@@ -385,6 +412,7 @@ function createColorEdgeGraphics(
     g.beginFill(fillColor)
     g.moveTo(toCm(shape.v0.x), toCm(shape.v0.y))
     g.lineTo(toCm(shape.v1.x), toCm(shape.v1.y))
+    g.visible = brush.visible
     return g
 }
 
@@ -408,9 +436,15 @@ export function createRenderObj(
     entity: Entity,
     spec: EntitySpec
 ): RenderObject {
-    const graphics: Pixi.Graphics[] = spec.shapes.map((shape) => {
-        return createGraphics[shape.type][shape.brush.type](shape, shape.brush)
+    const shapes = new Map<string, RenderShape>()
+    spec.shapes.forEach((shape) => {
+        const label = shape.label ?? "shape." + nextId()
+        const graphics = createGraphics[shape.type][shape.brush.type](
+            shape,
+            shape.brush
+        )
+        shapes.set(label, new RenderShape(shape, graphics))
     })
-    const renderObj = new RenderObject(entity, graphics)
+    const renderObj = new RenderObject(entity, shapes)
     return renderObj
 }

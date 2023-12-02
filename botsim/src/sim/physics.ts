@@ -98,7 +98,7 @@ export class PhysicsObject {
     public beforePhysicsStep(dtSecs: number) {}
 
     public afterPhysicsStep(dtSecs: number) {
-        if (!this._entity.sim.debugDraw) return;
+        if (!this._entity.sim.debugDraw) return
         this._debugRenderObj.removeChildren()
         for (
             let fixt = this._body.getFixtureList();
@@ -121,7 +121,7 @@ export class PhysicsObject {
                             angle
                         )
                     })
-                    const graphics = new Pixi.Graphics();
+                    const graphics = new Pixi.Graphics()
                     this._debugRenderObj.addChild(graphics as any)
                     graphics.lineStyle(1, 0xff0000, 1)
                     graphics.beginFill(0xff0000)
@@ -131,7 +131,7 @@ export class PhysicsObject {
                 case "circle":
                     const circle = fixt.getShape() as Planck.Circle
                     const pos2 = this._body.getPosition()
-                    const graphics3 = new Pixi.Graphics();
+                    const graphics3 = new Pixi.Graphics()
                     this._debugRenderObj.addChild(graphics3 as any)
                     graphics3.lineStyle(1, 0xff0000, 1)
                     graphics3.beginFill(0xff0000)
@@ -409,7 +409,7 @@ function addPathFixture(
         closed,
         0,
         pathVerts.length,
-        .25
+        0.25
     )
 
     // Might have to use use this if box fixtures exhibit issues with exposed corners.

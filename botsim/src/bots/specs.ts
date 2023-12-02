@@ -19,7 +19,10 @@ export type WheelSpec = {
 export type LineSensorSpec = {
     label: string // identification label
     pos: Vec2Like // offset from chassis center
-    brush: BrushSpec
+    brush: {
+        on: BrushSpec
+        off: BrushSpec
+    }
 }
 
 export type RangeSensorSpec = {

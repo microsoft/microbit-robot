@@ -214,6 +214,7 @@ export type BrushType = "color" | "texture" | "pattern"
 
 type BrushCommonSpec = {
     type: BrushType
+    visible: boolean
     zIndex?: number
 }
 
@@ -230,6 +231,7 @@ export const defaultColorBrush = (): ColorBrushSpec => ({
     borderWidth: 0.25,
     fillColor: "#EAD637",
     zIndex: 0,
+    visible: true,
 })
 
 export type TextureBrushSpec = BrushCommonSpec & {
