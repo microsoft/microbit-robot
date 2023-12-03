@@ -1,5 +1,11 @@
 import * as Pixi from "pixi.js"
-import { boxToVertices, toColor, toCm, samplePath, catmullRom } from "./util"
+import {
+    boxToVertices,
+    toColor,
+    toRenderScale,
+    samplePath,
+    catmullRom,
+} from "./util"
 import { Simulation } from "."
 import { Vec2, Vec2Like } from "../types/vec2"
 import {
@@ -19,7 +25,7 @@ import {
 } from "../maps/specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
-import { MAP_ASPECT_RATIO } from "./constants"
+import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE } from "./constants"
 import { nextId } from "../util"
 
 export default class Renderer {
@@ -40,8 +46,8 @@ export default class Renderer {
     constructor(private sim: Simulation) {
         this._size = new Vec2(10 * MAP_ASPECT_RATIO, 10)
         this.pixi = new Pixi.Application({
-            width: toCm(this._size.x),
-            height: toCm(this._size.y),
+            width: toRenderScale(this._size.x),
+            height: toRenderScale(this._size.y),
             antialias: true,
         })
         if (this.pixi.view.style) {
@@ -55,6 +61,12 @@ export default class Renderer {
         this.pixi.stage.addChild(this._debugLayer as any)
     }
 
+    public reinit() {
+        this.pixi.stage.removeChildren()
+        this._debugLayer.removeChildren()
+        this.pixi.stage.addChild(this._debugLayer as any)
+    }
+
     public destroy() {
         try {
             this.pixi.destroy(true)
@@ -63,11 +75,11 @@ export default class Renderer {
         }
     }
 
-    public update(dt: number) {}
+    public update(dtSecs: number) {}
 
     public resize(size: Vec2Like) {
         this._size = Vec2.from(size)
-        this.pixi.renderer.resize(toCm(size.x), toCm(size.y))
+        this.pixi.renderer.resize(toRenderScale(size.x), toRenderScale(size.y))
     }
 
     public color(color: string) {
@@ -140,7 +152,10 @@ export class RenderObject {
         // Copy current pos and angle from the entity to the renderable
         const pos = this.entity.pos
         const angle = this.entity.angle
-        this._container.position.set(pos.x, pos.y)
+        this._container.position.set(
+            pos.x * PHYSICS_TO_RENDER_SCALE,
+            pos.y * PHYSICS_TO_RENDER_SCALE
+        )
         this._container.rotation = toRadians(angle)
     }
 }
@@ -249,15 +264,15 @@ function createColorCircleGraphics(
     const borderColor = toColor(brush.borderColor)
     const fillColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0
-    g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
     g.angle = toRadians(shape.angle)
     g.lineStyle({
-        width: toCm(brush.borderWidth),
+        width: toRenderScale(brush.borderWidth),
         color: borderColor,
         alignment: 0,
     })
     g.beginFill(fillColor)
-    g.drawCircle(0, 0, toCm(shape.radius))
+    g.drawCircle(0, 0, toRenderScale(shape.radius))
     g.visible = brush.visible
     return g
 }
@@ -297,16 +312,16 @@ function createColorPathGraphics(
     )
     const lineColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0
-    g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
     g.angle = shape.angle
     g.lineStyle({
-        width: toCm(shape.width),
+        width: toRenderScale(shape.width),
         color: lineColor,
         alignment: 0.5,
     })
-    g.moveTo(toCm(verts[0].x), toCm(verts[0].y))
+    g.moveTo(toRenderScale(verts[0].x), toRenderScale(verts[0].y))
     for (let i = 1; i < verts.length; i++) {
-        g.lineTo(toCm(verts[i].x), toCm(verts[i].y))
+        g.lineTo(toRenderScale(verts[i].x), toRenderScale(verts[i].y))
     }
     g.visible = brush.visible
     return g
@@ -337,18 +352,18 @@ function createColorBoxGraphics(
     const borderColor = toColor(brush.borderColor)
     const fillColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0
-    g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
     g.angle = shape.angle
     g.lineStyle({
-        width: toCm(brush.borderWidth),
+        width: toRenderScale(brush.borderWidth),
         color: borderColor,
         alignment: 0,
     })
     g.beginFill(fillColor)
-    g.moveTo(toCm(verts[0].x), toCm(verts[0].y))
-    g.lineTo(toCm(verts[1].x), toCm(verts[1].y))
-    g.lineTo(toCm(verts[2].x), toCm(verts[2].y))
-    g.lineTo(toCm(verts[3].x), toCm(verts[3].y))
+    g.moveTo(toRenderScale(verts[0].x), toRenderScale(verts[0].y))
+    g.lineTo(toRenderScale(verts[1].x), toRenderScale(verts[1].y))
+    g.lineTo(toRenderScale(verts[2].x), toRenderScale(verts[2].y))
+    g.lineTo(toRenderScale(verts[3].x), toRenderScale(verts[3].y))
     g.closePath()
     g.visible = brush.visible
     return g
@@ -402,16 +417,16 @@ function createColorEdgeGraphics(
     const borderColor = toColor(brush.borderColor)
     const fillColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0
-    g.position.set(toCm(shape.offset.x), toCm(shape.offset.y))
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
     g.angle = toRadians(shape.angle)
     g.lineStyle({
-        width: toCm(brush.borderWidth),
+        width: toRenderScale(brush.borderWidth),
         color: borderColor,
         alignment: 0,
     })
     g.beginFill(fillColor)
-    g.moveTo(toCm(shape.v0.x), toCm(shape.v0.y))
-    g.lineTo(toCm(shape.v1.x), toCm(shape.v1.y))
+    g.moveTo(toRenderScale(shape.v0.x), toRenderScale(shape.v0.y))
+    g.lineTo(toRenderScale(shape.v1.x), toRenderScale(shape.v1.y))
     g.visible = brush.visible
     return g
 }

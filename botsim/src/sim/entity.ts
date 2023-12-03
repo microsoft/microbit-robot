@@ -84,12 +84,4 @@ export class Entity extends Container {
         this.renderObj.afterPhysicsStep(dtSecs)
         this.children.forEach((child) => child.afterPhysicsStep(dtSecs))
     }
-
-    public applyForce(f: Vec2Like, p?: Vec2Like) {
-        this.physicsObj.applyForce(f, p)
-    }
-
-    public applyImpulse(f: Vec2Like, p?: Vec2Like) {
-        this.physicsObj.applyImpulse(f, p)
-    }
 }

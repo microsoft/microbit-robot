@@ -78,6 +78,7 @@ export class LineSensor {
                 fillColor: "transparent",
                 borderColor: "transparent",
                 borderWidth: 0,
+                zIndex: 2,
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -100,8 +101,6 @@ export class LineSensor {
         this._value = 0
     }
 
-    public init() {}
-
     public destroy() {}
 
     public beforePhysicsStep(dtSecs: number) {}
@@ -115,19 +114,23 @@ export class LineSensor {
         ) {
             // TODO: Support multiple bots in the scene. As implemented, this
             // doesn't work in that scenario.
+            // TODO: Handle contacts from a central place.
             const contact = ce.contact
             const fixtureA = contact.getFixtureA()
             const fixtureB = contact.getFixtureB()
             const userDataA = fixtureA.getUserData() as EntityShapeSpec
             const userDataB = fixtureB.getUserData() as EntityShapeSpec
             if (userDataA && userDataB) {
+                const labelA = userDataA.label
+                const labelB = userDataB.label
+                if (!labelA || !labelB) continue
                 const rolesA = userDataA.roles
                 const rolesB = userDataB.roles
-                if (rolesA.includes("line-sensor")) {
+                if (labelA === "line." + this.spec.label + ".sensor") {
                     if (rolesB.includes("follow-line")) {
                         this.setDetecting(true)
                     }
-                } else if (rolesB.includes("line-sensor")) {
+                } else if (labelB === "line." + this.spec.label + ".sensor") {
                     if (rolesA.includes("follow-line")) {
                         this.setDetecting(true)
                     }

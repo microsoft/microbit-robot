@@ -39,7 +39,6 @@ export class Simulation extends Container {
     private paused = false
     private running = false
     private animframe = 0
-    private dtMs_frag = 0
 
     private _physics: Physics
     private _renderer: Renderer
@@ -69,7 +68,7 @@ export class Simulation extends Container {
 
     private constructor() {
         super()
-        //this.debugDraw = true;
+        this.debugDraw = true
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
         this._spawn = defaultSpawn()
@@ -134,17 +133,24 @@ export class Simulation extends Container {
     public clear() {
         super.clear(true)
         this._bot = undefined
+        this._physics.reinit()
+        this._renderer.reinit()
     }
 
     private run() {
         this.running = true
         this.paused = false
-        const loop = (dtMs: number) => {
+        let prevMs = performance.now()
+        const loop = () => {
+            const currMs = performance.now()
+            let dtMs = currMs - prevMs
+            prevMs = currMs
             // Avoid instabilities from large time jumps (window was in background)
             if (dtMs > 100) dtMs = 100
+            let dtSecs = dtMs / 1000
 
             if (!this.paused) {
-                this.step(dtMs)
+                this.step(dtSecs)
             }
 
             if (this.running) {
@@ -154,19 +160,12 @@ export class Simulation extends Container {
         this.animframe = window.requestAnimationFrame(loop)
     }
 
-    private step(dtMs: number) {
+    private step(dtSecs: number) {
         try {
-            // The ideal dt to apply this frame; includes remainder from previous frame.
-            const dtMs_i = dtMs + this.dtMs_frag
-            // Step physics (applies dt in fixed time slices)
-            this.dtMs_frag = this.physics.update(dtMs_i)
-            // The actual dt applied this frame; use this to step other components this frame.
-            const dtMs_a = dtMs_i - this.dtMs_frag
-            const dtSecs_a = dtMs_a / 1000
-            // Update entities to step things like animations
-            this.children.forEach((ent) => ent.update(dtSecs_a))
+            this.physics.update(dtSecs)
+            this.children.forEach((ent) => ent.update(dtSecs))
             // Update bot (and other controllers?) to step things (like animations (and AI?))
-            this._bot?.update(dtSecs_a)
+            this._bot?.update(dtSecs)
         } catch (e: any) {
             console.error(e.toString())
         }

@@ -31,7 +31,9 @@ const spec: MapSpec = {
     color: "#ffffff",
     spawn: {
         pos: { x: 25, y: 10 },
-        angle: 80,
+        angle: 90,
+        //pos: { x: 40, y: 40 },
+        //angle: 0,
     },
     entities: [
         {

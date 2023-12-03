@@ -6,7 +6,8 @@ import {
     defaultDynamicPhysics,
 } from "../../maps/specs"
 
-export function makeBallastSpec(botSpec: BotSpec): EntityShapeSpec {
+export function makeBallastSpec(botSpec: BotSpec): EntityShapeSpec | undefined {
+    if (!botSpec.ballast) return undefined
     return {
         ...defaultBoxShape(),
         label: "ballast",

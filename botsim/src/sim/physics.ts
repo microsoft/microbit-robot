@@ -8,7 +8,7 @@ import {
     calcMidVectors,
     makeCategoryBits,
     makeMaskBits,
-    toCm,
+    toPhysicsScale,
 } from "./util"
 import { Simulation } from "."
 import {
@@ -25,31 +25,36 @@ import {
     ShapePhysicsSpec,
 } from "../maps/specs"
 import { Entity } from "./entity"
-import { PHYS_TIMESTEP_MS, PHYS_TIMESTEP_SECS } from "./constants"
 import { toDegrees, toRadians } from "../util"
-import * as Pixi from "pixi.js" // Add this import statement
+import * as Pixi from "pixi.js"
+import { PHYSICS_TO_RENDER_SCALE } from "./constants"
 
 export default class Physics {
-    private _world: Planck.World
+    private _world!: Planck.World
 
     public get world() {
         return this._world
     }
 
     constructor(private sim: Simulation) {
+        this.createWorld()
+    }
+
+    public reinit() {
+        this.createWorld()
+    }
+
+    private createWorld() {
         this._world = Planck.World({
             gravity: Planck.Vec2(0, 0),
         })
     }
 
-    public update(dtMs: number): number {
-        while (dtMs >= PHYS_TIMESTEP_MS) {
-            this.sim.beforePhysicsStep(PHYS_TIMESTEP_SECS)
-            this.world.step(PHYS_TIMESTEP_SECS)
-            this.sim.afterPhysicsStep(PHYS_TIMESTEP_SECS)
-            dtMs -= PHYS_TIMESTEP_MS
-        }
-        return dtMs // Return remaining dtMs not used
+    public update(dtSecs: number): number {
+        this.sim.beforePhysicsStep(dtSecs)
+        this.world.step(dtSecs, 6, 2)
+        this.sim.afterPhysicsStep(dtSecs)
+        return 0
     }
 
     public add(physicsObj: PhysicsObject) {
@@ -57,8 +62,6 @@ export default class Physics {
         //physicsObj.body.setAngle(0);
         physicsObj.body.setActive(true)
     }
-
-    public debugDraw(canvas: HTMLCanvasElement) {}
 }
 
 export class PhysicsObject {
@@ -107,42 +110,61 @@ export class PhysicsObject {
         ) {
             const type = fixt.getShape().getType()
             switch (type) {
-                case "polygon":
+                case "polygon": {
                     const poly = fixt.getShape() as Planck.Polygon
                     const verts = poly.m_vertices
-                    const pos = this._body.getPosition()
-                    const angle = this._body.getAngle()
                     const worldVerts = verts.map((v) => {
-                        return Vec2.rotateDeg(
-                            Vec2.add(
-                                new Vec2(v.x, v.y),
-                                new Vec2(pos.x, pos.y)
-                            ),
-                            angle
+                        return Vec2.scale(
+                            this.getWorldPoint(v),
+                            PHYSICS_TO_RENDER_SCALE
                         )
                     })
                     const graphics = new Pixi.Graphics()
                     this._debugRenderObj.addChild(graphics as any)
-                    graphics.lineStyle(1, 0xff0000, 1)
+                    graphics.lineStyle(0)
                     graphics.beginFill(0xff0000)
                     graphics.drawPolygon(worldVerts)
                     graphics.endFill()
                     break
-                case "circle":
+                }
+                case "circle": {
                     const circle = fixt.getShape() as Planck.Circle
-                    const pos2 = this._body.getPosition()
-                    const graphics3 = new Pixi.Graphics()
-                    this._debugRenderObj.addChild(graphics3 as any)
-                    graphics3.lineStyle(1, 0xff0000, 1)
-                    graphics3.beginFill(0xff0000)
-                    graphics3.drawCircle(pos2.x, pos2.y, circle.m_radius)
-                    graphics3.endFill()
+                    const pos = this._body.getPosition()
+                    const graphics = new Pixi.Graphics()
+                    //this._debugRenderObj.addChild(graphics as any)
+                    graphics.lineStyle(0)
+                    graphics.beginFill(0xff0000)
+                    graphics.drawCircle(
+                        pos.x * PHYSICS_TO_RENDER_SCALE,
+                        pos.y * PHYSICS_TO_RENDER_SCALE,
+                        circle.m_radius
+                    )
+                    graphics.endFill()
                     break
+                }
                 case "edge":
                     break
                 case "chain":
                     break
             }
+        }
+        {
+            const massData: Planck.MassData = {
+                mass: 0,
+                center: Planck.Vec2.zero(),
+                I: 0,
+            }
+            this._body.getMassData(massData)
+            const graphics = new Pixi.Graphics()
+            this._debugRenderObj.addChild(graphics as any)
+            graphics.lineStyle(0)
+            graphics.beginFill(0x00ffff)
+            const p = Vec2.scale(
+                this.getWorldPoint(massData.center),
+                PHYSICS_TO_RENDER_SCALE
+            )
+            graphics.drawCircle(p.x, p.y, 10)
+            graphics.endFill()
         }
     }
 
@@ -278,7 +300,7 @@ export class PhysicsObject {
             bodyB: frictionBody,
             localAnchorA: Planck.Vec2(localPoint),
             localAnchorB: Planck.Vec2(0, 0),
-            maxForce: 500000, // TODO: calc this
+            maxForce: 500, // TODO: calc this
             maxTorque: 0,
         }
         return (
@@ -316,19 +338,32 @@ export class PhysicsObject {
         this.body.applyLinearImpulse(Planck.Vec2(f), pos, true)
     }
 
+    public applyAngularForce(f: number) {
+        this.body.applyTorque(f, true)
+    }
+
+    public applyAngularImpulse(f: number) {
+        this.body.applyAngularImpulse(f, true)
+    }
+
     public getLateralVelocity(p?: Vec2Like): Vec2Like {
-        p = p ?? this.body.getWorldCenter()
-        const forward = this.forward
-        const linearVel = this.body.getLinearVelocityFromWorldPoint(
-            Planck.Vec2(p)
-        )
-        const d = Vec2.dot(forward, linearVel)
-        const forwardLateralVelocity = Vec2.scale(forward, d)
-        return forwardLateralVelocity
+        const worldRight = this.getWorldVector(Planck.Vec2(Vec2.right()))
+        const linearVel = this.getLinearVelocity(p)
+        const d = Vec2.dot(worldRight, linearVel)
+        const latVel = Vec2.scale(worldRight, d)
+        return latVel
+    }
+
+    public getForwardVelocity(p?: Vec2Like): Vec2Like {
+        const worldForward = this.getWorldVector(Planck.Vec2(Vec2.up()))
+        const linearVel = this.getLinearVelocity(p)
+        const d = Vec2.dot(worldForward, linearVel)
+        const fwdVel = Vec2.scale(worldForward, d)
+        return fwdVel
     }
 
     public getLinearVelocity(p?: Vec2Like): Vec2Like {
-        p = p ?? this.body.getWorldCenter()
+        p = p ?? this.getWorldCenter()
         return this.body.getLinearVelocityFromWorldPoint(Planck.Vec2(p))
     }
 
@@ -342,6 +377,54 @@ export class PhysicsObject {
 
     public setAngularVelocity(v: number) {
         this.body.setAngularVelocity(v)
+    }
+
+    public getMass(): number {
+        return this.body.getMass()
+    }
+
+    public getInertia(): number {
+        return this.body.getInertia()
+    }
+
+    public getWorldPoint(localPoint: Vec2Like): Vec2Like {
+        return this.body.getWorldPoint(Planck.Vec2(localPoint))
+    }
+
+    public getLocalPoint(worldPoint: Vec2Like): Vec2Like {
+        return this.body.getLocalPoint(Planck.Vec2(worldPoint))
+    }
+
+    public getWorldVector(localVector: Vec2Like): Vec2Like {
+        return this.body.getWorldVector(Planck.Vec2(localVector))
+    }
+
+    public getLocalVector(worldVector: Vec2Like): Vec2Like {
+        return this.body.getLocalVector(Planck.Vec2(worldVector))
+    }
+
+    public getWorldCenter(): Vec2Like {
+        return this.body.getWorldCenter()
+    }
+
+    public getLocalCenter(): Vec2Like {
+        return this.body.getLocalCenter()
+    }
+
+    public getLinearDamping(): number {
+        return this.body.getLinearDamping()
+    }
+
+    public setLinearDamping(d: number) {
+        this.body.setLinearDamping(d)
+    }
+
+    public getAngularDamping(): number {
+        return this.body.getAngularDamping()
+    }
+
+    public setAngularDamping(d: number) {
+        this.body.setAngularDamping(d)
     }
 }
 
@@ -377,7 +460,7 @@ function addBoxFixture(
     const verts = boxToVertices(spec).map((v) => {
         v = Vec2.rotateDeg(v, spec.angle)
         v = Vec2.add(v, spec.offset)
-        return Planck.Vec2(toCm(v.x), toCm(v.y))
+        return Planck.Vec2(toPhysicsScale(v.x), toPhysicsScale(v.y))
     })
     const shape = Planck.Polygon(verts)
     const fixt = body.createFixture(shape, fixtureOptions(phys))
@@ -389,7 +472,10 @@ function addCircleFixture(
     spec: EntityCircleShapeSpec,
     phys: ShapePhysicsSpec
 ) {
-    const shape = Planck.Circle(Planck.Vec2(spec.offset), toCm(spec.radius))
+    const shape = Planck.Circle(
+        Planck.Vec2(spec.offset),
+        toPhysicsScale(spec.radius)
+    )
     const fixt = body.createFixture(shape, fixtureOptions(phys))
     fixt.setUserData(spec)
 }
@@ -412,7 +498,7 @@ function addPathFixture(
         0.25
     )
 
-    // Might have to use use this if box fixtures exhibit issues with exposed corners.
+    // Might have to use use `mids` if box fixtures exhibit issues with exposed corners.
     // Mid-vectors will allow us to create polygon fixtures that match up on edge.
     // const mids = calcMidVectors(samples)
 
@@ -447,7 +533,7 @@ function addPolygonFixture(
         spec.verts.map((v) => {
             v = Vec2.rotateDeg(v, spec.angle)
             v = Vec2.add(v, spec.offset)
-            return Planck.Vec2(toCm(v.x), toCm(v.y))
+            return Planck.Vec2(toPhysicsScale(v.x), toPhysicsScale(v.y))
         })
     )
     const fixt = body.createFixture(shape, {
@@ -468,22 +554,26 @@ function addEdgeFixture(
     const v1 = Vec2.add(spec.offset, Vec2.rotateDeg(spec.v1, spec.angle))
 
     const shape = Planck.Edge(
-        Planck.Vec2(toCm(v0.x), toCm(v0.y)),
-        Planck.Vec2(toCm(v1.x), toCm(v1.y))
+        Planck.Vec2(toPhysicsScale(v0.x), toPhysicsScale(v0.y)),
+        Planck.Vec2(toPhysicsScale(v1.x), toPhysicsScale(v1.y))
     )
     if (spec.vPrev) {
         const vPrev = Vec2.add(
             spec.offset,
             Vec2.rotateDeg(spec.vPrev, spec.angle)
         )
-        shape.setPrev(Planck.Vec2(toCm(vPrev.x), toCm(vPrev.y)))
+        shape.setPrev(
+            Planck.Vec2(toPhysicsScale(vPrev.x), toPhysicsScale(vPrev.y))
+        )
     }
     if (spec.vNext) {
         const vNext = Vec2.add(
             spec.offset,
             Vec2.rotateDeg(spec.vNext, spec.angle)
         )
-        shape.setNext(Planck.Vec2(toCm(vNext.x), toCm(vNext.y)))
+        shape.setNext(
+            Planck.Vec2(toPhysicsScale(vNext.x), toPhysicsScale(vNext.y))
+        )
     }
 
     const fixt = body.createFixture(shape, fixtureOptions(phys))
@@ -495,7 +585,7 @@ function createBody(world: Planck.World, spec: EntitySpec): Planck.Body {
 
     const body = world.createBody({
         type: physics.type,
-        position: Planck.Vec2(toCm(pos.x), toCm(pos.y)),
+        position: Planck.Vec2(toPhysicsScale(pos.x), toPhysicsScale(pos.y)),
         angle: toRadians(angle),
         angularDamping: physics.angularDamping ?? 0,
         linearDamping: physics.linearDamping ?? 0,

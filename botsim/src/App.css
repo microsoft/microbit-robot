@@ -3,3 +3,11 @@
     padding: 0;
     margin: 0;
 }
+
+.sim-container {
+    border-top-left-radius: 6% 7%;
+    border-top-right-radius: 6% 7%;
+    border-bottom-left-radius: 7% 6%;
+    border-bottom-right-radius: 7% 6%;
+    overflow: hidden;
+}

@@ -1,19 +1,15 @@
 import { BotSpec, WheelSpec } from "../../bots/specs"
 import {
     EntityShapeSpec,
-    EntitySpec,
     defaultBoxShape,
-    defaultDynamicPhysics,
-    defaultEntity,
     defaultEntityShape,
     defaultShapePhysics,
 } from "../../maps/specs"
-import { PHYS_CAT_ROBOT, PIXELS_PER_CM } from "../constants"
-import { makeCategoryBits, makeMaskBits } from "../util"
+import { PHYSICS_SCALE, PHYS_CAT_ROBOT, PIXELS_PER_CM } from "../constants"
+import { makeCategoryBits, makeMaskBits, toPhysicsScale } from "../util"
 import { Bot } from "."
 import { Vec2 } from "../../types/vec2"
 import Planck from "planck-js"
-import { Entity } from "../entity"
 
 export class Wheel {
     public static makeShapeSpecs(botSpec: BotSpec): EntityShapeSpec[] {
@@ -29,118 +25,119 @@ export class Wheel {
             ...defaultEntityShape(),
             ...defaultBoxShape(),
             label: spec.label,
-            offset: Vec2.zero(),
-            size: { y: spec.radius * 2, x: spec.width },
+            offset: spec.pos,
+            size: { x: spec.width, y: spec.radius * 2 },
             brush: {
                 ...spec.brush,
                 zIndex: 1,
             },
             physics: {
                 ...defaultShapePhysics(),
-                friction: 0.1,
-                restitution: 0.9,
-                density: 1,
+                friction: 0.3,
+                restitution: 1,
+                density: 10,
                 categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
                 maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
     }
 
-    public makeEntitySpec(): EntitySpec {
-        return {
-            ...defaultEntity(),
-            pos: this.spec.pos,
-            angle: 0,
-            shapes: [Wheel.makeShapeSpec(this.spec)],
-            physics: {
-                ...defaultDynamicPhysics(),
-                joint: {
-                    type: "weld",
-                    transformToParent: true,
-                },
-            },
-        }
-    }
-
-    private minSpeed: number
     private maxSpeed: number
     private currSpeed: number
-    private entity: Entity
+    private localPos: Vec2
     private friction?: Planck.FrictionJoint
 
     constructor(
         private bot: Bot,
         private spec: WheelSpec
     ) {
-        this.minSpeed = spec.minSpeed
+        this.localPos = Vec2.scale(this.spec.pos, PIXELS_PER_CM)
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
 
-        this.entity = bot.sim.createEntity(this.makeEntitySpec(), bot.entity)
-
-        // Add friction joint to apply constant friction at the wheel contact point.
-        // TODO: Calculate the friction forces ourselves instead of using a friction joint.
-        this.friction = this.entity.physicsObj.addFrictionJoint(spec.pos)
-        this.friction?.m_bodyB.setAngularDamping(1)
-        this.friction?.setMaxForce(200000)
+        // Handles some of the friction between wheel and ground. Additional
+        // friction is handled in updateFriction()
+        this.friction = this.bot.entity.physicsObj.addFrictionJoint(
+            Vec2.scale(spec.pos, PHYSICS_SCALE)
+        )
+        this.friction?.m_bodyB.setAngularDamping(10)
+        this.friction?.m_bodyB.setLinearDamping(10)
+        this.friction?.setMaxForce(5000)
+        this.friction?.setMaxTorque(2)
     }
 
     public destroy() {}
 
     public beforePhysicsStep(dtSecs: number) {
-        this.applySpeed(dtSecs)
-        // We're battling how the physics engine wants to move things (both here
-        // and elsewhere). Try to keep wheel in the same position relative to
-        // the chassis. Even though it's connected with what's called a "weld
-        // joint", it's not really welded. The joint can be overwhelmed by
-        // forces. So we apply a canceling force to try to keep it in place, but
-        // it isn't precise. This is a hack, but it seems to work well enough
-        // for now. We need our own generalized friction model and weld joint.
-        const relativePos = Vec2.scale(this.spec.pos, PIXELS_PER_CM)
-        const rotated = Vec2.rotateDeg(relativePos, this.bot.entity.angle)
-        const absolutePos = Vec2.add(this.bot.entity.pos, rotated)
-        const myPos = this.entity.pos
-        const delta = Vec2.sub(absolutePos, myPos)
-        const lenSq = Vec2.lenSq(delta)
-        if (lenSq > 0.001) {
-            const len = Math.sqrt(lenSq)
-            const force = Vec2.scale(delta, 100000 * len)
-            this.entity.applyForce(force)
-        }
+        this.updateFriction(dtSecs)
     }
 
-    public update(dtSecs: number) {}
+    public update(dtSecs: number) {
+        this.updateForce(dtSecs)
+    }
 
     public setSpeed(speed: number) {
-        if (Math.abs(speed) > this.maxSpeed) {
-            speed = Math.sign(speed) * this.maxSpeed
-        }
-        this.currSpeed = speed
-        //this.friction?.setMaxForce(10000 + 10000 * this.currSpeed / Math.abs(this.maxSpeed))
+        speed = Math.min(Math.abs(speed / 100), 1) * Math.sign(speed)
+        this.currSpeed = this.maxSpeed * speed
     }
 
-    public applySpeed(dtSecs: number) {
-        // NOTE: This is just a first stab at computing realistic-looking wheel
-        // forces. It is nowhere near correct yet.
+    public updateFriction(dtSecs: number) {
+        const worldPos = this.bot.entity.physicsObj.getWorldPoint(this.localPos)
 
-        const forward = this.bot.forward
+        // Debug flags
+        const dampenAngularVelocity = true
+        const dampenLateralVelocity = true
+
+        const maxAngularVelocity = 0.0005 // The maximum angular velocity to allow
+
+        //// Dampen angular velocity
+        if (dampenAngularVelocity) {
+            const angularDamping = 1 // The amount of angular velocity dampening to apply
+            const angularDampingScalar = 1 // hand-tuned
+            this.bot.entity.physicsObj.applyAngularForce(
+                -this.bot.entity.physicsObj.getAngularVelocity() *
+                    angularDamping *
+                    angularDampingScalar *
+                    this.bot.entity.physicsObj.body.getInertia()
+            )
+            const angularVel = this.bot.entity.physicsObj.getAngularVelocity()
+            if (Math.abs(angularVel) > maxAngularVelocity) {
+                this.bot.entity.physicsObj.setAngularVelocity(
+                    maxAngularVelocity * Math.sign(angularVel)
+                )
+            }
+        }
+
+        //// Dampen lateral linear velocity
+        if (dampenLateralVelocity) {
+            const lateralDamping = 1 // The amount of lateral velocity dampening to apply
+            const lateralDampingScalar = 5 // hand-tuned
+            const lateralVel =
+                this.bot.entity.physicsObj.getLateralVelocity(worldPos)
+            this.bot.entity.physicsObj.applyForce(
+                Vec2.scale(
+                    Vec2.neg(lateralVel),
+                    lateralDamping *
+                        lateralDampingScalar *
+                        this.bot.entity.physicsObj.body.getMass()
+                ),
+                worldPos
+            )
+        }
+    }
+
+    public updateForce(dtSecs: number) {
+        const worldPos = this.bot.entity.physicsObj.getWorldPoint(this.localPos)
+        const forwardDir = this.bot.forward
+
+        const speedMagScalar = 2 // hand-tuned
+        const forceMag =
+            this.currSpeed *
+            speedMagScalar *
+            this.bot.entity.physicsObj.body.getMass()
 
         // Apply forward force
-        const force = Vec2.scale(forward, this.currSpeed * 8000)
-        const flen = Vec2.lenSq(force)
-        if (flen > 0.0001) {
-            this.entity.applyForce(force)
-        }
-
-        // Cancel out lateral velocity
-        // TODO: Implement a generalized top-down friction model.
-        const lateralVelocity = this.entity.physicsObj.getLateralVelocity()
-        const lateralCancelingImpulse = Vec2.scale(
-            Vec2.neg(lateralVelocity),
-            90
-        )
-        if (Vec2.lenSq(lateralCancelingImpulse) > 0.0001) {
-            this.entity.applyImpulse(lateralCancelingImpulse)
-        }
+        const force = Vec2.scale(forwardDir, forceMag)
+        this.bot.entity.physicsObj.applyForce(force, worldPos)
     }
 }

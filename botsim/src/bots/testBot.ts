@@ -20,7 +20,6 @@ const spec: BotSpec = {
     wheels: [
         {
             label: "left",
-            minSpeed: -100,
             maxSpeed: 100,
             pos: { x: -3.8, y: 1.5 },
             width: 1.3,
@@ -36,7 +35,6 @@ const spec: BotSpec = {
         },
         {
             label: "right",
-            minSpeed: -100,
             maxSpeed: 100,
             pos: { x: 3.8, y: 1.5 },
             width: 1.3,
@@ -120,8 +118,8 @@ const spec: BotSpec = {
         },
     ],
     ballast: {
-        pos: { x: -0.8, y: 0 },
-        size: { x: 1.6, y: 3.8 },
+        pos: { x: 0, y: -0.8 },
+        size: { x: 3.8, y: 1.6 },
         mass: 10,
     },
 }

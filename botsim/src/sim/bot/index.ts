@@ -7,6 +7,7 @@ import { LineSensor } from "./lineSensor"
 import { LED } from "./led"
 import { makeBallastSpec } from "./ballast"
 import {
+    EntityShapeSpec,
     EntitySpec,
     defaultDynamicPhysics,
     defaultEntity,
@@ -33,6 +34,7 @@ export class Bot {
         private botSpec: BotSpec
     ) {
         const chassisShape = Chassis.makeShapeSpec(botSpec)
+        const wheelShapes = Wheel.makeShapeSpecs(botSpec)
         const ballastShape = makeBallastSpec(botSpec)
 
         botSpec.lineSensors?.forEach((sensorSpec) => {
@@ -43,17 +45,27 @@ export class Bot {
             (sensor) => sensor.shapeSpecs
         )
 
+        const shapes: EntityShapeSpec[] = [
+            chassisShape,
+            ...wheelShapes,
+            ...lineSensorShapes.flat(),
+        ]
+        if (ballastShape) shapes.push(ballastShape)
+
         const entitySpec: EntitySpec = {
             ...defaultEntity(),
             pos: { ...this.sim.spawn.pos },
             angle: this.sim.spawn.angle,
             physics: {
                 ...defaultDynamicPhysics(),
+                linearDamping: 10,
+                angularDamping: 10,
             },
-            shapes: [chassisShape, ballastShape, ...lineSensorShapes.flat()],
+            shapes,
         }
 
         this.entity = sim.createEntity(entitySpec)
+
         this.chassis = new Chassis(this, botSpec.chassis)
         botSpec.wheels.forEach((wheelSpec) =>
             this.wheels.set(wheelSpec.label, new Wheel(this, wheelSpec))
@@ -64,10 +76,6 @@ export class Bot {
         botSpec.leds?.forEach((led) =>
             this.leds.set(led.label, new LED(this, led))
         )
-
-        // init everything once the entity is created
-
-        this.lineSensors.forEach((sensor) => sensor.init())
     }
 
     public destroy() {
@@ -99,8 +107,7 @@ export class Bot {
         const { input } = this.sim
 
         // Hack: use first wheel's speed settings for all wheels
-        const maxSpeed = this.botSpec.wheels[0]?.maxSpeed ?? 100
-        const minSpeed = this.botSpec.wheels[0]?.minSpeed ?? -100
+        const maxSpeed = 100
         let leftSpeed = 0
         let rightSpeed = 0
 
@@ -149,17 +156,14 @@ export class Bot {
             rightSpeed += -rightStickY * maxSpeed
         }
 
-        this.setWheelSpeed(
-            "left",
-            Math.max(minSpeed, Math.min(maxSpeed, leftSpeed))
-        )
-        this.setWheelSpeed(
-            "right",
-            Math.max(minSpeed, Math.min(maxSpeed, rightSpeed))
-        )
+        leftSpeed = Math.max(-maxSpeed, Math.min(maxSpeed, leftSpeed))
+        rightSpeed = Math.max(-maxSpeed, Math.min(maxSpeed, rightSpeed))
+
+        this.setWheelSpeed("left", leftSpeed)
+        this.setWheelSpeed("right", rightSpeed)
     }
 
-    public setWheelSpeed(label: string, speed: number) {
+    private setWheelSpeed(label: string, speed: number) {
         const wheel = this.wheels.get(label)
         if (!wheel) return
         wheel.setSpeed(speed)

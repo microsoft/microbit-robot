@@ -8,7 +8,6 @@ export type ChassisSpec = {
 
 export type WheelSpec = {
     label: string // identification label
-    minSpeed: number // max speed backward (negative). no units, just influences force computation.
     maxSpeed: number // max speed forward (positive). no units, just influences force computation.
     pos: Vec2Like // offset from chassis center
     width: number // cm
@@ -53,7 +52,7 @@ export type BotSpec = {
     rangeSensor?: RangeSensorSpec
     lineSensors?: LineSensorSpec[]
     leds?: LEDSpec[]
-    ballast: BallastSpec
+    ballast?: BallastSpec
 }
 
 export const LINE_SENSORS = {

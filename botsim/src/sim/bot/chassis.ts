@@ -22,9 +22,9 @@ export class Chassis {
             },
             physics: {
                 ...defaultShapePhysics(),
-                friction: 0.001,
+                friction: 0.3,
                 restitution: 1,
-                density: 0.01,
+                density: 0.1,
                 categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
                 maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
@@ -35,8 +35,8 @@ export class Chassis {
         private bot: Bot,
         private spec: ChassisSpec
     ) {
-        const frict = this.bot.entity.physicsObj.addFrictionJoint(Vec2.zero())
-        frict?.setMaxForce(1000)
+        //const frict = this.bot.entity.physicsObj.addFrictionJoint(Vec2.zero())
+        //frict?.setMaxForce(10)
     }
 
     public destroy() {}
