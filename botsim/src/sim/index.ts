@@ -68,7 +68,7 @@ export class Simulation extends Container {
 
     private constructor() {
         super()
-        this.debugDraw = true
+        //this.debugDraw = true
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
         this._spawn = defaultSpawn()

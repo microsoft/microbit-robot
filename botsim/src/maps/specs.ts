@@ -34,6 +34,7 @@ export type PathShapeSpec = ShapeCommonSpec & {
     verts: Vec2Like[]
     width: number // cm
     closed: boolean // if true, the path is closed
+    stepSize: number // length of each step when sampling
 }
 
 export const defaultPathShape = (): PathShapeSpec => ({
@@ -48,6 +49,7 @@ export const defaultPathShape = (): PathShapeSpec => ({
     ],
     width: 5,
     closed: true,
+    stepSize: .2,
     roles: [],
 })
 

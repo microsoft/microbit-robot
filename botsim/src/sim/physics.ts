@@ -495,7 +495,7 @@ function addPathFixture(
         closed,
         0,
         pathVerts.length,
-        0.25
+        Math.max(0.01, spec.stepSize)
     )
 
     // Might have to use use `mids` if box fixtures exhibit issues with exposed corners.

@@ -30,10 +30,8 @@ const spec: MapSpec = {
     aspectRatio: MAP_ASPECT_RATIO, // width / height
     color: "#ffffff",
     spawn: {
-        pos: { x: 25, y: 10 },
+        pos: { x: 18, y: 16 },
         angle: 90,
-        //pos: { x: 40, y: 40 },
-        //angle: 0,
     },
     entities: [
         {
@@ -49,38 +47,14 @@ const spec: MapSpec = {
                     angle: 0,
                     roles: ["follow-line"],
                     width: 3, // cm
+                    stepSize: .1,
                     verts: [
-                        { x: 25, y: 10 },
-                        { x: 55, y: 10 },
-                        { x: 70, y: 20 },
-                        { x: 70, y: 50 },
-                        { x: 55, y: 60 },
-                        { x: 25, y: 60 },
-                        { x: 10, y: 50 },
-                        { x: 10, y: 20 },
-
-                        /*
-                        { x: 25, y: 10 },
-                        { x: 30, y: 10 },
-                        { x: 35, y: 10 },
-                        { x: 40, y: 10 },
-                        { x: 45, y: 10 },
-                        { x: 50, y: 10 },
-                        */
-                        /*
-                        { x: 10, y: 10 },
-                        { x: 20, y: 20 },
-                        { x: 30, y: 30 },
-                        { x: 40, y: 40 },
-                        */
-                        /*
-                        { x: 10, y: 10 },
-                        { x: 20, y: 10 },
-                        { x: 30, y: 10 },
-                        { x: 40, y: 10 },
-                        { x: 50, y: 10 },
-                        { x: 60, y: 10 },
-                        */
+                        { x: 15, y: 18 },
+                        { x: 45, y: 20 },
+                        { x: 75, y: 18 },
+                        { x: 75, y: 57 },
+                        { x: 45, y: 55 },
+                        { x: 15, y: 57 },
                     ],
                     closed: true,
                     brush: {
