@@ -53,6 +53,7 @@ export class Entity extends Container {
     public init(renderObj: RenderObject, physicsObj: PhysicsObject) {
         this._renderObj = renderObj
         this._physicsObj = physicsObj
+        this._renderObj.sync()
     }
 
     public addChild(ent: Entity): void {

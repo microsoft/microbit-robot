@@ -60,6 +60,7 @@ export class Wheel {
         this.friction = this.bot.entity.physicsObj.addFrictionJoint(
             Vec2.scale(spec.pos, PHYSICS_SCALE)
         )
+        // hand-tuned values
         this.friction?.m_bodyB.setAngularDamping(10)
         this.friction?.m_bodyB.setLinearDamping(10)
         this.friction?.setMaxForce(5000)
@@ -88,7 +89,7 @@ export class Wheel {
         const dampenAngularVelocity = true
         const dampenLateralVelocity = true
 
-        const maxAngularVelocity = 0.0005 // The maximum angular velocity to allow
+        const maxAngularVelocity = 0.0005 // The maximum angular velocity to allow (hand-tuned)
 
         //// Dampen angular velocity
         if (dampenAngularVelocity) {
