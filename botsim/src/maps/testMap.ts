@@ -47,7 +47,7 @@ const spec: MapSpec = {
                     angle: 0,
                     roles: ["follow-line"],
                     width: 3, // cm
-                    stepSize: .1,
+                    stepSize: 0.1,
                     verts: [
                         { x: 15, y: 18 },
                         { x: 45, y: 20 },

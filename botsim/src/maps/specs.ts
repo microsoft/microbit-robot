@@ -41,15 +41,14 @@ export const defaultPathShape = (): PathShapeSpec => ({
     type: "path",
     verts: [
         // default to a box shape
-        // TODO: Default to an "S" shape
         { x: 0, y: 0 },
         { x: 30, y: 0 },
         { x: 30, y: 30 },
         { x: 0, y: 30 },
     ],
-    width: 5,
+    width: 3,
     closed: true,
-    stepSize: .2,
+    stepSize: 0.2,
     roles: [],
 })
 

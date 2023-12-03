@@ -16,6 +16,7 @@ export class Chassis {
             ...defaultEntityShape(),
             ...chassisSpec.shape,
             label: "chassis",
+            roles: ["mouse-target"],
             brush: {
                 ...chassisSpec.brush,
                 zIndex: 1,
@@ -23,7 +24,7 @@ export class Chassis {
             physics: {
                 ...defaultShapePhysics(),
                 friction: 0.3,
-                restitution: 1,
+                restitution: 0.9,
                 density: 0.1,
                 categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
                 maskBits: makeMaskBits(PHYS_CAT_ROBOT),

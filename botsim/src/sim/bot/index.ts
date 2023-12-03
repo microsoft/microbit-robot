@@ -1,4 +1,4 @@
-import { LineSensorValues, Simulation } from ".."
+import { LineSensorValues, Simulation, defaultLineSensorValues } from ".."
 import { BotSpec } from "../../bots/specs"
 import { Chassis } from "./chassis"
 import { Wheel } from "./wheel"
@@ -27,6 +27,10 @@ export class Bot {
 
     public get forward(): Vec2Like {
         return this.entity.physicsObj.forward
+    }
+    public get held(): boolean {
+        const heldBody = this.entity.sim.physics.mouseJoint?.getBodyB()
+        return heldBody === this.entity.physicsObj.body
     }
 
     constructor(
@@ -176,6 +180,7 @@ export class Bot {
     }
 
     public readLineSensors(): LineSensorValues {
+        if (this.held) return defaultLineSensorValues()
         return {
             ["outer-left"]: this.lineSensors.get("outer-left")?.value ?? -1,
             ["left"]: this.lineSensors.get("left")?.value ?? -1,

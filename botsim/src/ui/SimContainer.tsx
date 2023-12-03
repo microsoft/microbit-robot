@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Simulation } from "../sim"
+import { Vec2 } from "../types/vec2"
 
 type Props = {}
 
@@ -30,6 +31,36 @@ export const SimContainer: React.FC<Props> = ({}) => {
             simContainer.append(sim.renderer.handle as any)
         }
     }, [simContainer, sim])
+
+    // Hook mouse events
+    useEffect(() => {
+        if (sim && simContainer) {
+            const handleMouseDown = (e: MouseEvent) => {
+                if (e.button === 0) {
+                    const p = new Vec2(e.offsetX, e.offsetY)
+                    sim.mouseDown(p)
+                }
+            }
+            const handleMouseMove = (e: MouseEvent) => {
+                const p = new Vec2(e.offsetX, e.offsetY)
+                sim.mouseMove(p)
+            }
+            const handleMouseUp = (e: MouseEvent) => {
+                if (e.button === 0) {
+                    const p = new Vec2(e.offsetX, e.offsetY)
+                    sim.mouseUp(p)
+                }
+            }
+            simContainer.addEventListener("mousedown", handleMouseDown)
+            simContainer.addEventListener("mousemove", handleMouseMove)
+            simContainer.addEventListener("mouseup", handleMouseUp)
+            return () => {
+                simContainer.removeEventListener("mousedown", handleMouseDown)
+                simContainer.removeEventListener("mousemove", handleMouseMove)
+                simContainer.removeEventListener("mouseup", handleMouseUp)
+            }
+        }
+    }, [sim, simContainer])
 
     const handleDivRef = (ref: HTMLDivElement) => {
         setSimContainer(ref)

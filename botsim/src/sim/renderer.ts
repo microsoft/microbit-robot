@@ -36,8 +36,18 @@ export default class Renderer {
     public get handle() {
         return this.pixi.view
     }
-    public get size() {
+    // Returns size without scaling (what you'd find in the map spec)
+    public get logicalSize() {
         return this._size
+    }
+    // Returns screen size of the canvas control
+    public get canvasSize() {
+        const rect = this.pixi.view.getBoundingClientRect?.()
+        if (!rect) {
+            // Fallback to something that won't cause divide-by-zero elsewhere
+            return new Vec2(1, 1)
+        }
+        return new Vec2(rect.width, rect.height)
     }
     public get debugLayer() {
         return this._debugLayer

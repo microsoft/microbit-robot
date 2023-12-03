@@ -3,6 +3,7 @@ export const PIXELS_PER_CM = 12
 //export const PHYSICS_SCALE = 100
 export const PHYSICS_SCALE = 1
 export const PHYSICS_TO_RENDER_SCALE = PIXELS_PER_CM / PHYSICS_SCALE
+export const RENDER_TO_PHYSICS_SCALE = PHYSICS_SCALE / PIXELS_PER_CM
 
 // Collision category bits for physics objects.
 export const PHYS_CAT_DECORATION = 0x0001

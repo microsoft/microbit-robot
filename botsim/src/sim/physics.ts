@@ -27,10 +27,19 @@ import {
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
-import { PHYSICS_TO_RENDER_SCALE } from "./constants"
+import {
+    PHYSICS_SCALE,
+    PHYSICS_TO_RENDER_SCALE,
+} from "./constants"
 
 export default class Physics {
     private _world!: Planck.World
+    private _mouseGround!: Planck.Body
+    private _mouseJoint: Planck.MouseJoint | undefined
+
+    public get mouseJoint() {
+        return this._mouseJoint
+    }
 
     public get world() {
         return this._world
@@ -45,9 +54,86 @@ export default class Physics {
     }
 
     private createWorld() {
+        if (this._world) {
+            try {
+                for (
+                    let body = this._world.getBodyList();
+                    body;
+                    body = body.getNext()
+                ) {
+                    this._world.destroyBody(body)
+                }
+            } catch {}
+            try {
+                for (
+                    let joint = this._world.getJointList();
+                    joint;
+                    joint = joint.getNext()
+                ) {
+                    this._world.destroyJoint(joint)
+                }
+            } catch {}
+        }
         this._world = Planck.World({
             gravity: Planck.Vec2(0, 0),
         })
+        this._mouseGround = this._world.createBody()
+        this._mouseJoint = undefined
+    }
+
+    public mouseDown(p: Vec2Like) {
+        const body = this.findBody(p, (fixt) => {
+            // Only grab shapes tagged with "mouse-target"
+            const spec = fixt.getUserData() as EntityShapeSpec
+            return spec.roles?.includes("mouse-target") ?? false
+        })
+        if (!body) return
+        const joint = new Planck.MouseJoint({
+            target: Planck.Vec2(p),
+            maxForce: 100000,
+            bodyA: this._mouseGround,
+            bodyB: body,
+        })
+        this._mouseJoint = this._world.createJoint(joint) as Planck.MouseJoint
+    }
+
+    public mouseMove(p: Vec2Like) {
+        if (this._mouseJoint) {
+            this._mouseJoint.setTarget(Planck.Vec2(p))
+        }
+    }
+
+    public mouseUp(p: Vec2Like) {
+        if (this._mouseJoint) {
+            this._world.destroyJoint(this._mouseJoint)
+            this._mouseJoint = undefined
+        }
+    }
+
+    private findBody(
+        p: Vec2Like,
+        filterFn?: (fixture: Planck.Fixture) => boolean
+    ): Planck.Body | undefined {
+        let body: Planck.Body | undefined
+        filterFn = filterFn ?? (() => true)
+        const aabb = Planck.AABB(Planck.Vec2(p.x, p.y), Planck.Vec2(p.x, p.y))
+        this._world.queryAABB(aabb, (fixture: Planck.Fixture) => {
+            // Dont' grab static objects
+            if (!fixture.getBody().isDynamic()) {
+                return true
+            }
+            // Make sure mouse is on it
+            if (!fixture.testPoint(Planck.Vec2(p.x, p.y))) {
+                return true
+            }
+            // Custom filter
+            if (!filterFn!(fixture)) {
+                return true
+            }
+            body = fixture.getBody()
+            return false
+        })
+        return body
     }
 
     public update(dtSecs: number): number {

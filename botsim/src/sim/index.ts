@@ -18,6 +18,7 @@ import { Bot } from "./bot"
 import { Container } from "./container"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
+import { PHYSICS_SCALE } from "./constants"
 
 export type LineSensorValues = {
     ["outer-left"]: number
@@ -73,7 +74,7 @@ export class Simulation extends Container {
         this._physics = new Physics(this)
         this._spawn = defaultSpawn()
 
-        this.buildWalls(this.renderer.size)
+        this.buildWalls(this.renderer.logicalSize)
 
         this._input = new InputState(
             [
@@ -224,6 +225,31 @@ export class Simulation extends Container {
         this.buildWalls(size)
     }
 
+    public mouseDown(p: Vec2Like) {
+        p = Vec2.div(p, this.renderer.canvasSize)
+        p = Vec2.mul(p, this.renderer.logicalSize)
+        {
+            const physp = Vec2.scale(p, PHYSICS_SCALE)
+            this.physics.mouseDown(physp)
+        }
+    }
+    public mouseMove(p: Vec2Like) {
+        p = Vec2.div(p, this.renderer.canvasSize)
+        p = Vec2.mul(p, this.renderer.logicalSize)
+        {
+            const physp = Vec2.scale(p, PHYSICS_SCALE)
+            this.physics.mouseMove(physp)
+        }
+    }
+    public mouseUp(p: Vec2Like) {
+        p = Vec2.div(p, this.renderer.canvasSize)
+        p = Vec2.mul(p, this.renderer.logicalSize)
+        {
+            const physp = Vec2.scale(p, PHYSICS_SCALE)
+            this.physics.mouseUp(physp)
+        }
+    }
+
     private buildWalls(size: Vec2Like) {
         // TODO: Entity destoy path is not fleshed out yet
         if (this.walls) {
@@ -254,30 +280,30 @@ export class Simulation extends Container {
                     ...defaultEdgeShape(),
                     ...wallCommon,
                     v0: { x: 0, y: 0 },
-                    v1: { x: this.renderer.size.x, y: 0 },
+                    v1: { x: size.x, y: 0 },
                     label: "wall.top",
                 },
                 {
                     ...defaultEntityShape(),
                     ...defaultEdgeShape(),
                     ...wallCommon,
-                    v0: { x: this.renderer.size.x, y: 0 },
-                    v1: { x: this.renderer.size.x, y: this.renderer.size.y },
+                    v0: { x: size.x, y: 0 },
+                    v1: { x: size.x, y: size.y },
                     label: "wall.right",
                 },
                 {
                     ...defaultEntityShape(),
                     ...defaultEdgeShape(),
                     ...wallCommon,
-                    v0: { x: this.renderer.size.x, y: this.renderer.size.y },
-                    v1: { x: 0, y: this.renderer.size.y },
+                    v0: { x: size.x, y: size.y },
+                    v1: { x: 0, y: size.y },
                     label: "wall.bottom",
                 },
                 {
                     ...defaultEntityShape(),
                     ...defaultEdgeShape(),
                     ...wallCommon,
-                    v0: { x: 0, y: this.renderer.size.y },
+                    v0: { x: 0, y: size.y },
                     v1: { x: 0, y: 0 },
                     label: "wall.left",
                 },

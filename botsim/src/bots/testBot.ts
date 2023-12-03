@@ -118,7 +118,7 @@ const spec: BotSpec = {
         },
     ],
     ballast: {
-        pos: { x: 0, y: -0.8 },
+        pos: { x: 0, y: 1.3 },
         size: { x: 3.8, y: 1.6 },
         mass: 10,
     },
