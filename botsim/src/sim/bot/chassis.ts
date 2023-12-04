@@ -7,7 +7,6 @@ import {
 import { PHYS_CAT_ROBOT } from "../constants"
 import { makeCategoryBits, makeMaskBits } from "../util"
 import { Bot } from "."
-import { Vec2 } from "../../types/vec2"
 
 export class Chassis {
     public static makeShapeSpec(botSpec: BotSpec): EntityShapeSpec {

@@ -15,8 +15,16 @@ import {
 import { Entity } from "../entity"
 import { Vec2Like } from "../../types/vec2"
 
+// Debug flag for keyboard control. When true, the bot will not be controlled by
+// the simulator, only by the keyboard and gamepad. Can be useful to tune a bot's
+// movement characteristics. See the Simulation class for keybindings.
 const KEYBOARD_CONTROL_ENABLED = false
 
+/**
+ * The Bot class is a controller for a robot in the simulation. It contains
+ * references to the Entity objects that make up the robot, and provides
+ * methods for controlling the robot's motors and reading its sensors.
+ */
 export class Bot {
     public entity: Entity
     public chassis: Chassis
@@ -62,6 +70,7 @@ export class Bot {
             angle: this.sim.spawn.angle,
             physics: {
                 ...defaultDynamicPhysics(),
+                // hand-tuned values
                 linearDamping: 10,
                 angularDamping: 10,
             },
@@ -191,6 +200,7 @@ export class Bot {
     }
 
     public readRangeSensor(): number {
+        // TODO
         return -1
     }
 }

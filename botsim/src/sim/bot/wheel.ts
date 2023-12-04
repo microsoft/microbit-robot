@@ -6,7 +6,7 @@ import {
     defaultShapePhysics,
 } from "../../maps/specs"
 import { PHYSICS_SCALE, PHYS_CAT_ROBOT, PIXELS_PER_CM } from "../constants"
-import { makeCategoryBits, makeMaskBits, toPhysicsScale } from "../util"
+import { makeCategoryBits, makeMaskBits } from "../util"
 import { Bot } from "."
 import { Vec2 } from "../../types/vec2"
 import Planck from "planck-js"

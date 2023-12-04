@@ -28,6 +28,9 @@ import { toRadians } from "../util"
 import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE } from "./constants"
 import { nextId } from "../util"
 
+/**
+ * Renderer is responsible for rendering the simulation to a canvas element.
+ */
 export default class Renderer {
     private pixi: Pixi.Application
     private _size: Vec2
@@ -170,7 +173,7 @@ export class RenderObject {
     }
 }
 
-// Factory functions for creating Pixi.Graphics objects
+// Factory functions for creating renderable objects
 const createGraphics: {
     [entity in ShapeType]: {
         [brush in BrushType]: (

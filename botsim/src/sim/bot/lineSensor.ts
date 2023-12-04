@@ -113,8 +113,11 @@ export class LineSensor {
             ce = ce.next ?? null
         ) {
             // TODO: Support multiple bots in the scene. As implemented, this
-            // doesn't work in that scenario.
-            // TODO: Handle contacts from a single contact listener instead of embedded in components.
+            // doesn't work for that scenario.
+            
+            // TODO: Refactor contacts to work from Simulation, providing a
+            // single contact listener instead of embedding polling like this in
+            // components.
             const contact = ce.contact
             const fixtureA = contact.getFixtureA()
             const fixtureB = contact.getFixtureB()

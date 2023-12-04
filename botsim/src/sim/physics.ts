@@ -2,10 +2,8 @@ import Planck from "planck-js"
 import { Vec2, Vec2Like } from "../types/vec2"
 import {
     boxToVertices,
-    makeBoxVertices,
     catmullRom,
     samplePath,
-    calcMidVectors,
     makeCategoryBits,
     makeMaskBits,
     toPhysicsScale,
@@ -28,8 +26,11 @@ import {
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
-import { PHYSICS_SCALE, PHYSICS_TO_RENDER_SCALE } from "./constants"
+import { PHYSICS_TO_RENDER_SCALE } from "./constants"
 
+/**
+ * Physics engine wrapper
+ */
 export default class Physics {
     private _world!: Planck.World
     private _mouseGround!: Planck.Body
@@ -151,6 +152,9 @@ export default class Physics {
     }
 }
 
+/**
+ * Physics object wrapper
+ */
 export class PhysicsObject {
     private _debugRenderObj: Pixi.Container
 
@@ -189,7 +193,10 @@ export class PhysicsObject {
     public beforePhysicsStep(dtSecs: number) {}
 
     public afterPhysicsStep(dtSecs: number) {
-        if (!this._entity.sim.debugDraw) return
+        if (this._entity.sim.debugDraw) this.debugDraw()
+    }
+
+    private debugDraw() {
         this._debugRenderObj.removeChildren()
         for (
             let fixt = this._body.getFixtureList();
@@ -200,9 +207,11 @@ export class PhysicsObject {
             let color = 0x000000
             let alpha = 1
             if (spec.roles?.includes("mouse-target")) {
+                // Color mouse targets with some transparency
                 color = 0x00ffff
                 alpha = 0.7
             } else if (spec.roles?.includes("follow-line")) {
+                // Color path segments as a looping gradient
                 const label = spec.label ?? ""
                 const m = label.match(/.seg.(\d+)/)
                 if (m && m[1]) {
@@ -255,7 +264,8 @@ export class PhysicsObject {
                     break
             }
         }
-        {
+        if (this._body.isDynamic()) {
+            // Draw center of mass
             const massData: Planck.MassData = {
                 mass: 0,
                 center: Planck.Vec2.zero(),
@@ -278,7 +288,7 @@ export class PhysicsObject {
     public update(dtSecs: number) {}
 
     public destroy() {
-        // NOTE/TODO: Physics destroy is not currently working reliably and will
+        // NOTE/TODO: Physics destroy is not currently working reliably and might
         // leave invisible bodies in the world
         this._entity.sim.physics.world.destroyBody(this.body)
     }

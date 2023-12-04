@@ -36,6 +36,10 @@ export const defaultLineSensorValues = (): LineSensorValues => ({
     ["outer-right"]: -1,
 })
 
+/**
+ * The Simulation class is a small game engine. It contains a physics engine and
+ * a renderer. Each object in the simulation is represented by the Entity class.
+ */
 export class Simulation extends Container {
     private paused = false
     private running = false

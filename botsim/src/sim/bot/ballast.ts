@@ -23,7 +23,7 @@ export function makeBallastSpec(botSpec: BotSpec): EntityShapeSpec | undefined {
         physics: {
             ...defaultDynamicPhysics(),
             sensor: true,
-            density:
+            density: // density = mass / area
                 botSpec.ballast.mass /
                 (botSpec.ballast.size.x * botSpec.ballast.size.y),
             friction: 0,
