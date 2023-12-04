@@ -79,6 +79,10 @@ export default class Physics {
     }
 
     public mouseDown(p: Vec2Like) {
+        if (this._mouseJoint) {
+            this._world.destroyJoint(this._mouseJoint)
+            this._mouseJoint = undefined
+        }
         const body = this.findBody(p, (fixt) => {
             // Only grab shapes tagged with "mouse-target"
             const spec = fixt.getUserData() as EntityShapeSpec
@@ -142,7 +146,6 @@ export default class Physics {
 
     public add(physicsObj: PhysicsObject) {
         // For PlanckJS, the body is already added to the world
-        //physicsObj.body.setAngle(0);
         physicsObj.body.setActive(true)
     }
 }
@@ -179,6 +182,7 @@ export class PhysicsObject {
         private _jointSpec?: JointSpec // when this object is added to another, this is the kind of joint to use
     ) {
         this._debugRenderObj = new Pixi.Graphics()
+        this._debugRenderObj.zIndex = 100
     }
 
     public beforePhysicsStep(dtSecs: number) {}
@@ -192,13 +196,13 @@ export class PhysicsObject {
             fixt = fixt.getNext()
         ) {
             const spec = fixt.getUserData() as EntityShapeSpec
-            let color = 0xff0000
+            let color = 0x000000
             let alpha = 1
             if (spec.roles?.includes("mouse-target")) {
                 color = 0x00ffff
                 alpha = 0.7
             } else if (spec.roles?.includes("follow-line")) {
-                color = 0xff00ff
+                color = 0xff0000
             } else if (spec.label?.match(/sensor/)) {
                 color = 0xffff00
             }

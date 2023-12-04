@@ -7,7 +7,7 @@ module.exports = function (config, env) {
     const aliasFn = aliasWebpack({});
     config = {
         ...config,
-        //...aliasFn(config),
+        ...aliasFn(config),
         resolve: {
             ...config.resolve,
             fallback: {
