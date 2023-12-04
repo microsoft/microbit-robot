@@ -216,8 +216,10 @@ export class Simulation extends Container {
     public addChild(ent: Entity) {
         super.addChild(ent)
         this.physics.add(ent.physicsObj)
-        this.renderer.add(ent.renderObj)
-        //this.renderer.addDebugObj(ent.physicsObj.debugRenderObj as any)
+        if (this.debugDraw && ent.physicsObj.debugRenderObj)
+            this.renderer.addDebugObj(ent.physicsObj.debugRenderObj as any)
+        else
+            this.renderer.add(ent.renderObj)
     }
 
     public resize(size: Vec2Like) {

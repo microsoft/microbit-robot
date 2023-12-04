@@ -318,7 +318,7 @@ function createColorPathGraphics(
         closed,
         0,
         pathVerts.length,
-        Math.max(0.01, shape.stepSize)
+        shape.stepSize
     )
     const lineColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0

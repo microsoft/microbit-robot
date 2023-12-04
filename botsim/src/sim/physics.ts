@@ -9,6 +9,7 @@ import {
     makeCategoryBits,
     makeMaskBits,
     toPhysicsScale,
+    makePathPolygons,
 } from "./util"
 import { Simulation } from "."
 import {
@@ -84,7 +85,7 @@ export default class Physics {
             this._mouseJoint = undefined
         }
         const body = this.findBody(p, (fixt) => {
-            // Only grab shapes tagged with "mouse-target"
+            // Only grab shapes with "mouse-target" role
             const spec = fixt.getUserData() as EntityShapeSpec
             return spec.roles?.includes("mouse-target") ?? false
         })
@@ -202,7 +203,15 @@ export class PhysicsObject {
                 color = 0x00ffff
                 alpha = 0.7
             } else if (spec.roles?.includes("follow-line")) {
-                color = 0xff0000
+                const label = spec.label ?? ""
+                const m = label.match(/.seg.(\d+)/)
+                if (m && m[1]) {
+                    const v = (20 * parseInt(m[1])) % 255
+                    const c = new Pixi.Color(Uint8Array.from([v, 0xff - v, 0]))
+                    color = c.toNumber()
+                } else {
+                    color = 0xff0000
+                }
             } else if (spec.label?.match(/sensor/)) {
                 color = 0xffff00
             }
@@ -593,33 +602,23 @@ function addPathFixture(
         closed,
         0,
         pathVerts.length,
-        Math.max(0.01, spec.stepSize)
+        spec.stepSize
     )
+    const polys = makePathPolygons(samples, spec.width)
 
-    // Might have to use use `mids` if box fixtures exhibit issues with exposed corners.
-    // Mid-vectors will allow us to create polygon fixtures that match up on edge.
-    // const mids = calcMidVectors(samples)
-
-    for (let i = 0; i < samples.length - 1; i++) {
-        const s0 = samples[i]
-        const s1 = samples[i + 1]
-        const delta = Vec2.sub(s1, s0)
-        const len = Vec2.len(delta)
-        const angle = Vec2.angleDeg(delta)
-        const segSpec: EntityBoxShapeSpec = {
-            type: "box",
-            label: spec.label + ".seg." + i,
-            offset: s0,
-            angle: angle,
-            halign: "right",
-            valign: "center",
-            size: { x: len, y: spec.width },
+    polys.forEach((verts, i) => {
+        const segSpec: EntityPolygonShapeSpec = {
+            type: "polygon",
+            label: "path.seg." + i,
+            offset: Vec2.zero(),
+            angle: 0,
+            verts,
             physics: spec.physics,
             brush: spec.brush,
             roles: spec.roles,
         }
-        addBoxFixture(body, segSpec, phys)
-    }
+        addPolygonFixture(body, segSpec, phys)
+    })
 }
 
 function addPolygonFixture(

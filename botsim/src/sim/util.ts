@@ -105,6 +105,7 @@ export function samplePath(
     endT: number,
     stepT: number
 ) {
+    stepT = Math.max(0.01, stepT)
     if (!p.length) {
         return []
     }
@@ -126,58 +127,66 @@ export function samplePath(
 }
 
 /**
- * For each point, get the normal of p(n)p(n+1) - p(n)p(n-1), or the normal of
- * p(n)p(n+1) if at start or end, or Vec2.up() if all else fails.
+ * Returns the average of the normals of the two adjacent line segments.
  */
 export function calcMidVectors(p: Vec2Like[]): Vec2[] {
     const mids: Vec2[] = []
 
-    const nextIndex: (i: number) => number = (i) => {
-        return Math.min(i + 1, p.length - 1)
-    }
-
-    const prevIndex: (i: number) => number = (i) => {
-        return Math.max(i - 1, 0)
-    }
+    const nextIndex: (i: number) => number = (i) =>
+        Math.min(i + 1, p.length - 1)
+    const prevIndex: (i: number) => number = (i) => Math.max(i - 1, 0)
 
     for (let i = 0; i < p.length; i++) {
         const i0 = prevIndex(i)
         const i1 = i
         const i2 = nextIndex(i)
-
-        if (i0 === i1) {
-            // At beginning
-            const p0 = p[i1] // p(n)
-            const p1 = p[i2] // p(n+1)
-            const vmid = Vec2.normal(
-                Vec2.transpose(Vec2.sub(p0, p1)),
-                Vec2.up()
-            )
-            mids.push(vmid)
-        } else if (i1 === i2) {
-            // At end
-            const p0 = p[i0] // p(n-1)
-            const p1 = p[i1] // p(n)
-            const vmid = Vec2.normal(
-                Vec2.transpose(Vec2.sub(p0, p1)),
-                Vec2.up()
-            )
-            mids.push(vmid)
-        } else {
+        {
             const p0 = p[i0] // p(n-1)
             const p1 = p[i1] // p(n)
             const p2 = p[i2] // p(n+1)
-            const v01 = Vec2.sub(p0, p1)
-            const v21 = Vec2.sub(p2, p1)
-            const vmid = Vec2.normal(
-                Vec2.add(v01, v21),
-                Vec2.normal(Vec2.transpose(v01), Vec2.up())
-            )
+            const p1p0 = Vec2.sub(p0, p1)
+            const p1p2 = Vec2.sub(p2, p1)
+            const t0 = Vec2.normal(p1p0, true)
+            const t1 = Vec2.normal(p1p2, true)
+            const v0 = Vec2.normalize(t0, Vec2.up())
+            const v1 = Vec2.normalize(t1, Vec2.up())
+            const dv = Vec2.sub(v1, v0)
+            const vmid = Vec2.normalize(Vec2.scale(dv, 0.5), Vec2.up())
             mids.push(vmid)
         }
     }
 
     return mids
+}
+
+export function makePathPolygons(
+    path: Vec2Like[],
+    width: number
+): Vec2[][] {
+    const polygons: Vec2[][] = []
+
+    const mids = calcMidVectors(path)
+
+    if (mids.length != path.length) {
+        // Something went wrong
+        return polygons;
+    }
+
+    for (let i = 0; i < path.length - 1; i++) {
+        const p0 = path[i]
+        const p1 = path[i + 1]
+        const m0 = mids[i]
+        const m1 = mids[i + 1]
+        const verts = [
+            Vec2.add(p0, Vec2.scale(m0, width / 2)),
+            Vec2.add(p1, Vec2.scale(m1, width / 2)),
+            Vec2.sub(p1, Vec2.scale(m1, width / 2)),
+            Vec2.sub(p0, Vec2.scale(m0, width / 2)),
+        ]
+        polygons.push(verts)
+    }
+
+    return polygons;
 }
 
 export function toColor(s: string): Pixi.Color {

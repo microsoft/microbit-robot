@@ -67,7 +67,7 @@ export class Vec2 implements Vec2Like {
      * Returns the normal of the vector, or throws an error if the vector is
      * zero and no fallback is provided
      */
-    public static normal(v: Vec2Like, fallback?: Vec2Like): Vec2 {
+    public static normalize(v: Vec2Like, fallback?: Vec2Like): Vec2 {
         const len = Vec2.len(v)
         if (len === 0) {
             if (fallback) return Vec2.from(fallback)
@@ -76,12 +76,24 @@ export class Vec2 implements Vec2Like {
         return new Vec2(v.x / len, v.y / len)
     }
 
+    public static normal(v: Vec2Like, up: boolean): Vec2 {
+        if (up) {
+            return new Vec2(-v.y, v.x)
+        } else {
+            return new Vec2(v.y, -v.x)
+        }
+    }
+
     public static dist(a: Vec2Like, b: Vec2Like): number {
         return Vec2.len(Vec2.sub(a, b))
     }
 
     public static transpose(v: Vec2Like): Vec2 {
         return new Vec2(v.y, v.x)
+    }
+
+    public static abs(v: Vec2Like): Vec2 {
+        return new Vec2(Math.abs(v.x), Math.abs(v.y))
     }
 
     public static angle(v: Vec2Like): number {
