@@ -1,4 +1,15 @@
 namespace robot {
+    const enum LineDetectorEvent {
+        LeftRight = (1 << RobotLineDetector.Left) | (1 << RobotLineDetector.Right),
+        LeftMiddleRight = (1 << RobotLineDetector.Left) |
+            (1 << RobotLineDetector.Right) |
+            (1 << RobotLineDetector.Middle),
+        OuterLeftLeftRightOuterRight = (1<<RobotLineDetector.OuterLeft) |
+            (1<<RobotLineDetector.Left) |
+            (1<<RobotLineDetector.Right) |
+            (1<<RobotLineDetector.OuterRight),
+    }
+
     function radioGroupFromDeviceSerialNumber() {
         const sn = control.deviceLongSerialNumber()
         return (
@@ -389,7 +400,7 @@ namespace robot {
             const threshold = this.robot.lineHighThreshold
             const changed = state.map(
                 (v, i) =>
-                    v >= threshold !== this.currentLineState[i] >= threshold
+                    (v >= threshold) !== (this.currentLineState[i] >= threshold)
             )
             const leftOrRight =
                 state[RobotLineDetector.Left] >= threshold ||
@@ -397,17 +408,24 @@ namespace robot {
 
             const sendChanged = (
                 event: messages.RobotEvents,
-                detectors: RobotLineDetector,
+                detectors: LineDetectorEvent,
                 code: robots.RobotCompactCommand
             ) => {
                 let send = false
+                console.log(changed.join(','))
                 for (let i = 0; i < 5; ++i) {
-                    if (changed[i] && detectors & (1 << i)) {
-                        send = true
-                        if (state[i] >= threshold) code |= 1 << i
+                    console.log(`detectors & (1 << i): ${detectors & (1 << i)}, i ${i}`)
+                    if (detectors & (1 << i)) {
+                        if (changed[i])
+                            send = true
+                        if (state[i] >= threshold) {
+                            code |= 1 << i
+                            console.log(i)
+                        }
                     }
                 }
-                if (send) messages.raiseEvent(event, code)
+                if (send)
+                    messages.raiseEvent(event, code)
             }
 
             if (changed.some(v => v)) {
@@ -420,22 +438,17 @@ namespace robot {
                 )
                 sendChanged(
                     messages.RobotEvents.LineLeftRight,
-                    RobotLineDetector.Left | RobotLineDetector.Right,
+                    LineDetectorEvent.LeftRight,
                     robots.RobotCompactCommand.LineLeftRightState
                 )
                 sendChanged(
                     messages.RobotEvents.LineLeftMiddleRight,
-                    RobotLineDetector.Left |
-                        RobotLineDetector.Right |
-                        RobotLineDetector.Middle,
+                    LineDetectorEvent.LeftMiddleRight,
                     robots.RobotCompactCommand.LineLeftRightMiddleState
                 )
                 sendChanged(
                     messages.RobotEvents.LineOuterLeftLeftRightOuterRight,
-                    RobotLineDetector.OuterLeft |
-                        RobotLineDetector.Left |
-                        RobotLineDetector.Right |
-                        RobotLineDetector.OuterRight,
+                    LineDetectorEvent.OuterLeftLeftRightOuterRight,
                     robots.RobotCompactCommand
                         .LineOuterLeftLeftRightOuterRightState
                 )
