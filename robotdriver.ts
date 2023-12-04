@@ -412,15 +412,12 @@ namespace robot {
                 code: robots.RobotCompactCommand
             ) => {
                 let send = false
-                console.log(changed.join(','))
                 for (let i = 0; i < 5; ++i) {
-                    console.log(`detectors & (1 << i): ${detectors & (1 << i)}, i ${i}`)
                     if (detectors & (1 << i)) {
                         if (changed[i])
                             send = true
                         if (state[i] >= threshold) {
                             code |= 1 << i
-                            console.log(i)
                         }
                     }
                 }
