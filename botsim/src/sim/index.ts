@@ -266,14 +266,17 @@ export class Simulation extends Container {
             },
             physics: {
                 ...defaultShapePhysics(),
-                restitution: 1,
+                restitution: 0.5,
+                friction: 0.5,
             },
         }
         this.walls = this.createEntity({
             ...defaultEntity(),
             pos: { x: 0, y: 0 },
             angle: 0,
-            physics: defaultStaticPhysics(),
+            physics: {
+                ...defaultStaticPhysics(),
+            },
             shapes: [
                 {
                     ...defaultEntityShape(),

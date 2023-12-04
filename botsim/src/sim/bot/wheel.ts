@@ -24,7 +24,7 @@ export class Wheel {
         return {
             ...defaultEntityShape(),
             ...defaultBoxShape(),
-            label: spec.label,
+            label: spec.name,
             roles: ["mouse-target"],
             offset: spec.pos,
             size: { x: spec.width, y: spec.radius * 2 },
@@ -55,6 +55,16 @@ export class Wheel {
         this.localPos = Vec2.scale(this.spec.pos, PIXELS_PER_CM)
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
+        // Handles some of the friction between wheel and ground. Additional
+        // friction is handled in updateFriction()
+        this.friction = this.bot.entity.physicsObj.addFrictionJoint(
+            Vec2.scale(this.spec.pos, PHYSICS_SCALE)
+        )
+        // hand-tuned values
+        this.friction?.m_bodyB.setAngularDamping(10)
+        this.friction?.m_bodyB.setLinearDamping(10)
+        this.friction?.setMaxForce(5000)
+        this.friction?.setMaxTorque(2)
     }
 
     public destroy() {}
@@ -65,26 +75,8 @@ export class Wheel {
     }
 
     public update(dtSecs: number) {
-        if (this.bot.held) {
-            if (this.friction) {
-                this.bot.entity.sim.physics.world.destroyJoint(this.friction)
-                this.friction = undefined
-            }
-        } else {
-            if (!this.friction) {
-                // Handles some of the friction between wheel and ground. Additional
-                // friction is handled in updateFriction()
-                this.friction = this.bot.entity.physicsObj.addFrictionJoint(
-                    Vec2.scale(this.spec.pos, PHYSICS_SCALE)
-                )
-                // hand-tuned values
-                this.friction?.m_bodyB.setAngularDamping(10)
-                this.friction?.m_bodyB.setLinearDamping(10)
-                this.friction?.setMaxForce(5000)
-                this.friction?.setMaxTorque(2)
-            }
-            this.updateForce(dtSecs)
-        }
+        if (this.bot.held) return
+        this.updateForce(dtSecs)
     }
 
     public setSpeed(speed: number) {

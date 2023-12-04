@@ -43,7 +43,7 @@ export class Bot {
 
         botSpec.lineSensors?.forEach((sensorSpec) => {
             const sensor = new LineSensor(this, sensorSpec)
-            this.lineSensors.set(sensorSpec.label, sensor)
+            this.lineSensors.set(sensorSpec.name, sensor)
         })
         const lineSensorShapes = Array.from(this.lineSensors.values()).map(
             (sensor) => sensor.shapeSpecs
@@ -72,13 +72,13 @@ export class Bot {
 
         this.chassis = new Chassis(this, botSpec.chassis)
         botSpec.wheels.forEach((wheelSpec) =>
-            this.wheels.set(wheelSpec.label, new Wheel(this, wheelSpec))
+            this.wheels.set(wheelSpec.name, new Wheel(this, wheelSpec))
         )
         if (botSpec.rangeSensor)
             this.rangeSensor = new RangeSensor(this, botSpec.rangeSensor)
 
         botSpec.leds?.forEach((led) =>
-            this.leds.set(led.label, new LED(this, led))
+            this.leds.set(led.name, new LED(this, led))
         )
     }
 

@@ -26,7 +26,7 @@ export class LineSensor {
         const onLineSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.label + ".on",
+            label: "line." + spec.name + ".on",
             offset: spec.pos,
             radius: 0.5,
             brush: {
@@ -47,7 +47,7 @@ export class LineSensor {
         const offLineSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.label + ".off",
+            label: "line." + spec.name + ".off",
             offset: spec.pos,
             radius: 0.5,
             brush: {
@@ -69,7 +69,7 @@ export class LineSensor {
         const sensorSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.label + ".sensor",
+            label: "line." + spec.name + ".sensor",
             offset: spec.pos,
             radius: 0.1,
             roles: ["line-sensor"],
@@ -114,7 +114,7 @@ export class LineSensor {
         ) {
             // TODO: Support multiple bots in the scene. As implemented, this
             // doesn't work in that scenario.
-            // TODO: Handle contacts from a central place.
+            // TODO: Handle contacts from a single contact listener instead of embedded in components.
             const contact = ce.contact
             const fixtureA = contact.getFixtureA()
             const fixtureB = contact.getFixtureB()
@@ -126,11 +126,11 @@ export class LineSensor {
                 if (!labelA || !labelB) continue
                 const rolesA = userDataA.roles
                 const rolesB = userDataB.roles
-                if (labelA === "line." + this.spec.label + ".sensor") {
+                if (labelA === "line." + this.spec.name + ".sensor") {
                     if (rolesB.includes("follow-line")) {
                         this.setDetecting(true)
                     }
-                } else if (labelB === "line." + this.spec.label + ".sensor") {
+                } else if (labelB === "line." + this.spec.name + ".sensor") {
                     if (rolesA.includes("follow-line")) {
                         this.setDetecting(true)
                     }
@@ -142,10 +142,10 @@ export class LineSensor {
     public setDetecting(detecting: boolean) {
         this._value = detecting ? 1023 : 0
         const onShape = this.bot.entity.renderObj.shapes.get(
-            "line." + this.spec.label + ".on"
+            "line." + this.spec.name + ".on"
         )
         const offShape = this.bot.entity.renderObj.shapes.get(
-            "line." + this.spec.label + ".off"
+            "line." + this.spec.name + ".off"
         )
         if (onShape) onShape.visible = detecting
         if (offShape) offShape.visible = !detecting

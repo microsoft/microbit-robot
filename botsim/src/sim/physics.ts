@@ -27,10 +27,7 @@ import {
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
-import {
-    PHYSICS_SCALE,
-    PHYSICS_TO_RENDER_SCALE,
-} from "./constants"
+import { PHYSICS_SCALE, PHYSICS_TO_RENDER_SCALE } from "./constants"
 
 export default class Physics {
     private _world!: Planck.World
@@ -194,6 +191,17 @@ export class PhysicsObject {
             !!fixt;
             fixt = fixt.getNext()
         ) {
+            const spec = fixt.getUserData() as EntityShapeSpec
+            let color = 0xff0000
+            let alpha = 1
+            if (spec.roles?.includes("mouse-target")) {
+                color = 0x00ffff
+                alpha = 0.7
+            } else if (spec.roles?.includes("follow-line")) {
+                color = 0xff00ff
+            } else if (spec.label?.match(/sensor/)) {
+                color = 0xffff00
+            }
             const type = fixt.getShape().getType()
             switch (type) {
                 case "polygon": {
@@ -208,22 +216,22 @@ export class PhysicsObject {
                     const graphics = new Pixi.Graphics()
                     this._debugRenderObj.addChild(graphics as any)
                     graphics.lineStyle(0)
-                    graphics.beginFill(0xff0000)
+                    graphics.beginFill(color, alpha)
                     graphics.drawPolygon(worldVerts)
                     graphics.endFill()
                     break
                 }
                 case "circle": {
                     const circle = fixt.getShape() as Planck.Circle
-                    const pos = this._body.getPosition()
+                    const pos = this.getWorldPoint(circle.m_p)
                     const graphics = new Pixi.Graphics()
-                    //this._debugRenderObj.addChild(graphics as any)
+                    this._debugRenderObj.addChild(graphics as any)
                     graphics.lineStyle(0)
-                    graphics.beginFill(0xff0000)
+                    graphics.beginFill(color, alpha)
                     graphics.drawCircle(
                         pos.x * PHYSICS_TO_RENDER_SCALE,
                         pos.y * PHYSICS_TO_RENDER_SCALE,
-                        circle.m_radius
+                        circle.m_radius * PHYSICS_TO_RENDER_SCALE
                     )
                     graphics.endFill()
                     break

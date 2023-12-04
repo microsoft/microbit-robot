@@ -1,122 +1,108 @@
 import { defaultCircleShape, defaultColorBrush } from "../maps/specs"
 import { BotSpec } from "./specs"
 
+const wheelBrush = {
+    // TODO: Make this an animated texture or pattern
+    ...defaultColorBrush(),
+    fillColor: "#212738",
+    borderColor: "black",
+    borderWidth: 0.2,
+    zIndex: 1,
+}
+
+const lineSensorBrush = {
+    on: {
+        ...defaultColorBrush(),
+        fillColor: "white",
+        borderColor: "white",
+        borderWidth: 0.1,
+    },
+    off: {
+        ...defaultColorBrush(),
+        fillColor: "black",
+        borderColor: "black",
+        borderWidth: 0.1,
+    },
+}
+
 const spec: BotSpec = {
     name: "Test Bot",
     chassis: {
         shape: {
             ...defaultCircleShape(),
             radius: 8.6 / 2, // cm
-            //...defaultBoxShape(),
-            //size: { x: 8.6, y: 8.6 },
         },
         brush: {
-            // TODO: Make this a texture
             ...defaultColorBrush(),
             fillColor: "#11B5E499",
             borderColor: "#555555",
         },
     },
+    // Recognized wheel names: "left", "right"
     wheels: [
         {
-            label: "left",
+            name: "left",
             maxSpeed: 100,
+            // offset to center of wheel from chassis center
             pos: { x: -3.8, y: 1.5 },
+            // wheel width
             width: 1.3,
+            // wheel radius
             radius: 3.6 / 2,
-            brush: {
-                // TODO: Make this an animated texture or pattern
-                ...defaultColorBrush(),
-                fillColor: "#212738",
-                borderColor: "black",
-                borderWidth: 0.2,
-                zIndex: 1,
-            },
+            brush: wheelBrush,
         },
         {
-            label: "right",
+            name: "right",
             maxSpeed: 100,
+            // offset to center of wheel from chassis center
             pos: { x: 3.8, y: 1.5 },
+            // wheel width
             width: 1.3,
+            // wheel radius
             radius: 3.6 / 2,
-            brush: {
-                // TODO: Make this an animated texture or pattern
-                ...defaultColorBrush(),
-                fillColor: "#212738",
-                borderColor: "black",
-                borderWidth: 0.2,
-                zIndex: 1,
-            },
+            brush: wheelBrush,
         },
     ],
     rangeSensor: {
         angle: 10,
         pos: { x: 4.5, y: 0 },
         brush: {
-            // TODO
             ...defaultColorBrush(),
         },
     },
+    // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
     lineSensors: [
         {
-            label: "left",
+            name: "left",
+            // offset to center of sensor from chassis center
             pos: { x: -0.58, y: -2.74 },
-            brush: {
-                on: {
-                    // TODO make look nice
-                    ...defaultColorBrush(),
-                    fillColor: "white",
-                    borderColor: "white",
-                    borderWidth: 0.1,
-                },
-                off: {
-                    // TODO make look nice
-                    ...defaultColorBrush(),
-                    fillColor: "black",
-                    borderColor: "black",
-                    borderWidth: 0.1,
-                },
-            },
+            brush: lineSensorBrush,
         },
         {
-            label: "right",
+            name: "right",
+            // offset to center of sensor from chassis center
             pos: { x: 0.58, y: -2.74 },
-            brush: {
-                on: {
-                    // TODO make look nice
-                    ...defaultColorBrush(),
-                    fillColor: "white",
-                    borderColor: "white",
-                    borderWidth: 0.1,
-                },
-                off: {
-                    // TODO make look nice
-                    ...defaultColorBrush(),
-                    fillColor: "black",
-                    borderColor: "black",
-                    borderWidth: 0.1,
-                },
-            },
+            brush: lineSensorBrush,
         },
     ],
     leds: [
         {
-            label: "left",
+            name: "left",
             pos: { x: 4.5, y: 1.5 },
             brush: {
-                // TODO
                 ...defaultColorBrush(),
             },
         },
         {
-            label: "right",
+            name: "right",
             pos: { x: 4.5, y: -1.5 },
             brush: {
-                // TODO
                 ...defaultColorBrush(),
             },
         },
     ],
+    // Ballast can be used to adjust the center of mass of the bot.
+    // Here it represents a battery located between the wheels.
     ballast: {
         pos: { x: 0, y: 1.3 },
         size: { x: 3.8, y: 1.6 },

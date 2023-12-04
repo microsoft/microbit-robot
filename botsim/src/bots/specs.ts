@@ -1,13 +1,25 @@
 import { Vec2Like } from "../types/vec2"
 import { BrushSpec, ShapeSpec } from "../maps/specs"
 
+export const LINE_SENSORS = {
+    ["outer-left"]: 0,
+    ["left"]: 1,
+    ["middle"]: 2,
+    ["right"]: 3,
+    ["outer-right"]: 4,
+}
+
+type WheelSlotName = "left" | "right"
+type LineSensorSlotName = keyof typeof LINE_SENSORS
+type LEDSlotName = "left" | "right"
+
 export type ChassisSpec = {
     shape: ShapeSpec
     brush: BrushSpec
 }
 
 export type WheelSpec = {
-    label: string // identification label
+    name: WheelSlotName // identification label
     maxSpeed: number // max speed forward (positive). no units, just influences force computation.
     pos: Vec2Like // offset from chassis center
     width: number // cm
@@ -16,7 +28,7 @@ export type WheelSpec = {
 }
 
 export type LineSensorSpec = {
-    label: string // identification label
+    name: LineSensorSlotName // identification label
     pos: Vec2Like // offset from chassis center
     brush: {
         on: BrushSpec
@@ -31,7 +43,7 @@ export type RangeSensorSpec = {
 }
 
 export type LEDSpec = {
-    label: string // identification label
+    name: LEDSlotName // identification label
     pos: Vec2Like // offset from chassis center
     brush: BrushSpec
 }
@@ -42,7 +54,7 @@ export type LEDSpec = {
 export type BallastSpec = {
     pos: Vec2Like // offset from chassis center
     size: Vec2Like // cm
-    mass: number // mg (converted to density as mass/area)
+    mass: number
 }
 
 export type BotSpec = {
@@ -53,12 +65,4 @@ export type BotSpec = {
     lineSensors?: LineSensorSpec[]
     leds?: LEDSpec[]
     ballast?: BallastSpec
-}
-
-export const LINE_SENSORS = {
-    ["outer-left"]: 0,
-    ["left"]: 1,
-    ["middle"]: 2,
-    ["right"]: 3,
-    ["outer-right"]: 4,
 }
