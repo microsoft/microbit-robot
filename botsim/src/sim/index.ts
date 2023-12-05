@@ -12,7 +12,6 @@ import {
 } from "./specs"
 import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
-import { Container } from "./container"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PHYSICS_SCALE } from "./constants"
@@ -38,7 +37,7 @@ export const defaultLineSensorValues = (): LineSensorValues => ({
  * The Simulation class is a small game engine. It contains a physics engine and
  * a renderer. Each object in the simulation is represented by the Entity class.
  */
-export class Simulation extends Container {
+export class Simulation {
     private paused = false
     private running = false
     private animframe = 0
@@ -46,6 +45,7 @@ export class Simulation extends Container {
     private _physics: Physics
     private _renderer: Renderer
     private _input: InputState
+    private _entities: Entity[] = [];
 
     private _spawn: SpawnSpec
     private _bot?: Bot
@@ -62,6 +62,9 @@ export class Simulation extends Container {
     public get input() {
         return this._input
     }
+    public get entities() {
+        return this._entities
+    }
     public get spawn() {
         return this._spawn
     }
@@ -70,7 +73,6 @@ export class Simulation extends Container {
     }
 
     private constructor() {
-        super()
         //this.debugDraw = true
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
@@ -134,7 +136,8 @@ export class Simulation extends Container {
     }
 
     public clear() {
-        super.clear(true)
+        this._entities.forEach((ent) => ent.destroy())
+        this._entities = []
         this._bot = undefined
         this._physics.reinit()
         this._renderer.reinit()
@@ -166,21 +169,20 @@ export class Simulation extends Container {
     private step(dtSecs: number) {
         try {
             this.physics.update(dtSecs)
-            this.children.forEach((ent) => ent.update(dtSecs))
-            // Update bot (and other controllers?) to step things (like animations (and AI?))
-            this._bot?.update(dtSecs)
+            this.entities.forEach((ent) => ent.update(dtSecs))
+            this.bot?.update(dtSecs)
         } catch (e: any) {
             console.error(e.toString())
         }
     }
 
     public beforePhysicsStep(dtSecs: number) {
-        this._bot?.beforePhysicsStep(dtSecs)
-        this.children.forEach((ent) => ent.beforePhysicsStep(dtSecs))
+        this.bot?.beforePhysicsStep(dtSecs)
+        this.entities.forEach((ent) => ent.beforePhysicsStep(dtSecs))
     }
 
     public afterPhysicsStep(dtSecs: number) {
-        this.children.forEach((ent) => ent.afterPhysicsStep(dtSecs))
+        this.entities.forEach((ent) => ent.afterPhysicsStep(dtSecs))
     }
 
     public loadMap(map: MapSpec) {
@@ -206,22 +208,25 @@ export class Simulation extends Container {
         this._bot = new Bot(this, botSpec)
     }
 
-    public createEntity(spec: EntitySpec, parent?: Container): Entity {
-        if (!parent) parent = this
+    public createEntity(spec: EntitySpec): Entity {
         const ent = new Entity(this, spec)
         ent.init(createRenderObj(ent, spec), createPhysicsObj(ent, spec))
-        parent.addChild(ent)
-        spec.children?.forEach((child) => this.createEntity(child, ent))
+        this.addEntity(ent);
         return ent
     }
 
-    public addChild(ent: Entity) {
-        super.addChild(ent)
+    private addEntity(ent: Entity) {
+        this.entities.push(ent)
         this.physics.add(ent.physicsObj)
         if (this.debugDraw && ent.physicsObj.debugRenderObj)
             this.renderer.addDebugObj(ent.physicsObj.debugRenderObj as any)
         else
             this.renderer.add(ent.renderObj)
+    }
+
+    public removeEntity(ent: Entity) {
+        this.entities.splice(this.entities.indexOf(ent), 1)
+        ent.destroy();
     }
 
     public resize(size: Vec2Like) {
@@ -257,8 +262,8 @@ export class Simulation extends Container {
     private buildWalls(size: Vec2Like) {
         // TODO: Entity destoy path is not fleshed out yet
         if (this.walls) {
-            this.removeChild(this.walls)
-            this.walls.physicsObj.destroy()
+            this.removeEntity(this.walls);
+            this.walls = undefined;
         }
         const wallCommon = {
             ...defaultEntityShape(),

@@ -95,7 +95,7 @@ export const defaultEdgeShape = (): EdgeShapeSpec => ({
     roles: [],
 })
 
-/// Physical shapes
+/// Physics of a shape
 
 export type ShapePhysicsSpec = {
     density: number
@@ -113,7 +113,7 @@ export const defaultShapePhysics = (): ShapePhysicsSpec => ({
     sensor: false,
 })
 
-/// Entity Shape
+/// Shape applied to an entity
 
 type EntityShapeCommonSpec = {
     offset: Vec2Like // cm, offset from entity origin
@@ -150,7 +150,6 @@ export type EntitySpec = {
     angle: number // degrees
     physics: EntityPhysicsSpec
     shapes: EntityShapeSpec[]
-    children?: EntitySpec[]
 }
 
 export const defaultEntity = (): EntitySpec => ({
@@ -161,21 +160,6 @@ export const defaultEntity = (): EntitySpec => ({
     shapes: [],
 })
 
-/// Joints
-
-export type JointType = "revolute" | "prismatic" | "distance" | "weld" | "mouse"
-
-export type JointSpec = {
-    type: JointType
-    transformToParent?: boolean
-}
-
-export const defaultJoint = (): JointSpec => ({
-    type: "revolute",
-})
-
-// TODO: add specs for specific joint types
-
 /// Entity Physics
 
 export type EntityPhysicsType = "dynamic" | "static"
@@ -185,7 +169,6 @@ export type EntityPhysicsSpec = {
     angularDamping: number
     linearDamping: number
     fixedRotation?: boolean
-    joint?: JointSpec // When this entity is childed to another, this is the kind of joint to use.
 }
 
 export const defaultDynamicPhysics = (): EntityPhysicsSpec => ({

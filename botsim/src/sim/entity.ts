@@ -2,18 +2,15 @@ import { RenderObject } from "./renderer"
 import { PhysicsObject } from "./physics"
 import { Vec2Like } from "../types/vec2"
 import { Simulation } from "."
-import { Container } from "./container"
 import { EntitySpec } from "./specs"
 
 /**
  * An Entity is a container for a RenderObject and a PhysicsObject. These two
  * objects represent the visual and physical aspects of the entity,
  * respectively. The Entity class is responsible for keeping these two objects
- * in sync with each other, and for managing the entity's children.
+ * in sync with each other.
  */
-export class Entity extends Container {
-    parent: Container | undefined
-
+export class Entity {
     private _renderObj!: RenderObject
     private _physicsObj!: PhysicsObject
     public label: string | undefined
@@ -46,7 +43,6 @@ export class Entity extends Container {
         private _sim: Simulation,
         spec: EntitySpec
     ) {
-        super()
         this.label = spec.label
     }
 
@@ -56,18 +52,9 @@ export class Entity extends Container {
         this._renderObj.sync()
     }
 
-    public addChild(ent: Entity): void {
-        super.addChild(ent)
-        this.physicsObj.add(ent.physicsObj)
-        this.sim.renderer.add(ent.renderObj)
-    }
-
-    public clear(destroy: boolean = true) {
-        if (destroy) {
-            this.renderObj.destroy()
-            this.physicsObj.destroy()
-        }
-        super.clear()
+    public destroy() {
+        this.renderObj.destroy()
+        this.physicsObj.destroy()
     }
 
     public update(dtSecs: number) {
@@ -77,12 +64,10 @@ export class Entity extends Container {
 
     public beforePhysicsStep(dtSecs: number) {
         this.physicsObj.beforePhysicsStep(dtSecs)
-        this.children.forEach((child) => child.beforePhysicsStep(dtSecs))
     }
 
     public afterPhysicsStep(dtSecs: number) {
         this.physicsObj.afterPhysicsStep(dtSecs)
         this.renderObj.afterPhysicsStep(dtSecs)
-        this.children.forEach((child) => child.afterPhysicsStep(dtSecs))
     }
 }

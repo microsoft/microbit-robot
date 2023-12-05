@@ -13,8 +13,6 @@ import { Simulation } from "."
 import {
     EntitySpec,
     ShapeType,
-    JointSpec,
-    defaultJoint,
     EntityShapeSpec,
     EntityBoxShapeSpec,
     EntityCircleShapeSpec,
@@ -184,7 +182,6 @@ export class PhysicsObject {
     constructor(
         private _entity: Entity,
         private _body: Planck.Body,
-        private _jointSpec?: JointSpec // when this object is added to another, this is the kind of joint to use
     ) {
         this._debugRenderObj = new Pixi.Graphics()
         this._debugRenderObj.zIndex = 100
@@ -291,120 +288,6 @@ export class PhysicsObject {
         // NOTE/TODO: Physics destroy is not currently working reliably and might
         // leave invisible bodies in the world
         this._entity.sim.physics.world.destroyBody(this.body)
-    }
-
-    public add(physicsObj: PhysicsObject) {
-        const relativePos = physicsObj.pos
-        const jointSpec =
-            physicsObj._jointSpec ?? this._jointSpec ?? defaultJoint()
-
-        if (jointSpec.transformToParent) {
-            const rotated = Vec2.rotateDeg(relativePos, this.angle)
-            const absolutePos = Vec2.add(this.pos, rotated)
-            physicsObj.pos = absolutePos
-            physicsObj.angle += this.angle
-        }
-
-        switch (jointSpec.type) {
-            case "revolute":
-                this.addRevoluteJoint(physicsObj, relativePos, jointSpec)
-                break
-            case "prismatic":
-                this.addPrismaticJoint(physicsObj, relativePos, jointSpec)
-                break
-            case "distance":
-                this.addDistanceJoint(physicsObj, relativePos, jointSpec)
-                break
-            case "weld":
-                this.addWeldJoint(physicsObj, relativePos, jointSpec)
-                break
-        }
-    }
-
-    private addRevoluteJoint(
-        physicsObj: PhysicsObject,
-        offset: Vec2Like,
-        jointSpec: JointSpec
-    ): Planck.RevoluteJoint | undefined {
-        const jointDef: Planck.RevoluteJointDef = {
-            collideConnected: false,
-            bodyA: this.body,
-            bodyB: physicsObj.body,
-            localAnchorB: Planck.Vec2.zero(),
-            localAnchorA: Planck.Vec2(offset),
-            referenceAngle: 0,
-            lowerAngle: 0,
-            upperAngle: 0,
-            enableLimit: true,
-        }
-        return (
-            this._entity.sim.physics.world.createJoint(
-                new Planck.RevoluteJoint(jointDef)
-            ) ?? undefined
-        )
-    }
-
-    private addPrismaticJoint(
-        physicsObj: PhysicsObject,
-        offset: Vec2Like,
-        jointSpec: JointSpec
-    ): Planck.PrismaticJoint | undefined {
-        const jointDef: Planck.PrismaticJointDef = {
-            collideConnected: false,
-            bodyA: this.body,
-            bodyB: physicsObj.body,
-            localAnchorB: Planck.Vec2.zero(),
-            localAnchorA: Planck.Vec2(offset),
-            localAxisA: Planck.Vec2(0, 1),
-            referenceAngle: 0,
-        }
-        return (
-            this._entity.sim.physics.world.createJoint(
-                new Planck.PrismaticJoint(jointDef)
-            ) ?? undefined
-        )
-    }
-
-    private addDistanceJoint(
-        physicsObj: PhysicsObject,
-        offset: Vec2Like,
-        jointSpec: JointSpec
-    ): Planck.DistanceJoint | undefined {
-        const jointDef: Planck.DistanceJointDef = {
-            collideConnected: false,
-            bodyA: this.body,
-            bodyB: physicsObj.body,
-            localAnchorB: Planck.Vec2.zero(),
-            localAnchorA: Planck.Vec2(offset),
-            length: 0,
-            frequencyHz: 0,
-            dampingRatio: 1,
-        }
-        return (
-            this._entity.sim.physics.world.createJoint(
-                new Planck.DistanceJoint(jointDef)
-            ) ?? undefined
-        )
-    }
-
-    private addWeldJoint(
-        physicsObj: PhysicsObject,
-        offset: Vec2Like,
-        jointSpec: JointSpec
-    ): Planck.WeldJoint | undefined {
-        const jointDef: Planck.WeldJointDef = {
-            collideConnected: false,
-            bodyA: this.body,
-            bodyB: physicsObj.body,
-            localAnchorB: Planck.Vec2.zero(),
-            localAnchorA: Planck.Vec2(offset),
-            localAxisA: Planck.Vec2(0, 1),
-        }
-        return (
-            this._entity.sim.physics.world.createJoint(
-                new Planck.WeldJoint(jointDef)
-            ) ?? undefined
-        )
     }
 
     public addFrictionJoint(
@@ -708,6 +591,6 @@ function createBody(world: Planck.World, spec: EntitySpec): Planck.Body {
 
 export function createPhysicsObj(ent: Entity, spec: EntitySpec): PhysicsObject {
     const body = createBody(ent.sim.physics.world, spec)
-    const physicsObj = new PhysicsObject(ent, body, spec.physics.joint)
+    const physicsObj = new PhysicsObject(ent, body)
     return physicsObj
 }
