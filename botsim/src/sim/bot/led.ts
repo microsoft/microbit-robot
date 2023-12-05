@@ -9,8 +9,10 @@ export class LED {
             const shape: ChassisShapeSpec = {
                 ...bot.chassis.shape
             };
+            let brush = bot.chassis.brush;
             if (shape.type === "circle" && bot.chassis.shape.type === "circle") {
                 shape.radius = bot.chassis.shape.radius * 1.5;
+
             }
             const shapeSpec: EntityShapeSpec = {
                 ...defaultEntityShape(),
@@ -19,9 +21,7 @@ export class LED {
                     ...defaultShapePhysics(),
                     sensor: true, // Don't collide with anything
                 },
-                brush: {
-                    ...defaultColorBrush()
-                }
+                brush
             }
             return shapeSpec
         } else {

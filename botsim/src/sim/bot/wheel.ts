@@ -49,7 +49,7 @@ export class Wheel {
         private bot: Bot,
         private spec: WheelSpec
     ) {
-        this.localPos = Vec2.scale(this.spec.pos, RENDER_SCALE) // TODO: This shouldn't be scaled by render scale. Needs debugging why it is working this way and not the other
+        this.localPos = Vec2.scale(this.spec.pos, PHYSICS_SCALE)
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
         // Handles some of the friction between wheel and ground. Additional
@@ -90,7 +90,8 @@ export class Wheel {
         const dampenAngularVelocity = true
         const dampenLateralVelocity = true
 
-        const maxAngularVelocity = 0.0005 // The maximum angular velocity to allow (hand-tuned)
+        // Tweak this value to adjust top spin rate
+        const maxAngularVelocity = 10 // The maximum angular velocity to allow (hand-tuned)
 
         //// Dampen angular velocity
         if (dampenAngularVelocity) {
@@ -132,7 +133,8 @@ export class Wheel {
         const worldPos = this.bot.entity.physicsObj.getWorldPoint(this.localPos)
         const forwardDir = this.bot.forward
 
-        const speedMagScalar = 2 // hand-tuned
+        // Tweak this value to adjust top speed
+        const speedMagScalar = 4.5 // hand-tuned
         const forceMag =
             this.currSpeed *
             speedMagScalar *
