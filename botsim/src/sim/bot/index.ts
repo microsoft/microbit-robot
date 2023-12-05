@@ -48,20 +48,21 @@ export class Bot {
 
     constructor(
         public sim: Simulation,
-        private botSpec: BotSpec
+        public spec: BotSpec
     ) {
-        const chassisShape = Chassis.makeShapeSpec(botSpec)
-        const wheelShapes = Wheel.makeShapeSpecs(botSpec)
-        const ballastShape = makeBallastSpec(botSpec)
+        const chassisShape = Chassis.makeShapeSpec(spec)
+        const wheelShapes = Wheel.makeShapeSpecs(spec)
+        const ballastShape = makeBallastSpec(spec)
 
-        botSpec.lineSensors?.forEach((sensorSpec) => {
+        spec.lineSensors?.forEach((sensorSpec) => {
             const sensor = new LineSensor(this, sensorSpec)
             this.lineSensors.set(sensorSpec.name, sensor)
         })
         const lineSensorShapes = Array.from(this.lineSensors.values()).map(
             (sensor) => sensor.shapeSpecs
         )
-        const ledShapes = botSpec.leds?.map((ledSpec) => LED.makeShapeSpec(botSpec, ledSpec)) ?? []
+        const ledShapes =
+            spec.leds?.map((ledSpec) => LED.makeShapeSpec(spec, ledSpec)) ?? []
 
         const shapes: EntityShapeSpec[] = [
             chassisShape,
@@ -86,14 +87,14 @@ export class Bot {
 
         this.entity = sim.createEntity(entitySpec)
 
-        this.chassis = new Chassis(this, botSpec.chassis)
-        botSpec.wheels.forEach((wheelSpec) =>
+        this.chassis = new Chassis(this, spec.chassis)
+        spec.wheels.forEach((wheelSpec) =>
             this.wheels.set(wheelSpec.name, new Wheel(this, wheelSpec))
         )
-        if (botSpec.rangeSensor)
-            this.rangeSensor = new RangeSensor(this, botSpec.rangeSensor)
+        if (spec.rangeSensor)
+            this.rangeSensor = new RangeSensor(this, spec.rangeSensor)
 
-        botSpec.leds?.forEach((ledSpec) =>
+        spec.leds?.forEach((ledSpec) =>
             this.leds.set(ledSpec.name, new LED(this, ledSpec))
         )
     }
@@ -196,12 +197,15 @@ export class Bot {
         this.setWheelSpeed("right", right)
     }
 
-    public setLEDColor(name: LEDSlotName, color: number) {
+    public setColor(name: LEDSlotName, color: number) {
         // TODO: should we allow this when held?
         if (this.held) return
+        /*
         const led = this.leds.get(name)
         if (!led) return
         led.setColor(color)
+        */
+        this.chassis.setColor(color)
     }
 
     public readLineSensors(): LineSensorValues {

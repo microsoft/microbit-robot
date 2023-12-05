@@ -35,6 +35,7 @@ async function applyRobotStateAsync(
 ) {
     const sim = await Simulation.getAsync()
     sim?.setMotors(deviceId, motorLeft, motorRight)
+    sim?.setColor(deviceId, color)
 }
 
 async function readRobotLineSensorsAsync(

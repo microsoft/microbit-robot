@@ -29,7 +29,7 @@ export class Wheel {
             size: { x: spec.width, y: spec.radius * 2 },
             brush: {
                 ...spec.brush,
-                zIndex: 1,
+                zIndex: 6,
             },
             physics: {
                 ...defaultShapePhysics(),

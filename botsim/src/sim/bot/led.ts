@@ -1,27 +1,41 @@
 import { Bot } from "."
-import { BotSpec, ChassisShapeSpec, LEDSpec } from "../../bots/specs"
-import { EntityShapeSpec, defaultCircleShape, defaultColorBrush, defaultEntityShape, defaultShapePhysics } from "../specs";
+import { BotSpec, LEDSpec } from "../../bots/specs"
+import { Vec2 } from "../../types/vec2"
+import {
+    EntityShapeSpec,
+    defaultCircleShape,
+    defaultColorBrush,
+    defaultEntityShape,
+    defaultShapePhysics,
+} from "../specs"
 
 export class LED {
-    public static makeShapeSpec(bot: BotSpec, ledSpec: LEDSpec): EntityShapeSpec {
-
+    public static makeShapeSpec(
+        bot: BotSpec,
+        ledSpec: LEDSpec
+    ): EntityShapeSpec {
         if (ledSpec.name === "general") {
-            const shape: ChassisShapeSpec = {
-                ...bot.chassis.shape
-            };
-            let brush = bot.chassis.brush;
-            if (shape.type === "circle" && bot.chassis.shape.type === "circle") {
-                shape.radius = bot.chassis.shape.radius * 1.5;
-
+            let radius = 0
+            if (bot.chassis.shape.type === "circle") {
+                radius = bot.chassis.shape.radius * 2
+            } else if (bot.chassis.shape.type === "box") {
+                radius = 1.5 * Vec2.len(bot.chassis.shape.size)
             }
             const shapeSpec: EntityShapeSpec = {
                 ...defaultEntityShape(),
-                ...shape,
+                ...defaultCircleShape(),
+                radius,
                 physics: {
                     ...defaultShapePhysics(),
                     sensor: true, // Don't collide with anything
                 },
-                brush
+                brush: {
+                    ...defaultColorBrush(),
+                    fillColor: "00FF0044",
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    zIndex: 1,
+                },
             }
             return shapeSpec
         } else {
@@ -36,7 +50,7 @@ export class LED {
         }
     }
 
-    private color: number = 0;
+    private color: number = 0
 
     constructor(
         private bot: Bot,
@@ -47,14 +61,13 @@ export class LED {
 
     public beforePhysicsStep(dtSecs: number) {}
 
-    public update(dtSecs: number) { }
-    
+    public update(dtSecs: number) {}
+
     public setColor(color: number) {
-        if (color === this.color) return;
-        this.color = color;
-        this.rebuildBrush();
+        if (color === this.color) return
+        this.color = color
+        this.rebuildBrush()
     }
 
-    private rebuildBrush() {
-    }
+    private rebuildBrush() {}
 }

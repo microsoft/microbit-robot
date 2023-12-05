@@ -30,7 +30,7 @@ export class LineSensor {
             brush: {
                 ...spec.brush.on,
                 visible: false,
-                zIndex: 1,
+                zIndex: 6,
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -49,7 +49,7 @@ export class LineSensor {
             brush: {
                 ...spec.brush.off,
                 visible: true,
-                zIndex: 1,
+                zIndex: 6,
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -72,7 +72,7 @@ export class LineSensor {
                 fillColor: "transparent",
                 borderColor: "transparent",
                 borderWidth: 0,
-                zIndex: 2,
+                zIndex: 1,
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -106,7 +106,7 @@ export class LineSensor {
         ) {
             // TODO: Support multiple bots in the scene. As implemented, this
             // doesn't work for that scenario.
-            
+
             // TODO: Refactor contacts to work from Simulation, providing a
             // single contact listener instead of embedding polling like this in
             // components.

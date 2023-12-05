@@ -18,10 +18,7 @@ export type WheelSlotName = "left" | "right"
 export type LineSensorSlotName = keyof typeof LINE_SENSORS
 export type LEDSlotName = "left" | "right" | "general"
 
-export type ChassisShapeSpec =
-    | CircleShapeSpec
-    | BoxShapeSpec
-    | PolygonShapeSpec
+export type ChassisShapeSpec = CircleShapeSpec | BoxShapeSpec
 
 export type ChassisSpec = {
     shape: ChassisShapeSpec

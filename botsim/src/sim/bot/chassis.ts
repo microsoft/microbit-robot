@@ -5,6 +5,8 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import { Bot } from "."
+import { numberToRgb, rgbToString } from "../util"
+import { createGraphics } from "../renderer"
 
 export class Chassis {
     public static makeShapeSpec(botSpec: BotSpec): EntityShapeSpec {
@@ -16,7 +18,7 @@ export class Chassis {
             roles: ["mouse-target"],
             brush: {
                 ...chassisSpec.brush,
-                zIndex: 1,
+                zIndex: 5,
             },
             physics: {
                 ...defaultShapePhysics(),
@@ -31,17 +33,34 @@ export class Chassis {
         return this._spec
     }
 
+    private cachedColor: number = -2
+
     constructor(
         private bot: Bot,
         private _spec: ChassisSpec
-    ) {
-        //const frict = this.bot.entity.physicsObj.addFrictionJoint(Vec2.zero())
-        //frict?.setMaxForce(10)
-    }
+    ) {}
 
     public destroy() {}
 
     public beforePhysicsStep(dtSecs: number) {}
 
     public update(dtSecs: number) {}
+
+    public setColor(color: number) {
+        if (this.cachedColor === color) return
+        this.cachedColor = color
+        // this is the worst way possible to change the color. works for now. don't do this.
+        const renderShape = this.bot.entity.renderObj.shapes.get("chassis")
+        const newSpec = Chassis.makeShapeSpec(this.bot.spec)
+        const newBrush = newSpec.brush
+        if (newBrush.type === "color") {
+            const c = rgbToString(numberToRgb(color))
+            newBrush.fillColor = c + "99"
+        }
+        const newGfx = createGraphics[newSpec.type][newSpec.brush.type](
+            newSpec,
+            newSpec.brush
+        )
+        renderShape?.setGfx(newGfx)
+    }
 }

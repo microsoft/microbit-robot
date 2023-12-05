@@ -125,6 +125,12 @@ class RenderShape {
         public spec: EntityShapeSpec,
         public gfx: Pixi.DisplayObject
     ) {}
+    public setGfx(gfx: Pixi.DisplayObject) {
+        const idx = this.gfx.parent?.getChildIndex(this.gfx)
+        this.gfx.parent?.addChildAt(gfx, idx ?? 0)
+        this.gfx.removeFromParent()
+        this.gfx = gfx
+    }
 }
 
 /**
@@ -133,7 +139,7 @@ class RenderShape {
  * randomly assigned key otherwise.
  */
 export class RenderObject {
-    private _container = new Pixi.Container<any>()
+    private _container = new Pixi.Container()
 
     public get handle() {
         return this._container
@@ -173,7 +179,7 @@ export class RenderObject {
 }
 
 // Factory functions for creating renderable objects
-const createGraphics: {
+export const createGraphics: {
     [entity in ShapeType]: {
         [brush in BrushType]: (
             shape: EntityShapeSpec,

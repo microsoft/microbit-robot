@@ -1,8 +1,4 @@
-import {
-    BoxShapeSpec,
-    HorizontalAlignment,
-    VerticalAlignment,
-} from "./specs"
+import { BoxShapeSpec, HorizontalAlignment, VerticalAlignment } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
@@ -159,17 +155,14 @@ export function calcMidVectors(p: Vec2Like[]): Vec2[] {
     return mids
 }
 
-export function makePathPolygons(
-    path: Vec2Like[],
-    width: number
-): Vec2[][] {
+export function makePathPolygons(path: Vec2Like[], width: number): Vec2[][] {
     const polygons: Vec2[][] = []
 
     const mids = calcMidVectors(path)
 
     if (mids.length != path.length) {
         // Something went wrong
-        return polygons;
+        return polygons
     }
 
     for (let i = 0; i < path.length - 1; i++) {
@@ -186,7 +179,7 @@ export function makePathPolygons(
         polygons.push(verts)
     }
 
-    return polygons;
+    return polygons
 }
 
 export function toColor(s: string): Pixi.Color {
@@ -196,6 +189,55 @@ export function toColor(s: string): Pixi.Color {
         console.error(e.toString())
         return new Pixi.Color("red")
     }
+}
+
+export type Argb = {
+    a: number
+    r: number
+    g: number
+    b: number
+}
+
+export type Rgb = {
+    r: number
+    g: number
+    b: number
+}
+
+export function numberToArgb(n: number): Argb {
+    return {
+        a: (n >> 24) & 0xff,
+        r: (n >> 16) & 0xff,
+        g: (n >> 8) & 0xff,
+        b: n & 0xff,
+    }
+}
+
+export function numberToRgb(n: number): Rgb {
+    return {
+        r: (n >> 16) & 0xff,
+        g: (n >> 8) & 0xff,
+        b: n & 0xff,
+    }
+}
+
+export function argbToString(argb: Argb): string {
+    return (
+        "#" +
+        argb.a.toString(16).padStart(2, "0") +
+        argb.r.toString(16).padStart(2, "0") +
+        argb.g.toString(16).padStart(2, "0") +
+        argb.b.toString(16).padStart(2, "0")
+    )
+}
+
+export function rgbToString(rgb: Rgb): string {
+    return (
+        "#" +
+        rgb.r.toString(16).padStart(2, "0") +
+        rgb.g.toString(16).padStart(2, "0") +
+        rgb.b.toString(16).padStart(2, "0")
+    )
 }
 
 export function toRenderScale(n: number): number {

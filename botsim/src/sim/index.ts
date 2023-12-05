@@ -45,7 +45,7 @@ export class Simulation {
     private _physics: Physics
     private _renderer: Renderer
     private _input: InputState
-    private _entities: Entity[] = [];
+    private _entities: Entity[] = []
 
     private _spawn: SpawnSpec
     private _bot?: Bot
@@ -208,7 +208,7 @@ export class Simulation {
     public createEntity(spec: EntitySpec): Entity {
         const ent = new Entity(this, spec)
         ent.init(createRenderObj(ent, spec), createPhysicsObj(ent, spec))
-        this.addEntity(ent);
+        this.addEntity(ent)
         return ent
     }
 
@@ -217,13 +217,12 @@ export class Simulation {
         this.physics.add(ent.physicsObj)
         if (this.debugDraw && ent.physicsObj.debugRenderObj)
             this.renderer.addDebugObj(ent.physicsObj.debugRenderObj as any)
-        else
-            this.renderer.add(ent.renderObj)
+        else this.renderer.add(ent.renderObj)
     }
 
     public removeEntity(ent: Entity) {
         this.entities.splice(this.entities.indexOf(ent), 1)
-        ent.destroy();
+        ent.destroy()
     }
 
     public resize(size: Vec2Like) {
@@ -259,8 +258,8 @@ export class Simulation {
     private buildWalls(size: Vec2Like) {
         // TODO: Entity destoy path is not fleshed out yet
         if (this.walls) {
-            this.removeEntity(this.walls);
-            this.walls = undefined;
+            this.removeEntity(this.walls)
+            this.walls = undefined
         }
         const wallCommon = {
             ...defaultEntityShape(),
@@ -323,6 +322,11 @@ export class Simulation {
     public setMotors(deviceId: number, left: number, right: number) {
         // TODO: Lookup or create bot by deviceId
         this._bot?.setMotors(left, right)
+    }
+
+    public setColor(deviceId: number, color: number) {
+        // TODO: Lookup or create bot by deviceId
+        this._bot?.setColor("general", color)
     }
 
     public readLineSensors(deviceId: number): LineSensorValues {

@@ -178,7 +178,7 @@ export class PhysicsObject {
 
     constructor(
         private _entity: Entity,
-        private _body: Planck.Body,
+        private _body: Planck.Body
     ) {
         this._debugRenderObj = new Pixi.Graphics()
         this._debugRenderObj.zIndex = 100
