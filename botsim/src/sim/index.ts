@@ -169,6 +169,7 @@ export class Simulation {
     private step(dtSecs: number) {
         try {
             this.physics.update(dtSecs)
+            this.renderer.update(dtSecs)
             this.entities.forEach((ent) => ent.update(dtSecs))
             this.bot?.update(dtSecs)
         } catch (e: any) {
@@ -179,10 +180,6 @@ export class Simulation {
     public beforePhysicsStep(dtSecs: number) {
         this.bot?.beforePhysicsStep(dtSecs)
         this.entities.forEach((ent) => ent.beforePhysicsStep(dtSecs))
-    }
-
-    public afterPhysicsStep(dtSecs: number) {
-        this.entities.forEach((ent) => ent.afterPhysicsStep(dtSecs))
     }
 
     public loadMap(map: MapSpec) {

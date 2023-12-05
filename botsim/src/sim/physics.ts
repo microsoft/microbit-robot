@@ -140,7 +140,6 @@ export default class Physics {
     public update(dtSecs: number): number {
         this.sim.beforePhysicsStep(dtSecs)
         this.world.step(dtSecs, 6, 2)
-        this.sim.afterPhysicsStep(dtSecs)
         return 0
     }
 
@@ -188,10 +187,6 @@ export class PhysicsObject {
     }
 
     public beforePhysicsStep(dtSecs: number) {}
-
-    public afterPhysicsStep(dtSecs: number) {
-        if (this._entity.sim.debugDraw) this.debugDraw()
-    }
 
     private debugDraw() {
         this._debugRenderObj.removeChildren()
@@ -282,7 +277,9 @@ export class PhysicsObject {
         }
     }
 
-    public update(dtSecs: number) {}
+    public update(dtSecs: number) {
+        if (this._entity.sim.debugDraw) this.debugDraw()
+    }
 
     public destroy() {
         // NOTE/TODO: Physics destroy is not currently working reliably and might

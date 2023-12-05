@@ -150,9 +150,7 @@ export class RenderObject {
         )
     }
 
-    public update(dtSecs: number) {}
-
-    public afterPhysicsStep(dtSecs: number) {
+    public update(dtSecs: number) {
         this.sync()
     }
 
