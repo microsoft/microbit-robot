@@ -4,7 +4,7 @@ import {
     defaultBoxShape,
     defaultEntityShape,
     defaultShapePhysics,
-} from "../../maps/specs"
+} from "../specs"
 import { PHYSICS_SCALE, PHYS_CAT_ROBOT, PIXELS_PER_CM } from "../constants"
 import { makeCategoryBits, makeMaskBits } from "../util"
 import { Bot } from "."
@@ -70,17 +70,18 @@ export class Wheel {
     public destroy() {}
 
     public beforePhysicsStep(dtSecs: number) {
+        // If bot is held, don't apply friction
         if (this.bot.held) return
         this.updateFriction(dtSecs)
     }
 
     public update(dtSecs: number) {
+        // If bot is held, don't apply movement forces
         if (this.bot.held) return
         this.updateForce(dtSecs)
     }
 
     public setSpeed(speed: number) {
-        if (this.bot.held) return
         speed = Math.min(Math.abs(speed / 100), 1) * Math.sign(speed)
         this.currSpeed = this.maxSpeed * speed
     }

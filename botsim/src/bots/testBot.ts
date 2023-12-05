@@ -1,4 +1,4 @@
-import { defaultCircleShape, defaultColorBrush } from "../maps/specs"
+import { defaultCircleShape, defaultColorBrush } from "../sim/specs"
 import { BotSpec } from "./specs"
 
 const wheelBrush = {
@@ -86,6 +86,7 @@ const spec: BotSpec = {
         },
     ],
     leds: [
+    /*
         {
             name: "left",
             pos: { x: 4.5, y: 1.5 },
@@ -100,6 +101,12 @@ const spec: BotSpec = {
                 ...defaultColorBrush(),
             },
         },
+    */
+        {
+            name: "general", // Generalized/non-specific LED
+            pos: { x: 0, y: 0 },
+            radius: 0, // The "general" LED takes its shape and size from the chassis
+        }
     ],
     // Ballast can be used to adjust the center of mass of the bot.
     // Here it represents a battery located between the wheels.

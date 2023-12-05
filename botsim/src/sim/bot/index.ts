@@ -1,5 +1,10 @@
 import { LineSensorValues, Simulation, defaultLineSensorValues } from ".."
-import { BotSpec } from "../../bots/specs"
+import {
+    BotSpec,
+    LEDSlotName,
+    LineSensorSlotName,
+    WheelSlotName,
+} from "../../bots/specs"
 import { Chassis } from "./chassis"
 import { Wheel } from "./wheel"
 import { RangeSensor } from "./rangeSensor"
@@ -11,7 +16,7 @@ import {
     EntitySpec,
     defaultDynamicPhysics,
     defaultEntity,
-} from "../../maps/specs"
+} from "../specs"
 import { Entity } from "../entity"
 import { Vec2Like } from "../../types/vec2"
 
@@ -28,10 +33,10 @@ const KEYBOARD_CONTROL_ENABLED = false
 export class Bot {
     public entity: Entity
     public chassis: Chassis
-    public wheels = new Map<string, Wheel>()
+    public wheels = new Map<WheelSlotName, Wheel>()
     public rangeSensor?: RangeSensor
-    public lineSensors = new Map<string, LineSensor>()
-    public leds = new Map<string, LED>()
+    public lineSensors = new Map<LineSensorSlotName, LineSensor>()
+    public leds = new Map<LEDSlotName, LED>()
 
     public get forward(): Vec2Like {
         return this.entity.physicsObj.forward
@@ -56,11 +61,13 @@ export class Bot {
         const lineSensorShapes = Array.from(this.lineSensors.values()).map(
             (sensor) => sensor.shapeSpecs
         )
+        const ledShapes = botSpec.leds?.map((ledSpec) => LED.makeShapeSpec(botSpec, ledSpec)) ?? []
 
         const shapes: EntityShapeSpec[] = [
             chassisShape,
             ...wheelShapes,
             ...lineSensorShapes.flat(),
+            //...ledShapes,
         ]
         if (ballastShape) shapes.push(ballastShape)
 
@@ -86,8 +93,8 @@ export class Bot {
         if (botSpec.rangeSensor)
             this.rangeSensor = new RangeSensor(this, botSpec.rangeSensor)
 
-        botSpec.leds?.forEach((led) =>
-            this.leds.set(led.name, new LED(this, led))
+        botSpec.leds?.forEach((ledSpec) =>
+            this.leds.set(ledSpec.name, new LED(this, ledSpec))
         )
     }
 
@@ -176,19 +183,29 @@ export class Bot {
         this.setWheelSpeed("right", rightSpeed)
     }
 
-    private setWheelSpeed(label: string, speed: number) {
-        const wheel = this.wheels.get(label)
+    private setWheelSpeed(name: WheelSlotName, speed: number) {
+        const wheel = this.wheels.get(name)
         if (!wheel) return
         wheel.setSpeed(speed)
     }
 
     public setMotors(left: number, right: number) {
+        if (this.held) return
         if (KEYBOARD_CONTROL_ENABLED) return
         this.setWheelSpeed("left", left)
         this.setWheelSpeed("right", right)
     }
 
+    public setLEDColor(name: LEDSlotName, color: number) {
+        // TODO: should we allow this when held?
+        if (this.held) return
+        const led = this.leds.get(name)
+        if (!led) return
+        led.setColor(color)
+    }
+
     public readLineSensors(): LineSensorValues {
+        // If the bot is held, return default empty values
         if (this.held) return defaultLineSensorValues()
         return {
             ["outer-left"]: this.lineSensors.get("outer-left")?.value ?? -1,

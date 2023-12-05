@@ -22,7 +22,7 @@ import {
     EntityPathShapeSpec,
     EntityPolygonShapeSpec,
     EntityEdgeShapeSpec,
-} from "../maps/specs"
+} from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
 import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE } from "./constants"

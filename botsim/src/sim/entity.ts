@@ -3,7 +3,7 @@ import { PhysicsObject } from "./physics"
 import { Vec2Like } from "../types/vec2"
 import { Simulation } from "."
 import { Container } from "./container"
-import { EntitySpec } from "../maps/specs"
+import { EntitySpec } from "./specs"
 
 /**
  * An Entity is a container for a RenderObject and a PhysicsObject. These two

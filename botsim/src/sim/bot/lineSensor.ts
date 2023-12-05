@@ -6,7 +6,7 @@ import {
     defaultColorBrush,
     defaultEntityShape,
     defaultShapePhysics,
-} from "../../maps/specs"
+} from "../specs"
 import { PHYS_CAT_ROBOT } from "../constants"
 import { makeCategoryBits, makeMaskBits } from "../util"
 

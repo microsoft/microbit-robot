@@ -1,15 +1,14 @@
 import { MAP_ASPECT_RATIO } from "../sim/constants"
 import {
     BrushSpec,
-    MapSpec,
     ShapePhysicsSpec,
-    defaultBoxShape,
     defaultColorBrush,
     defaultEntity,
     defaultPathShape,
     defaultShapePhysics,
     defaultStaticPhysics,
-} from "./specs"
+} from "../sim/specs"
+import { MapSpec } from "./specs"
 
 const boxBrush: BrushSpec = {
     ...defaultColorBrush(),

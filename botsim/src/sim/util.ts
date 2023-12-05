@@ -2,7 +2,7 @@ import {
     BoxShapeSpec,
     HorizontalAlignment,
     VerticalAlignment,
-} from "../maps/specs"
+} from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PHYS_CAT_DECORATION, PIXELS_PER_CM, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"

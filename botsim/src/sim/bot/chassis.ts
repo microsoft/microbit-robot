@@ -3,7 +3,7 @@ import {
     EntityShapeSpec,
     defaultEntityShape,
     defaultShapePhysics,
-} from "../../maps/specs"
+} from "../specs"
 import { PHYS_CAT_ROBOT } from "../constants"
 import { makeCategoryBits, makeMaskBits } from "../util"
 import { Bot } from "."
@@ -31,9 +31,13 @@ export class Chassis {
         }
     }
 
+    public get spec() {
+        return this._spec
+    }
+
     constructor(
         private bot: Bot,
-        private spec: ChassisSpec
+        private _spec: ChassisSpec
     ) {
         //const frict = this.bot.entity.physicsObj.addFrictionJoint(Vec2.zero())
         //frict?.setMaxForce(10)

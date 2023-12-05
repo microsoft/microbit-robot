@@ -1,5 +1,10 @@
 import { Vec2Like } from "../types/vec2"
-import { BrushSpec, ShapeSpec } from "../maps/specs"
+import {
+    BoxShapeSpec,
+    BrushSpec,
+    CircleShapeSpec,
+    PolygonShapeSpec,
+} from "../sim/specs"
 
 export const LINE_SENSORS = {
     ["outer-left"]: 0,
@@ -9,12 +14,17 @@ export const LINE_SENSORS = {
     ["outer-right"]: 4,
 }
 
-type WheelSlotName = "left" | "right"
-type LineSensorSlotName = keyof typeof LINE_SENSORS
-type LEDSlotName = "left" | "right"
+export type WheelSlotName = "left" | "right"
+export type LineSensorSlotName = keyof typeof LINE_SENSORS
+export type LEDSlotName = "left" | "right" | "general"
+
+export type ChassisShapeSpec =
+    | CircleShapeSpec
+    | BoxShapeSpec
+    | PolygonShapeSpec
 
 export type ChassisSpec = {
-    shape: ShapeSpec
+    shape: ChassisShapeSpec
     brush: BrushSpec
 }
 
@@ -45,7 +55,7 @@ export type RangeSensorSpec = {
 export type LEDSpec = {
     name: LEDSlotName // identification label
     pos: Vec2Like // offset from chassis center
-    brush: BrushSpec
+    radius: number // cm. exception: the "general" LED takes its shape and size from the chassis
 }
 
 // Ballast is an invisible mass that can be added to the bot to change its

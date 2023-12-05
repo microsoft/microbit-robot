@@ -2,23 +2,21 @@ import Physics, { createPhysicsObj } from "./physics"
 import Renderer, { createRenderObj } from "./renderer"
 import { Entity } from "./entity"
 import {
-    MapSpec,
     EntitySpec,
-    SpawnSpec,
-    defaultSpawn,
     defaultStaticPhysics,
     defaultColorBrush,
     defaultEdgeShape,
     defaultEntity,
     defaultShapePhysics,
     defaultEntityShape,
-} from "../maps/specs"
+} from "./specs"
 import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
 import { Container } from "./container"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PHYSICS_SCALE } from "./constants"
+import { MapSpec, SpawnSpec, defaultSpawn } from "../maps/specs"
 
 export type LineSensorValues = {
     ["outer-left"]: number

@@ -4,7 +4,7 @@ import {
     defaultBoxShape,
     defaultColorBrush,
     defaultDynamicPhysics,
-} from "../../maps/specs"
+} from "../specs"
 
 export function makeBallastSpec(botSpec: BotSpec): EntityShapeSpec | undefined {
     if (!botSpec.ballast) return undefined

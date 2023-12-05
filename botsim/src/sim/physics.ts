@@ -22,7 +22,7 @@ import {
     EntityPathShapeSpec,
     EntityEdgeShapeSpec,
     ShapePhysicsSpec,
-} from "../maps/specs"
+} from "./specs"
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
