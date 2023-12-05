@@ -53,7 +53,7 @@ export class Wheel {
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
         // Handles some of the friction between wheel and ground. Additional
-        // friction is handled in updateFriction()
+        // friction is handled in updateFriction(), below.
         this.friction = this.bot.entity.physicsObj.addFrictionJoint(
             Vec2.scale(this.spec.pos, PHYSICS_SCALE)
         )
@@ -86,15 +86,16 @@ export class Wheel {
     public updateFriction(dtSecs: number) {
         const worldPos = this.bot.entity.physicsObj.getWorldPoint(this.localPos)
 
-        // Debug flags
-        const dampenAngularVelocity = true
-        const dampenLateralVelocity = true
+        // Debug flags. These should be commented out in production
+        //const dampenAngularVelocity = true
+        //const dampenLateralVelocity = true
 
         // Tweak this value to adjust top spin rate
-        const maxAngularVelocity = 10 // The maximum angular velocity to allow (hand-tuned)
+        const maxAngularVelocity = 10 // The maximum angular velocity (hand-tuned)
 
         //// Dampen angular velocity
-        if (dampenAngularVelocity) {
+        //if (dampenAngularVelocity)
+        {
             const angularDamping = 1 // The amount of angular velocity dampening to apply
             const angularDampingScalar = 1 // hand-tuned
             this.bot.entity.physicsObj.applyAngularForce(
@@ -111,8 +112,9 @@ export class Wheel {
             }
         }
 
-        //// Dampen lateral linear velocity
-        if (dampenLateralVelocity) {
+        //// Dampen lateral velocity
+        //if (dampenLateralVelocity)
+        {
             const lateralDamping = 1 // The amount of lateral velocity dampening to apply
             const lateralDampingScalar = 5 // hand-tuned
             const lateralVel =
