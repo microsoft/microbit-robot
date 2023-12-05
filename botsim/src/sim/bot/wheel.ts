@@ -5,8 +5,7 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import { PHYSICS_SCALE, PHYS_CAT_ROBOT, PIXELS_PER_CM } from "../constants"
-import { makeCategoryBits, makeMaskBits } from "../util"
+import { PHYSICS_SCALE, RENDER_SCALE } from "../constants"
 import { Bot } from "."
 import { Vec2 } from "../../types/vec2"
 import Planck from "planck-js"
@@ -37,8 +36,6 @@ export class Wheel {
                 friction: 0.3,
                 restitution: 0.9,
                 density: 10,
-                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
-                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
     }
@@ -52,7 +49,7 @@ export class Wheel {
         private bot: Bot,
         private spec: WheelSpec
     ) {
-        this.localPos = Vec2.scale(this.spec.pos, PIXELS_PER_CM)
+        this.localPos = Vec2.scale(this.spec.pos, RENDER_SCALE) // TODO: This shouldn't be scaled by render scale. Needs debugging why it is working this way and not the other
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
         // Handles some of the friction between wheel and ground. Additional

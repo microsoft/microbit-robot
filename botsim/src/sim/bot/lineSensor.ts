@@ -7,8 +7,6 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import { PHYS_CAT_ROBOT } from "../constants"
-import { makeCategoryBits, makeMaskBits } from "../util"
 
 export class LineSensor {
     _shapeSpecs: EntityShapeSpec[]
@@ -40,8 +38,6 @@ export class LineSensor {
                 restitution: 0,
                 density: 0,
                 sensor: true,
-                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
-                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
         const offLineSpec: EntityShapeSpec = {
@@ -61,8 +57,6 @@ export class LineSensor {
                 restitution: 0,
                 density: 0,
                 sensor: true,
-                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
-                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
         // The actual sensor (very small)
@@ -86,8 +80,6 @@ export class LineSensor {
                 restitution: 0,
                 density: 0,
                 sensor: true,
-                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
-                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
         return [onLineSpec, offLineSpec, sensorSpec]

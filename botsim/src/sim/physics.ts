@@ -4,8 +4,6 @@ import {
     boxToVertices,
     catmullRom,
     samplePath,
-    makeCategoryBits,
-    makeMaskBits,
     toPhysicsScale,
     makePathPolygons,
 } from "./util"
@@ -444,8 +442,8 @@ function fixtureOptions(phys: ShapePhysicsSpec): Planck.FixtureOpt {
         friction: phys.friction ?? 0.3,
         restitution: phys.restitution ?? 0.2,
         isSensor: phys.sensor ?? false,
-        filterMaskBits: phys.maskBits ?? makeMaskBits(0),
-        filterCategoryBits: phys.categoryBits ?? makeCategoryBits(0),
+        filterMaskBits: phys.maskBits ?? 0xffff,
+        filterCategoryBits: phys.categoryBits ?? 0xffff,
     }
 }
 

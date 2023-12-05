@@ -4,7 +4,7 @@ import {
     VerticalAlignment,
 } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
-import { PHYS_CAT_DECORATION, PIXELS_PER_CM, PHYSICS_SCALE } from "./constants"
+import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
 
 export function makeBoxVertices(
@@ -199,19 +199,9 @@ export function toColor(s: string): Pixi.Color {
 }
 
 export function toRenderScale(n: number): number {
-    return n * PIXELS_PER_CM
+    return n * RENDER_SCALE
 }
 
 export function toPhysicsScale(n: number): number {
     return n * PHYSICS_SCALE
-}
-
-export function makeCategoryBits(flags: number): number {
-    return 0xffff
-    return flags & ~PHYS_CAT_DECORATION
-}
-
-export function makeMaskBits(flags: number): number {
-    return 0xffff
-    return flags & ~PHYS_CAT_DECORATION
 }

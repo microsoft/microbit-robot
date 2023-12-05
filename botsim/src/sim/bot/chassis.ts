@@ -4,8 +4,6 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import { PHYS_CAT_ROBOT } from "../constants"
-import { makeCategoryBits, makeMaskBits } from "../util"
 import { Bot } from "."
 
 export class Chassis {
@@ -25,8 +23,6 @@ export class Chassis {
                 friction: 0.3,
                 restitution: 0.9,
                 density: 0.1,
-                categoryBits: makeCategoryBits(PHYS_CAT_ROBOT),
-                maskBits: makeMaskBits(PHYS_CAT_ROBOT),
             },
         }
     }
