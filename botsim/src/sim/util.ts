@@ -2,6 +2,7 @@ import { BoxShapeSpec, HorizontalAlignment, VerticalAlignment } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
+import { clamp } from "../util"
 
 export function makeBoxVertices(
     size: Vec2Like,
@@ -191,26 +192,16 @@ export function toColor(s: string): Pixi.Color {
     }
 }
 
-export type Argb = {
-    a: number
-    r: number
-    g: number
-    b: number
-}
-
 export type Rgb = {
     r: number
     g: number
     b: number
 }
 
-export function numberToArgb(n: number): Argb {
-    return {
-        a: (n >> 24) & 0xff,
-        r: (n >> 16) & 0xff,
-        g: (n >> 8) & 0xff,
-        b: n & 0xff,
-    }
+export type Hsl = {
+    h: number
+    s: number
+    l: number
 }
 
 export function numberToRgb(n: number): Rgb {
@@ -221,14 +212,75 @@ export function numberToRgb(n: number): Rgb {
     }
 }
 
-export function argbToString(argb: Argb): string {
-    return (
-        "#" +
-        argb.a.toString(16).padStart(2, "0") +
-        argb.r.toString(16).padStart(2, "0") +
-        argb.g.toString(16).padStart(2, "0") +
-        argb.b.toString(16).padStart(2, "0")
-    )
+export function rgbToHsl(rgb: Rgb): Hsl {
+    const r = rgb.r / 255
+    const g = rgb.g / 255
+    const b = rgb.b / 255
+    const max = Math.max(r, g, b),
+        min = Math.min(r, g, b)
+    let h = 0,
+        s = 0,
+        l = (max + min) / 2
+    if (max == min) {
+        h = s = 0
+    } else {
+        const d = max - min
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0)
+                break
+            case g:
+                h = (b - r) / d + 2
+                break
+            case b:
+                h = (r - g) / d + 4
+                break
+        }
+        h /= 6
+    }
+    return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 255),
+        l: Math.round(l * 255),
+    }
+}
+
+export function hslToRgb(hsl: Hsl): Rgb {
+    let r = 0,
+        g = 0,
+        b = 0
+    const h = hsl.h / 360
+    const s = hsl.s / 255
+    const l = hsl.l / 255
+    const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1
+        if (t > 1) t -= 1
+        if (t < 1 / 6) return p + (q - p) * 6 * t
+        if (t < 1 / 2) return q
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+        return p
+    }
+    if (s === 0) {
+        r = g = b = l
+    } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s
+        const p = 2 * l - q
+        r = hue2rgb(p, q, h + 1 / 3)
+        g = hue2rgb(p, q, h)
+        b = hue2rgb(p, q, h - 1 / 3)
+    }
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255),
+    }
+}
+
+export function lighten(hsl: Hsl, amount: number): Hsl {
+    hsl = { ...hsl }
+    hsl.l = Math.round(clamp(hsl.l + amount * 255, 0, 255))
+    return hsl
 }
 
 export function rgbToString(rgb: Rgb): string {

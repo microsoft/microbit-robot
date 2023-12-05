@@ -5,8 +5,9 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import { Bot } from "."
-import { numberToRgb, rgbToString } from "../util"
+import { hslToRgb, lighten, numberToRgb, rgbToHsl, rgbToString } from "../util"
 import { createGraphics } from "../renderer"
+import { clamp } from "../../util"
 
 export class Chassis {
     public static makeShapeSpec(botSpec: BotSpec): EntityShapeSpec {
@@ -54,7 +55,11 @@ export class Chassis {
         const newSpec = Chassis.makeShapeSpec(this.bot.spec)
         const newBrush = newSpec.brush
         if (newBrush.type === "color") {
-            const c = rgbToString(numberToRgb(color))
+            let rgb = numberToRgb(color)
+            let hsl = rgbToHsl(rgb)
+            hsl.l = clamp(hsl.l * 1.2, 0, 255)
+            rgb = hslToRgb(hsl)
+            const c = rgbToString(rgb)
             newBrush.fillColor = c + "99"
         }
         const newGfx = createGraphics[newSpec.type][newSpec.brush.type](
