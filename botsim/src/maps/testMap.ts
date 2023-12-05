@@ -23,13 +23,16 @@ const boxPhysics: ShapePhysicsSpec = {
     restitution: 1,
 }
 
+const MAP_WIDTH = 90 // cm
+const MAP_HEIGHT = MAP_WIDTH / MAP_ASPECT_RATIO
+
 const spec: MapSpec = {
     name: "Test Map",
     width: 90, // cm
-    aspectRatio: MAP_ASPECT_RATIO, // width / height
+    aspectRatio: MAP_ASPECT_RATIO,
     color: "#ffffff",
     spawn: {
-        pos: { x: 18, y: 16 },
+        pos: { x: 20.5, y: 18 },
         angle: 90,
     },
     entities: [
@@ -49,12 +52,14 @@ const spec: MapSpec = {
                     stepSize: 0.1,
                     closed: true,
                     verts: [
-                        { x: 15, y: 18 },
-                        { x: 45, y: 20 },
-                        { x: 75, y: 18 },
-                        { x: 75, y: 57 },
-                        { x: 45, y: 55 },
-                        { x: 15, y: 57 },
+                        { x: 10, y: MAP_HEIGHT / 2 },
+                        { x: 20, y: 19 },
+                        { x: MAP_WIDTH / 2, y: 20 },
+                        { x: MAP_WIDTH - 20, y: 19 },
+                        { x: MAP_WIDTH - 10, y: MAP_HEIGHT / 2 },
+                        { x: MAP_WIDTH - 20, y: MAP_HEIGHT - 19 },
+                        { x: MAP_WIDTH / 2, y: MAP_HEIGHT - 20 },
+                        { x: 20, y: MAP_HEIGHT - 19 },
                     ],
                     brush: {
                         ...defaultColorBrush(),
