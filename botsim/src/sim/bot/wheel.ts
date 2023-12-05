@@ -116,7 +116,7 @@ export class Wheel {
         //if (dampenLateralVelocity)
         {
             const lateralDamping = 1 // The amount of lateral velocity dampening to apply
-            const lateralDampingScalar = 5 // hand-tuned
+            const lateralDampingScalar = 2 // hand-tuned
             const lateralVel =
                 this.bot.entity.physicsObj.getLateralVelocity(worldPos)
             this.bot.entity.physicsObj.applyForce(
