@@ -19,6 +19,7 @@ import {
 } from "../specs"
 import { Entity } from "../entity"
 import { Vec2Like } from "../../types/vec2"
+import { SpawnSpec } from "../../maps/specs"
 
 // Debug flag for keyboard control. When true, the bot will not be controlled by
 // the simulator, only by the keyboard and gamepad. Can be useful to tune a bot's
@@ -48,6 +49,7 @@ export class Bot {
 
     constructor(
         public sim: Simulation,
+        spawn: SpawnSpec,
         public spec: BotSpec
     ) {
         const chassisShape = Chassis.makeShapeSpec(spec)
@@ -74,8 +76,8 @@ export class Bot {
 
         const entitySpec: EntitySpec = {
             ...defaultEntity(),
-            pos: { ...this.sim.spawn.pos },
-            angle: this.sim.spawn.angle,
+            pos: { ...spawn.pos },
+            angle: spawn.angle,
             physics: {
                 ...defaultDynamicPhysics(),
                 // hand-tuned values

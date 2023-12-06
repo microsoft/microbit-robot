@@ -27,6 +27,7 @@ const lineSensorBrush = {
 
 const spec: BotSpec = {
     name: "Test Bot",
+    productId: 0,
     chassis: {
         shape: {
             ...defaultCircleShape(),

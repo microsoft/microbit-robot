@@ -7,48 +7,40 @@ type Props = {}
 
 export const SimContainer: React.FC<Props> = ({}) => {
     const [simContainer, setSimContainer] = useState<HTMLDivElement>()
-    const [sim, setSim] = useState<Simulation>()
-    const fetchSim = useRef(true)
 
     // Get the simulator instance and run it as long as we're mounted
     useEffect(() => {
-        if (fetchSim.current) {
-            fetchSim.current = false
-            Simulation.getAsync().then((s) => {
-                setSim(s)
-            })
-        }
         return () => {
-            sim?.clear()
-            sim?.stop()
+            Simulation.instance.clear()
+            Simulation.instance.stop()
         }
     }, [])
 
     // Add the simulator to the div once we have the ref.
     // Ensure container has no existing children, because React.
     useEffect(() => {
-        if (sim && simContainer && !simContainer.firstChild) {
-            simContainer.append(sim.renderer.handle as any)
+        if (simContainer && !simContainer.firstChild) {
+            simContainer.append(Simulation.instance.renderer.handle as any)
         }
-    }, [simContainer, sim])
+    }, [simContainer])
 
     // Hook mouse events
     useEffect(() => {
-        if (sim && simContainer) {
+        if (simContainer) {
             const handleMouseDown = (e: MouseEvent) => {
                 if (e.button === 0) {
                     const p = new Vec2(e.offsetX, e.offsetY)
-                    sim.mouseDown(p)
+                    Simulation.instance.mouseDown(p)
                 }
             }
             const handleMouseMove = (e: MouseEvent) => {
                 const p = new Vec2(e.offsetX, e.offsetY)
-                sim.mouseMove(p)
+                Simulation.instance.mouseMove(p)
             }
             const handleMouseUp = (e: MouseEvent) => {
                 if (e.button === 0) {
                     const p = new Vec2(e.offsetX, e.offsetY)
-                    sim.mouseUp(p)
+                    Simulation.instance.mouseUp(p)
                 }
             }
             simContainer.addEventListener("mousedown", handleMouseDown)
@@ -60,15 +52,11 @@ export const SimContainer: React.FC<Props> = ({}) => {
                 simContainer.removeEventListener("mouseup", handleMouseUp)
             }
         }
-    }, [sim, simContainer])
+    }, [simContainer])
 
     const handleDivRef = (ref: HTMLDivElement) => {
         setSimContainer(ref)
     }
 
-    if (!sim) {
-        return <div>{"loading..."}</div>
-    } else {
-        return <div className="sim-container" ref={handleDivRef}></div>
-    }
+    return <div className="sim-container" ref={handleDivRef}></div>
 }

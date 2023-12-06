@@ -6,48 +6,20 @@ import * as Protocol from "../external/protocol"
 // TODO: Move this to simulation?
 let currRunId: string | undefined
 
-async function stopSimAsync() {
-    const sim = await Simulation.getAsync()
-    sim?.stop()
+function stopSim() {
+    const sim = Simulation.instance
+    sim.stop()
 }
 
-async function runSimAsync() {
-    const sim = await Simulation.getAsync()
-    sim?.stop()
-    sim?.clear()
+function restartSim() {
+    const sim = Simulation.instance
+    sim.stop()
+    sim.clear()
     const map = MAPS["Test Map"]
     if (map) {
-        sim?.loadMap(map)
+        sim.loadMap(map)
     }
-    const bot = BOTS["Test Bot"]
-    if (bot) {
-        sim?.createBot(bot)
-    }
-    sim?.start()
-}
-
-async function applyRobotStateAsync(
-    deviceId: number,
-    motorLeft: number,
-    motorRight: number,
-    armAperture: number,
-    color: number
-) {
-    const sim = await Simulation.getAsync()
-    sim?.setMotors(deviceId, motorLeft, motorRight)
-    sim?.setColor(deviceId, color)
-}
-
-async function readRobotLineSensorsAsync(
-    deviceId: number
-): Promise<LineSensorValues> {
-    const sim = await Simulation.getAsync()
-    return sim?.readLineSensors(deviceId) ?? defaultLineSensorValues()
-}
-
-async function readRobotRangeSensorAsync(deviceId: number): Promise<number> {
-    const sim = await Simulation.getAsync()
-    return sim?.readRangeSensor(deviceId) ?? 0
+    sim.start()
 }
 
 function postMessagePacket(msg: any) {
@@ -62,10 +34,8 @@ function postMessagePacket(msg: any) {
     )
 }
 
-async function handleRobotMessageAsync(buf: any) {
+function handleRobotMessage(buf: any) {
     let data = new TextDecoder().decode(new Uint8Array(buf))
-    // TEMP: Replace Infinity with 0
-    data = data.replace(/-?Infinity/g, "0")
     const msg = JSON.parse(data) as Protocol.robot.robots.RobotSimMessage
     switch (msg.type) {
         case "state":
@@ -73,6 +43,7 @@ async function handleRobotMessageAsync(buf: any) {
             //console.log(`robot state: ${JSON.stringify(state)}`)
             const {
                 deviceId,
+                productId,
                 motorLeft,
                 motorRight,
                 armAperture,
@@ -82,17 +53,24 @@ async function handleRobotMessageAsync(buf: any) {
             // If the runId has changed, restart the simulation
             if (currRunId !== runId) {
                 currRunId = runId
-                await runSimAsync()
+                restartSim()
             }
-            await applyRobotStateAsync(
-                deviceId,
-                motorLeft,
-                motorRight,
-                armAperture,
-                color
-            )
-            const lineSensors = await readRobotLineSensorsAsync(deviceId)
-            const rangeSensor = await readRobotRangeSensorAsync(deviceId)
+            const sim = Simulation.instance
+
+            const botId = `${deviceId}/${productId}`
+            const bot =
+                sim.bot(botId) ??
+                sim.spawnBot(botId, BOTS[deviceId]) ??
+                sim.spawnBot(botId, BOTS[0])
+            if (!bot) return
+
+            // Apply state to bot
+            bot.setMotors(motorLeft, motorRight)
+            bot.setColor("general", color)
+
+            // Read bot sensors
+            const lineSensors = bot.readLineSensors()
+            const rangeSensor = bot.readRangeSensor()
             const sensorMessage: Protocol.robot.robots.RobotSensorsMessage = {
                 type: "sensors",
                 id: runId,
@@ -114,33 +92,37 @@ async function handleRobotMessageAsync(buf: any) {
     }
 }
 
-async function handleMessagePacketAsync(msg: any) {
+function handleMessagePacket(msg: any) {
     switch (msg.channel) {
         case "robot":
-            return await handleRobotMessageAsync(msg.data)
+            return handleRobotMessage(msg.data)
         default:
             console.log(`unknown messagepacket: ${JSON.stringify(msg)}`)
     }
 }
 
-async function handleStopMessageAsync(msg: any) {
-    await stopSimAsync()
+function handleDebuggerMessage(msg: any) {
+    // TODO: pause/step, etc
 }
 
-async function handleRunMessageAsync(msg: any) {
-    await runSimAsync()
+async function handleStopMessage(msg: any) {
+    stopSim()
 }
 
 export function init() {
-    window.addEventListener("message", async (ev) => {
+    window.addEventListener("message", (ev) => {
         try {
             switch (ev.data?.type) {
                 case "messagepacket":
-                    return await handleMessagePacketAsync(ev.data)
+                    return handleMessagePacket(ev.data)
                 case "stop":
-                    return await handleStopMessageAsync(ev.data)
+                    return handleStopMessage(ev.data)
                 case "run":
-                //return await handleRunMessageAsync(ev.data)
+                    return
+                case "debugger":
+                    return handleDebuggerMessage(ev.data)
+                case "bulkserial":
+                    return
             }
             console.log(`unknown message: ${JSON.stringify(ev.data)}`)
         } catch (e) {

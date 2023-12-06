@@ -8,11 +8,6 @@ export type SpawnSpec = {
     angle: number
 }
 
-export const defaultSpawn = (): SpawnSpec => ({
-    pos: { x: 40, y: 40 },
-    angle: 90,
-})
-
 /// Map
 
 export type MapSpec = {
@@ -20,6 +15,6 @@ export type MapSpec = {
     width: number // cm
     aspectRatio: number // width / height
     color: string // background color
-    spawn: SpawnSpec // robot spawn location
+    spawns: SpawnSpec[] // robot spawn location
     entities: EntitySpec[] // obstacles, etc.
 }

@@ -15,7 +15,7 @@ import { Bot } from "./bot"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { PHYSICS_SCALE } from "./constants"
-import { MapSpec, SpawnSpec, defaultSpawn } from "../maps/specs"
+import { MapSpec, SpawnSpec } from "../maps/specs"
 
 export type LineSensorValues = {
     ["outer-left"]: number
@@ -46,9 +46,8 @@ export class Simulation {
     private _renderer: Renderer
     private _input: InputState
     private _entities: Entity[] = []
-
-    private _spawn: SpawnSpec
-    private _bot?: Bot
+    private spawns: SpawnSpec[] = []
+    private bots = new Map<string, Bot>()
     private walls?: Entity
 
     public debugDraw = false
@@ -65,18 +64,14 @@ export class Simulation {
     public get entities() {
         return this._entities
     }
-    public get spawn() {
-        return this._spawn
-    }
-    public get bot() {
-        return this._bot
+    public bot(botId: string): Bot | undefined {
+        return this.bots.get(botId)
     }
 
     private constructor() {
         //this.debugDraw = true
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
-        this._spawn = defaultSpawn()
 
         this.buildWalls(this.renderer.logicalSize)
 
@@ -102,22 +97,12 @@ export class Simulation {
         registerInputState(this._input)
     }
 
-    // To complicate things, make allocating the simulation async
-    public static async createAsync() {
-        const sim = new this()
-        return sim
-    }
-
-    // To simplify things, make a static instance available
-    static instance: Promise<Simulation>
-    static async getAsync(): Promise<Simulation> {
-        if (!this.instance) {
-            this.instance = new Promise<Simulation>(async (resolve) => {
-                const sim = await this.createAsync()
-                resolve(sim)
-            })
+    private static _instance: Simulation
+    public static get instance() {
+        if (!this._instance) {
+            this._instance = new Simulation()
         }
-        return this.instance
+        return this._instance
     }
 
     public stop() {
@@ -138,7 +123,10 @@ export class Simulation {
     public clear() {
         this._entities.forEach((ent) => ent.destroy())
         this._entities = []
-        this._bot = undefined
+        for (let [_, bot] of this.bots) {
+            bot.destroy()
+        }
+        this.bots = new Map<string, Bot>()
         this._physics.reinit()
         this._renderer.reinit()
     }
@@ -171,14 +159,18 @@ export class Simulation {
             this.physics.update(dtSecs)
             this.renderer.update(dtSecs)
             this.entities.forEach((ent) => ent.update(dtSecs))
-            this.bot?.update(dtSecs)
+            for (let [_, bot] of this.bots) {
+                bot.update(dtSecs)
+            }
         } catch (e: any) {
             console.error(e.toString())
         }
     }
 
     public beforePhysicsStep(dtSecs: number) {
-        this.bot?.beforePhysicsStep(dtSecs)
+        for (let [_, bot] of this.bots) {
+            bot.beforePhysicsStep(dtSecs)
+        }
         this.entities.forEach((ent) => ent.beforePhysicsStep(dtSecs))
     }
 
@@ -188,21 +180,29 @@ export class Simulation {
         const size = new Vec2(map.width, height)
         this.resize(size)
         this.renderer.color(map.color)
-        this._spawn = map.spawn ?? {
-            pos: {
-                x: size.x / 2,
-                y: size.y / 2,
-            },
-            angle: 90,
+        this.spawns = map.spawns
+        if (!this.spawns.length) {
+            // Make sure we have at least one spawn location
+            this.spawns = [{ pos: Vec2.scale(size, 0.5), angle: 0 }]
         }
         map.entities.forEach((ent) => this.createEntity(ent))
     }
 
-    public createBot(botSpec: BotSpec) {
-        if (this._bot) {
-            this._bot.destroy()
+    public spawnBot(
+        botId: string,
+        botSpec: BotSpec | undefined
+    ): Bot | undefined {
+        if (!botSpec) return
+
+        if (this.bots.has(botId)) {
+            this.bots.get(botId)?.destroy()
         }
-        this._bot = new Bot(this, botSpec)
+
+        const spawnIndex = this.bots.size % this.spawns.length
+        const spawn = this.spawns[spawnIndex]
+        const bot = new Bot(this, spawn, botSpec)
+        this.bots.set(botId, bot)
+        return bot
     }
 
     public createEntity(spec: EntitySpec): Entity {
@@ -317,31 +317,5 @@ export class Simulation {
                 },
             ],
         })
-    }
-
-    public setMotors(deviceId: number, left: number, right: number) {
-        // TODO: Lookup or create bot by deviceId
-        this._bot?.setMotors(left, right)
-    }
-
-    public setColor(deviceId: number, color: number) {
-        // TODO: Lookup or create bot by deviceId
-        this._bot?.setColor("general", color)
-    }
-
-    public readLineSensors(deviceId: number): LineSensorValues {
-        if (this.bot) {
-            return this.bot.readLineSensors()
-        } else {
-            return defaultLineSensorValues()
-        }
-    }
-
-    public readRangeSensor(deviceId: number): number {
-        if (this.bot) {
-            return this.bot.readRangeSensor()
-        } else {
-            return -1
-        }
     }
 }

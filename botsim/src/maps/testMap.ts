@@ -31,10 +31,16 @@ const spec: MapSpec = {
     width: 90, // cm
     aspectRatio: MAP_ASPECT_RATIO,
     color: "#ffffff",
-    spawn: {
-        pos: { x: 20.5, y: 18 },
-        angle: 90,
-    },
+    spawns: [
+        {
+            pos: { x: 20.5, y: 18 },
+            angle: 90,
+        },
+        {
+            pos: { x: 20.5, y: MAP_HEIGHT - 18 },
+            angle: 90,
+        },
+    ],
     entities: [
         {
             ...defaultEntity(),
@@ -52,13 +58,13 @@ const spec: MapSpec = {
                     stepSize: 0.1,
                     closed: true,
                     verts: [
-                        { x: 10, y: (MAP_HEIGHT / 2) + 8 },
-                        { x: 10, y: (MAP_HEIGHT / 2) - 8 },
+                        { x: 10, y: MAP_HEIGHT / 2 + 8 },
+                        { x: 10, y: MAP_HEIGHT / 2 - 8 },
                         { x: 20, y: 19 },
                         { x: MAP_WIDTH / 2, y: 22 },
                         { x: MAP_WIDTH - 20, y: 19 },
-                        { x: MAP_WIDTH - 10, y: (MAP_HEIGHT / 2) - 8 },
-                        { x: MAP_WIDTH - 10, y: (MAP_HEIGHT / 2) + 8 },
+                        { x: MAP_WIDTH - 10, y: MAP_HEIGHT / 2 - 8 },
+                        { x: MAP_WIDTH - 10, y: MAP_HEIGHT / 2 + 8 },
                         { x: MAP_WIDTH - 20, y: MAP_HEIGHT - 19 },
                         { x: MAP_WIDTH / 2, y: MAP_HEIGHT - 22 },
                         { x: 20, y: MAP_HEIGHT - 19 },

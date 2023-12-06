@@ -66,6 +66,7 @@ export type BallastSpec = {
 
 export type BotSpec = {
     name: string
+    productId: number
     chassis: ChassisSpec
     wheels: WheelSpec[]
     rangeSensor?: RangeSensorSpec
