@@ -1,4 +1,6 @@
 namespace robot.robots {
+    export let sensorsUsed = Sensors.None
+
     /**
      * Sends the robot state to the simulator
      */
@@ -15,6 +17,7 @@ namespace robot.robots {
             motorRight: r.currentThrottle[1],
             color: r.currentColor,
             assists: r.assists,
+            sensors: sensorsUsed
         }
         if (r.robot.productId) msg.productId = r.robot.productId
         control.simmessages.send("robot", Buffer.fromUTF8(JSON.stringify(msg)), false)

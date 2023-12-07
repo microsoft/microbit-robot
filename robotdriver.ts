@@ -37,6 +37,10 @@ namespace robot {
     //% fixedInstances
     export class RobotDriver {
         private static _instance: RobotDriver
+
+        /**
+         * Internal use only
+         */
         static instance(): RobotDriver {
             if (!RobotDriver._instance)
                 throw "Add 'robot start ...' block in the 'on start' block"

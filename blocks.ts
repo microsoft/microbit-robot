@@ -85,6 +85,7 @@ namespace robot {
     //% group="Obstacles"
     export function obstacleDistance(): number {
         const robot = RobotDriver.instance()
+        robots.sensorsUsed |= robots.Sensors.Sonar
         return robot.obstacleDistance
     }
 
@@ -96,6 +97,7 @@ namespace robot {
     //% blockId=microcoderobotobstacledistancechanged
     //% group="Obstacles"
     export function onObstacleDistanceChanged(handler: () => void) {
+        robots.sensorsUsed |= robots.Sensors.Sonar
         messages.onEvent(
             messages.RobotEvents.ObstacleDistance,
             robot.robots.RobotCompactCommand.ObstacleState,
@@ -111,6 +113,7 @@ namespace robot {
     //% blockId=microcoderobotdetectlines
     //% group="Lines"
     export function detectLine(detector: RobotLineDetector): boolean {
+        robots.sensorsUsed |= robots.Sensors.LineDetector
         const r = RobotDriver.instance()
         const threshold = r.robot.lineHighThreshold
         const current = r.currentLineState
@@ -126,6 +129,7 @@ namespace robot {
     //% blockId=microcoderobotondetectlines
     //% group="Lines"
     export function onLineDetected(handler: () => void) {
+        robots.sensorsUsed |= robots.Sensors.LineDetector
         const msg = robot.robots.RobotCompactCommand.LineAnyState
         messages.onEvent(messages.RobotEvents.LineAny, msg, handler)
     }
@@ -145,6 +149,7 @@ namespace robot {
         right: boolean,
         handler: () => void
     ) {
+        robots.sensorsUsed |= robots.Sensors.LineDetector
         let msg = robot.robots.RobotCompactCommand.LineLeftRightState
         if (left) msg |= 1 << RobotLineDetector.Left
         if (right) msg |= 1 << RobotLineDetector.Right
@@ -168,6 +173,7 @@ namespace robot {
         right: boolean,
         handler: () => void
     ) {
+        robots.sensorsUsed |= robots.Sensors.LineDetector
         let msg = robot.robots.RobotCompactCommand.LineLeftRightMiddleState
         if (left) msg |= 1 << RobotLineDetector.Left
         if (middle) msg |= 1 << RobotLineDetector.Middle
@@ -194,6 +200,7 @@ namespace robot {
         outerRight: boolean,
         handler: () => void
     ) {
+        robots.sensorsUsed |= robots.Sensors.LineDetector
         let msg =
             robot.robots.RobotCompactCommand
                 .LineOuterLeftLeftRightOuterRightState

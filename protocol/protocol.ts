@@ -128,6 +128,12 @@ namespace robot.robots {
         deviceId: number
     }
 
+    export enum Sensors {
+        None = 0,
+        LineDetector = 1 << 0,
+        Sonar = 1 << 1
+    }
+
     export interface RobotSimStateMessage extends RobotSimMessage {
         type: "state"
         /**
@@ -148,6 +154,11 @@ namespace robot.robots {
          * Assistance enabled on the robot
          */
         assists: RobotAssist
+
+        /**
+         * Sensors used by the current program
+         */
+        sensors: Sensors
     }
 
     export interface RobotSensorsMessage extends RobotSimMessage {
