@@ -99,7 +99,7 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
 }
 
 function handleMessagePacket(msg: any) {
-    const srcFrameIndex = msg.srcFrameIndex as number ?? -1;
+    const srcFrameIndex = (msg.srcFrameIndex as number) ?? -1
     switch (msg.channel) {
         case "robot":
             return handleRobotMessage(msg.data, srcFrameIndex)

@@ -2,26 +2,15 @@ import { MAP_ASPECT_RATIO } from "../sim/constants"
 import {
     BrushSpec,
     ShapePhysicsSpec,
+    defaultBoxShape,
     defaultColorBrush,
+    defaultDynamicPhysics,
     defaultEntity,
     defaultPathShape,
     defaultShapePhysics,
     defaultStaticPhysics,
 } from "../sim/specs"
 import { MapSpec } from "./specs"
-
-const boxBrush: BrushSpec = {
-    ...defaultColorBrush(),
-    fillColor: "#DC965A",
-    borderColor: "#D85E44",
-    borderWidth: 0.5,
-}
-
-const boxPhysics: ShapePhysicsSpec = {
-    ...defaultShapePhysics(),
-    friction: 0.001,
-    restitution: 1,
-}
 
 const MAP_WIDTH = 90 // cm
 const MAP_HEIGHT = MAP_WIDTH / MAP_ASPECT_RATIO
@@ -81,47 +70,70 @@ const spec: MapSpec = {
                 },
             ],
         },
-
-        // This entity is a group of static boxes. Alternatively, each box could
-        // be specified as an individual entity.
-        /*
         {
             ...defaultEntity(),
-            label: "boxes",
-            pos: { x: 0, y: 0 },
+            label: "green-box",
+            pos: { x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 },
             angle: 0,
-            physics: defaultStaticPhysics(),
+            physics: {
+                ...defaultDynamicPhysics(),
+                linearDamping: 10,
+                angularDamping: 10,
+            },
             shapes: [
                 {
                     ...defaultBoxShape(),
-                    label: "box1",
-                    offset: { x: 10, y: 40 },
-                    size: { x: 5, y: 5 },
-                    angle: 20,
-                    brush: boxBrush,
-                    physics: boxPhysics,
-                },
-                {
-                    ...defaultBoxShape(),
-                    label: "box2",
-                    offset: { x: 40, y: 60 },
-                    size: { x: 5, y: 10 },
+                    offset: { x: -8, y: 0 },
+                    size: { x: 10, y: 5 },
                     angle: 90,
-                    brush: boxBrush,
-                    physics: boxPhysics,
-                },
-                {
-                    ...defaultBoxShape(),
-                    label: "box3",
-                    offset: { x: 86, y: 45 },
-                    size: { x: 6, y: 30 },
-                    angle: 170,
-                    brush: boxBrush,
-                    physics: boxPhysics,
+                    roles: ["obstacle", "mouse-target"],
+                    brush: {
+                        ...defaultColorBrush(),
+                        fillColor: "#78dc52",
+                        borderColor: "#444444",
+                        borderWidth: 0.25,
+                    },
+                    physics: {
+                        ...defaultShapePhysics(),
+                        friction: 0.1,
+                        restitution: 0.9,
+                        density: 3,
+                    },
                 },
             ],
         },
-        */
+        {
+            ...defaultEntity(),
+            label: "yellow-box",
+            pos: { x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 },
+            angle: 0,
+            physics: {
+                ...defaultDynamicPhysics(),
+                linearDamping: 10,
+                angularDamping: 10,
+            },
+            shapes: [
+                {
+                    ...defaultBoxShape(),
+                    offset: { x: 8, y: 0 },
+                    size: { x: 10, y: 5 },
+                    angle: 90,
+                    roles: ["obstacle", "mouse-target"],
+                    brush: {
+                        ...defaultColorBrush(),
+                        fillColor: "#fff609",
+                        borderColor: "#444444",
+                        borderWidth: 0.25,
+                    },
+                    physics: {
+                        ...defaultShapePhysics(),
+                        friction: 0.1,
+                        restitution: 0.9,
+                        density: 3,
+                    },
+                },
+            ],
+        },
     ],
 }
 
