@@ -34,7 +34,7 @@ function postMessagePacket(msg: any) {
     )
 }
 
-function handleRobotMessage(buf: any) {
+function handleRobotMessage(buf: any, srcFrameIndex: number) {
     let data = new TextDecoder().decode(new Uint8Array(buf))
     const msg = JSON.parse(data) as Protocol.robot.robots.RobotSimMessage
     switch (msg.type) {
@@ -50,8 +50,15 @@ function handleRobotMessage(buf: any) {
                 color,
                 id: runId,
             } = state
+
+            // Is this message from the primary sim frame? This frame will reliably exist at index zero.
+            // Secondary frame index cannot be relied upon to exist at a knowable index. The check for <= 0
+            // is for backwards compatibility with older versions of the simulator, before the frame index
+            // was added to the message.
+            const isPrimarySim = srcFrameIndex <= 0
+
             // If the runId has changed, restart the simulation
-            if (currRunId !== runId) {
+            if (isPrimarySim && currRunId !== runId) {
                 currRunId = runId
                 restartSim()
             }
@@ -93,9 +100,10 @@ function handleRobotMessage(buf: any) {
 }
 
 function handleMessagePacket(msg: any) {
+    const srcFrameIndex = msg.srcFrameIndex as number ?? -1;
     switch (msg.channel) {
         case "robot":
-            return handleRobotMessage(msg.data)
+            return handleRobotMessage(msg.data, srcFrameIndex)
         default:
             console.log(`unknown messagepacket: ${JSON.stringify(msg)}`)
     }
