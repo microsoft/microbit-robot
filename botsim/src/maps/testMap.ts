@@ -10,10 +10,18 @@ import {
     defaultShapePhysics,
     defaultStaticPhysics,
 } from "../sim/specs"
+import { pickRandom } from "../util"
 import { MapSpec } from "./specs"
 
 const MAP_WIDTH = 90 // cm
 const MAP_HEIGHT = MAP_WIDTH / MAP_ASPECT_RATIO
+
+const MICROBIT_COLORS = {
+    YELLOW: "rgb(255, 212, 58)",
+    GREEN: "rgb(58, 255, 179)",
+    RED: "rgb(255, 58, 84)",
+    BLUE: "rgb(58, 220, 254)"
+}
 
 const spec: MapSpec = {
     name: "Test Map",
@@ -31,9 +39,9 @@ const spec: MapSpec = {
         },
     ],
     entities: [
+        // Line-following path
         {
             ...defaultEntity(),
-            label: "path",
             pos: { x: 0, y: 0 },
             angle: 0,
             physics: defaultStaticPhysics(),
@@ -70,9 +78,9 @@ const spec: MapSpec = {
                 },
             ],
         },
+        // Box obstacles
         {
             ...defaultEntity(),
-            label: "orange-box",
             pos: { x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 },
             angle: 0,
             physics: {
@@ -89,7 +97,7 @@ const spec: MapSpec = {
                     roles: ["obstacle", "mouse-target"],
                     brush: {
                         ...defaultColorBrush(),
-                        fillColor: "#ff8135",
+                        fillColor: pickRandom(Object.values(MICROBIT_COLORS)),
                         borderColor: "#444444",
                         borderWidth: 0.25,
                     },
@@ -104,7 +112,6 @@ const spec: MapSpec = {
         },
         {
             ...defaultEntity(),
-            label: "yellow-box",
             pos: { x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 },
             angle: 0,
             physics: {
@@ -121,7 +128,7 @@ const spec: MapSpec = {
                     roles: ["obstacle", "mouse-target"],
                     brush: {
                         ...defaultColorBrush(),
-                        fillColor: "#fff609",
+                        fillColor: pickRandom(Object.values(MICROBIT_COLORS)),
                         borderColor: "#444444",
                         borderWidth: 0.25,
                     },

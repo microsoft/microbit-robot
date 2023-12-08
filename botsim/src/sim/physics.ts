@@ -87,6 +87,7 @@ export default class Physics {
         if (this._mouseJoint) {
             const _bodyB = this._mouseJoint.getBodyB()
             if (_bodyB && this._mouseCachedDampening) {
+                // Restore the body's original dampening
                 _bodyB.setAngularDamping(this._mouseCachedDampening.angular)
                 _bodyB.setLinearDamping(this._mouseCachedDampening.linear)
                 this._mouseCachedDampening = undefined
@@ -104,13 +105,16 @@ export default class Physics {
             return spec.roles?.includes("mouse-target") ?? false
         })
         if (!body) return
+
+        // Make the body easier to drag around (without losing all sense of weight)
         this._mouseCachedDampening = {
             angular: body.getAngularDamping(),
             linear: body.getLinearDamping(),
         }
-        // Make the body easier to drag around, without losing all sense of weight
         body.setAngularDamping(2 * body.getAngularDamping() / 3)
         body.setLinearDamping(body.getLinearDamping() / 3)
+
+        // Create a mouse joint to handle dragging the body
         const joint = new Planck.MouseJoint({
             target: Planck.Vec2(p),
             maxForce: 100000,

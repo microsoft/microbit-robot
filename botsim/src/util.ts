@@ -24,3 +24,7 @@ export function randomAngleDeg() {
 export function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value))
 }
+
+export function pickRandom<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)]
+}
