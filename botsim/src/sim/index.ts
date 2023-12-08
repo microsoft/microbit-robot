@@ -34,7 +34,7 @@ export const defaultLineSensorValues = (): LineSensorValues => ({
 })
 
 /**
- * The Simulation class is a small game engine. It contains a physics engine and
+ * The Simulation class is a small game engine. It contains a physics world and
  * a renderer. Each object in the simulation is represented by the Entity class.
  */
 export class Simulation {
@@ -75,6 +75,8 @@ export class Simulation {
 
         this.buildWalls(this.renderer.logicalSize)
 
+        // Keyboard/gamepad input is for debugging bot movement models, it is
+        // disabled in production
         this._input = new InputState(
             [
                 // left wheel motor

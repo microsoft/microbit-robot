@@ -63,6 +63,9 @@ export class Bot {
         const lineSensorShapes = Array.from(this.lineSensors.values()).map(
             (sensor) => sensor.shapeSpecs
         )
+        if (spec.rangeSensor)
+            this.rangeSensor = new RangeSensor(this, spec.rangeSensor)
+        const rangeSensorShapes = this.rangeSensor?.shapeSpecs ?? []
         const ledShapes =
             spec.leds?.map((ledSpec) => LED.makeShapeSpec(spec, ledSpec)) ?? []
 
@@ -71,6 +74,7 @@ export class Bot {
             ...wheelShapes,
             ...lineSensorShapes.flat(),
             //...ledShapes,
+            //...rangeSensorShapes,
         ]
         if (ballastShape) shapes.push(ballastShape)
 
@@ -93,9 +97,6 @@ export class Bot {
         spec.wheels.forEach((wheelSpec) =>
             this.wheels.set(wheelSpec.name, new Wheel(this, wheelSpec))
         )
-        if (spec.rangeSensor)
-            this.rangeSensor = new RangeSensor(this, spec.rangeSensor)
-
         spec.leds?.forEach((ledSpec) =>
             this.leds.set(ledSpec.name, new LED(this, ledSpec))
         )

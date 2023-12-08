@@ -72,7 +72,7 @@ const spec: MapSpec = {
         },
         {
             ...defaultEntity(),
-            label: "green-box",
+            label: "orange-box",
             pos: { x: MAP_WIDTH / 2, y: MAP_HEIGHT / 2 },
             angle: 0,
             physics: {
@@ -89,14 +89,14 @@ const spec: MapSpec = {
                     roles: ["obstacle", "mouse-target"],
                     brush: {
                         ...defaultColorBrush(),
-                        fillColor: "#78dc52",
+                        fillColor: "#ff8135",
                         borderColor: "#444444",
                         borderWidth: 0.25,
                     },
                     physics: {
                         ...defaultShapePhysics(),
                         friction: 0.1,
-                        restitution: 0.9,
+                        restitution: 0.5,
                         density: 3,
                     },
                 },
@@ -128,7 +128,7 @@ const spec: MapSpec = {
                     physics: {
                         ...defaultShapePhysics(),
                         friction: 0.1,
-                        restitution: 0.9,
+                        restitution: 0.5,
                         density: 3,
                     },
                 },

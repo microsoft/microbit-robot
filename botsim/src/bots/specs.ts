@@ -45,7 +45,8 @@ export type LineSensorSpec = {
 
 export type RangeSensorSpec = {
     pos: Vec2Like // offset from chassis center
-    angle: number // beam angle
+    beamAngle: number // degrees
+    maxRange: number // cm
     brush: BrushSpec
 }
 

@@ -25,7 +25,7 @@ import {
 } from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
-import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE } from "./constants"
+import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE, RENDER_SCALE } from "./constants"
 import { nextId } from "../util"
 import { GradientFactory } from "@pixi-essentials/gradients"
 
@@ -114,6 +114,9 @@ export default class Renderer {
     }
 }
 
+/**
+ * Small API wrapper around a renderable object.
+ */
 class RenderShape {
     public get visible() {
         return this.gfx.visible
@@ -419,8 +422,24 @@ function createColorPolygonGraphics(
     shape: EntityPolygonShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
-    // TODO: implement
     const g = new Pixi.Graphics()
+    const verts = shape.verts.map((v) => Vec2.scale(v, RENDER_SCALE));
+    const borderColor = toColor(brush.borderColor)
+    const fillColor = toColor(brush.fillColor)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
+    g.lineStyle({
+        width: toRenderScale(brush.borderWidth),
+        color: borderColor,
+        alignment: 0,
+    })
+    g.beginFill(fillColor)
+    g.moveTo(verts[0].x, verts[0].y)
+    for (let i = 0; i < verts.length; i++) {
+        g.lineTo(verts[i].x, verts[i].y)
+    }
+    g.closePath()
     g.visible = brush.visible
     return g as any
 }

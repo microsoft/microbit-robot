@@ -24,6 +24,11 @@ import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
 import { PHYSICS_TO_RENDER_SCALE } from "./constants"
 
+
+type Dampening = {
+    linear: number
+    angular: number
+}
 /**
  * Physics engine wrapper
  */
@@ -31,6 +36,7 @@ export default class Physics {
     private _world!: Planck.World
     private _mouseGround!: Planck.Body
     private _mouseJoint: Planck.MouseJoint | undefined
+    private _mouseCachedDampening: Dampening | undefined;
 
     public get mouseJoint() {
         return this._mouseJoint
@@ -50,6 +56,7 @@ export default class Physics {
 
     private createWorld() {
         if (this._world) {
+            // Destroy all bodies and joints
             try {
                 for (
                     let body = this._world.getBodyList();
@@ -76,17 +83,34 @@ export default class Physics {
         this._mouseJoint = undefined
     }
 
-    public mouseDown(p: Vec2Like) {
+    private releaseMouseJoint() {
         if (this._mouseJoint) {
+            const _bodyB = this._mouseJoint.getBodyB()
+            if (_bodyB && this._mouseCachedDampening) {
+                _bodyB.setAngularDamping(this._mouseCachedDampening.angular)
+                _bodyB.setLinearDamping(this._mouseCachedDampening.linear)
+                this._mouseCachedDampening = undefined
+            }
             this._world.destroyJoint(this._mouseJoint)
             this._mouseJoint = undefined
         }
+    }
+
+    public mouseDown(p: Vec2Like) {
+        this.releaseMouseJoint();
         const body = this.findBody(p, (fixt) => {
-            // Only grab shapes with "mouse-target" role
+            // Only grab shapes tagged with "mouse-target" role
             const spec = fixt.getUserData() as EntityShapeSpec
             return spec.roles?.includes("mouse-target") ?? false
         })
         if (!body) return
+        this._mouseCachedDampening = {
+            angular: body.getAngularDamping(),
+            linear: body.getLinearDamping(),
+        }
+        // Make the body easier to drag around, without losing all sense of weight
+        body.setAngularDamping(2 * body.getAngularDamping() / 3)
+        body.setLinearDamping(body.getLinearDamping() / 3)
         const joint = new Planck.MouseJoint({
             target: Planck.Vec2(p),
             maxForce: 100000,
@@ -103,10 +127,7 @@ export default class Physics {
     }
 
     public mouseUp(p: Vec2Like) {
-        if (this._mouseJoint) {
-            this._world.destroyJoint(this._mouseJoint)
-            this._mouseJoint = undefined
-        }
+        this.releaseMouseJoint();
     }
 
     private findBody(
@@ -121,7 +142,7 @@ export default class Physics {
             if (!fixture.getBody().isDynamic()) {
                 return true
             }
-            // Make sure mouse is on it
+            // Make sure `p` is on it
             if (!fixture.testPoint(Planck.Vec2(p.x, p.y))) {
                 return true
             }
@@ -142,7 +163,8 @@ export default class Physics {
     }
 
     public add(physicsObj: PhysicsObject) {
-        // For PlanckJS, the body is already added to the world
+        // For PlanckJS, the body is already added to the world (the world
+        // creates it)
         physicsObj.body.setActive(true)
     }
 }
@@ -280,8 +302,8 @@ export class PhysicsObject {
     }
 
     public destroy() {
-        // NOTE/TODO: Physics destroy is not currently working reliably and might
-        // leave invisible bodies in the world
+        // NOTE/TODO: Physics destroy is not currently working reliably and
+        // might leave invisible bodies in the world
         this._entity.sim.physics.world.destroyBody(this.body)
     }
 
@@ -295,30 +317,12 @@ export class PhysicsObject {
             bodyB: frictionBody,
             localAnchorA: Planck.Vec2(localPoint),
             localAnchorB: Planck.Vec2(0, 0),
-            maxForce: 500, // TODO: calc this
+            maxForce: 500,
             maxTorque: 0,
         }
         return (
             this._entity.sim.physics.world.createJoint(
                 new Planck.FrictionJoint(jointDef)
-            ) ?? undefined
-        )
-    }
-
-    public addMouseJoint(localPoint: Vec2Like): Planck.MouseJoint | undefined {
-        const mouseBody = this._entity.sim.physics.world.createBody()
-        const jointDef: Planck.MouseJointDef = {
-            collideConnected: false,
-            bodyA: this.body,
-            bodyB: mouseBody,
-            target: Planck.Vec2(localPoint),
-            maxForce: 100000, // TODO: calc this
-            frequencyHz: 0,
-            dampingRatio: 1,
-        }
-        return (
-            this._entity.sim.physics.world.createJoint(
-                new Planck.MouseJoint(jointDef)
             ) ?? undefined
         )
     }
