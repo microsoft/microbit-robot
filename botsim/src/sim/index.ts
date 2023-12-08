@@ -47,7 +47,7 @@ export class Simulation {
     private _input: InputState
     private _entities: Entity[] = []
     private spawns: SpawnSpec[] = []
-    private bots = new Map<string, Bot>()
+    private bots = new Map<number, Bot>()
     private walls?: Entity
 
     public debugDraw = false
@@ -64,8 +64,8 @@ export class Simulation {
     public get entities() {
         return this._entities
     }
-    public bot(botId: string): Bot | undefined {
-        return this.bots.get(botId)
+    public bot(deviceId: number): Bot | undefined {
+        return this.bots.get(deviceId)
     }
 
     private constructor() {
@@ -126,7 +126,7 @@ export class Simulation {
         for (let [_, bot] of this.bots) {
             bot.destroy()
         }
-        this.bots = new Map<string, Bot>()
+        this.bots = new Map<number, Bot>()
         this._physics.reinit()
         this._renderer.reinit()
     }
@@ -189,19 +189,19 @@ export class Simulation {
     }
 
     public spawnBot(
-        botId: string,
+        deviceId: number,
         botSpec: BotSpec | undefined
     ): Bot | undefined {
         if (!botSpec) return
 
-        if (this.bots.has(botId)) {
-            this.bots.get(botId)?.destroy()
+        if (this.bots.has(deviceId)) {
+            this.bots.get(deviceId)?.destroy()
         }
 
         const spawnIndex = this.bots.size % this.spawns.length
         const spawn = this.spawns[spawnIndex]
         const bot = new Bot(this, spawn, botSpec)
-        this.bots.set(botId, bot)
+        this.bots.set(deviceId, bot)
         return bot
     }
 

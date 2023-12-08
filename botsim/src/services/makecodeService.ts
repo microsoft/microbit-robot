@@ -49,6 +49,7 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
                 armAperture,
                 color,
                 id: runId,
+                sensors,
             } = state
 
             // Is this message from the primary sim frame? This frame will reliably exist at index zero.
@@ -63,12 +64,10 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
                 restartSim()
             }
             const sim = Simulation.instance
-
-            const botId = `${deviceId}/${productId}`
             const bot =
-                sim.bot(botId) ??
-                sim.spawnBot(botId, BOTS[deviceId]) ??
-                sim.spawnBot(botId, BOTS[0])
+                sim.bot(deviceId) ??
+                sim.spawnBot(deviceId, BOTS[productId]) ??
+                sim.spawnBot(deviceId, BOTS[0])
             if (!bot) return
 
             // Apply state to bot
@@ -126,10 +125,16 @@ export function init() {
                 case "stop":
                     return handleStopMessage(ev.data)
                 case "run":
+                    // We can't rely on receiving a run message every time the
+                    // simulator starts, so instead we restart botsim whenever
+                    // we receive a robot state message with a new runId from
+                    // the primary sim frame.
                     return
                 case "debugger":
                     return handleDebuggerMessage(ev.data)
                 case "bulkserial":
+                    return
+                case "stopsound":
                     return
             }
             console.log(`unknown message: ${JSON.stringify(ev.data)}`)
