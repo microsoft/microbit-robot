@@ -70,7 +70,7 @@ export class LineSensor {
             ...defaultCircleShape(),
             label: this.sensorId + ".sensor",
             offset: spec.pos,
-            radius: 0.1,
+            radius: 0.3,
             roles: ["line-sensor"],
             brush: {
                 ...defaultColorBrush(),
