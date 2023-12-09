@@ -162,7 +162,7 @@ export const defaultEntity = (): EntitySpec => ({
 
 /// Entity Physics
 
-export type EntityPhysicsType = "dynamic" | "static"
+export type EntityPhysicsType = "dynamic" | "static" // TODO: Add support for kinematic
 
 export type EntityPhysicsSpec = {
     type: EntityPhysicsType

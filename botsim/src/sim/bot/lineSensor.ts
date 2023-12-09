@@ -8,6 +8,9 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
+import Planck from "planck-js"
+
+const testOverlap = Planck.internal.Distance.testOverlap
 
 export class LineSensor {
     sensorId: string
@@ -113,20 +116,40 @@ export class LineSensor {
             const fixtureB = contact.getFixtureB()
             const userDataA = fixtureA.getUserData() as EntityShapeSpec
             const userDataB = fixtureB.getUserData() as EntityShapeSpec
-            if (userDataA && userDataB) {
-                const labelA = userDataA.label
-                const labelB = userDataB.label
-                if (!labelA || !labelB) continue
-                const rolesA = userDataA.roles
-                const rolesB = userDataB.roles
-                if (labelA === this.sensorId + ".sensor") {
-                    if (rolesB.includes("follow-line")) {
-                        this.setDetecting(true)
-                    }
-                } else if (labelB === this.sensorId + ".sensor") {
-                    if (rolesA.includes("follow-line")) {
-                        this.setDetecting(true)
-                    }
+            if (!userDataA || !userDataB) continue
+            const labelA = userDataA.label
+            const labelB = userDataB.label
+            const rolesA = userDataA.roles
+            const rolesB = userDataB.roles
+            if (
+                labelA === this.sensorId + ".sensor" &&
+                rolesB.includes("follow-line")
+            ) {
+                const overlap = testOverlap(
+                    fixtureA.getShape(),
+                    0,
+                    fixtureB.getShape(),
+                    0,
+                    fixtureA.getBody().getTransform(),
+                    fixtureB.getBody().getTransform()
+                )
+                if (overlap) {
+                    this.setDetecting(true)
+                }
+            } else if (
+                labelB === this.sensorId + ".sensor" &&
+                rolesA.includes("follow-line")
+            ) {
+                const overlap = testOverlap(
+                    fixtureA.getShape(),
+                    0,
+                    fixtureB.getShape(),
+                    0,
+                    fixtureA.getBody().getTransform(),
+                    fixtureB.getBody().getTransform()
+                )
+                if (overlap) {
+                    this.setDetecting(true)
                 }
             }
         }
