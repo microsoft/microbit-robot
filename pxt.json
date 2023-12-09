@@ -50,7 +50,7 @@
         "microbit.ts": "target:microbit"
     },
     "targetVersions": {
-        "target": "6.0.24",
+        "target": "6.0.25",
         "targetId": "microbit"
     },
     "supportedTargets": [
