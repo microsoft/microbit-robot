@@ -38,7 +38,8 @@
         "robots/kittenbotnanobit.ts",
         "robots/inksmithk8.ts",
         "robots/sim.ts",
-        "constants.ts"
+        "constants.ts",
+        "tutorials/getting-started.md"
     ],
     "testFiles": [
         "test.ts"
