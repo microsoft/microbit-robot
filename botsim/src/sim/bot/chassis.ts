@@ -43,8 +43,6 @@ export class Chassis {
 
     public destroy() {}
 
-    public beforePhysicsStep(dtSecs: number) {}
-
     public update(dtSecs: number) {}
 
     public setColor(color: number) {

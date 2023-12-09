@@ -82,7 +82,5 @@ export class RangeSensor {
 
     public destroy() {}
 
-    public beforePhysicsStep(dtSecs: number) {}
-
     public update(dtSecs: number) {}
 }

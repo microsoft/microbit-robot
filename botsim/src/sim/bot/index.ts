@@ -110,14 +110,6 @@ export class Bot {
         this.leds.forEach((led) => led.destroy())
     }
 
-    public beforePhysicsStep(dtSecs: number) {
-        this.chassis.beforePhysicsStep(dtSecs)
-        this.wheels.forEach((wheel) => wheel.beforePhysicsStep(dtSecs))
-        this.rangeSensor?.beforePhysicsStep(dtSecs)
-        this.lineSensors.forEach((sensor) => sensor.beforePhysicsStep(dtSecs))
-        this.leds.forEach((led) => led.beforePhysicsStep(dtSecs))
-    }
-
     public update(dtSecs: number) {
         if (KEYBOARD_CONTROL_ENABLED) this.handleInput()
         this.chassis.update(dtSecs)

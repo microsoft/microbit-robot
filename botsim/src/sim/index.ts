@@ -169,13 +169,6 @@ export class Simulation {
         }
     }
 
-    public beforePhysicsStep(dtSecs: number) {
-        for (let [_, bot] of this.bots) {
-            bot.beforePhysicsStep(dtSecs)
-        }
-        this.entities.forEach((ent) => ent.beforePhysicsStep(dtSecs))
-    }
-
     public loadMap(map: MapSpec) {
         this.clear()
         const height = map.width / map.aspectRatio

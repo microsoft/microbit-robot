@@ -59,8 +59,6 @@ export class LED {
 
     public destroy() {}
 
-    public beforePhysicsStep(dtSecs: number) {}
-
     public update(dtSecs: number) {}
 
     public setColor(color: number) {

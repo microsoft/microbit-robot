@@ -160,7 +160,6 @@ export default class Physics {
     }
 
     public update(dtSecs: number): number {
-        this.sim.beforePhysicsStep(dtSecs)
         this.world.step(dtSecs, 6, 2)
         return 0
     }
@@ -208,8 +207,6 @@ export class PhysicsObject {
         this._debugRenderObj = new Pixi.Graphics()
         this._debugRenderObj.zIndex = 100
     }
-
-    public beforePhysicsStep(dtSecs: number) {}
 
     private debugDraw() {
         this._debugRenderObj.removeChildren()

@@ -95,8 +95,6 @@ export class LineSensor {
 
     public destroy() {}
 
-    public beforePhysicsStep(dtSecs: number) {}
-
     public update(dtSecs: number) {
         this.setDetecting(false)
         for (

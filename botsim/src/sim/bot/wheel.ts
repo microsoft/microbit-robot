@@ -66,15 +66,10 @@ export class Wheel {
 
     public destroy() {}
 
-    public beforePhysicsStep(dtSecs: number) {
-        // If bot is held, don't apply friction
-        if (this.bot.held) return
-        this.updateFriction(dtSecs)
-    }
-
     public update(dtSecs: number) {
         // If bot is held, don't apply movement forces
         if (this.bot.held) return
+        this.updateFriction(dtSecs)
         this.updateForce(dtSecs)
     }
 

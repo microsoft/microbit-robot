@@ -61,8 +61,4 @@ export class Entity {
         this.renderObj.update(dtSecs)
         this.physicsObj.update(dtSecs)
     }
-
-    public beforePhysicsStep(dtSecs: number) {
-        this.physicsObj.beforePhysicsStep(dtSecs)
-    }
 }
