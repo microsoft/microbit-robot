@@ -1,5 +1,5 @@
-import testMap from "./testMap"
+import * as TestMap from "./testMap"
 
 export const MAPS = {
-    [testMap.name]: testMap,
+    [TestMap.name]: TestMap.create,
 }

@@ -25,7 +25,11 @@ import {
 } from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
-import { MAP_ASPECT_RATIO, PHYSICS_TO_RENDER_SCALE, RENDER_SCALE } from "./constants"
+import {
+    MAP_ASPECT_RATIO,
+    PHYSICS_TO_RENDER_SCALE,
+    RENDER_SCALE,
+} from "./constants"
 import { nextId } from "../util"
 import { GradientFactory } from "@pixi-essentials/gradients"
 
@@ -423,7 +427,7 @@ function createColorPolygonGraphics(
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
     const g = new Pixi.Graphics()
-    const verts = shape.verts.map((v) => Vec2.scale(v, RENDER_SCALE));
+    const verts = shape.verts.map((v) => Vec2.scale(v, RENDER_SCALE))
     const borderColor = toColor(brush.borderColor)
     const fillColor = toColor(brush.fillColor)
     g.zIndex = brush.zIndex ?? 0

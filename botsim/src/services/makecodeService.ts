@@ -1,4 +1,4 @@
-import { LineSensorValues, Simulation, defaultLineSensorValues } from "../sim"
+import { Simulation } from "../sim"
 import { MAPS } from "../maps"
 import { BOTS } from "../bots"
 import * as Protocol from "../external/protocol"
@@ -15,7 +15,7 @@ function restartSim() {
     const sim = Simulation.instance
     sim.stop()
     sim.clear()
-    const map = MAPS["Test Map"]
+    const map = MAPS["Test Map"]?.()
     if (map) {
         sim.loadMap(map)
     }

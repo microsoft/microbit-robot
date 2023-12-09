@@ -24,7 +24,6 @@ import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
 import { PHYSICS_TO_RENDER_SCALE } from "./constants"
 
-
 type Dampening = {
     linear: number
     angular: number
@@ -36,7 +35,7 @@ export default class Physics {
     private _world!: Planck.World
     private _mouseGround!: Planck.Body
     private _mouseJoint: Planck.MouseJoint | undefined
-    private _mouseCachedDampening: Dampening | undefined;
+    private _mouseCachedDampening: Dampening | undefined
 
     public get mouseJoint() {
         return this._mouseJoint
@@ -98,7 +97,7 @@ export default class Physics {
     }
 
     public mouseDown(p: Vec2Like) {
-        this.releaseMouseJoint();
+        this.releaseMouseJoint()
         const body = this.findBody(p, (fixt) => {
             // Only grab shapes tagged with "mouse-target" role
             const spec = fixt.getUserData() as EntityShapeSpec
@@ -111,7 +110,7 @@ export default class Physics {
             angular: body.getAngularDamping(),
             linear: body.getLinearDamping(),
         }
-        body.setAngularDamping(2 * body.getAngularDamping() / 3)
+        body.setAngularDamping((2 * body.getAngularDamping()) / 3)
         body.setLinearDamping(body.getLinearDamping() / 3)
 
         // Create a mouse joint to handle dragging the body
@@ -131,7 +130,7 @@ export default class Physics {
     }
 
     public mouseUp(p: Vec2Like) {
-        this.releaseMouseJoint();
+        this.releaseMouseJoint()
     }
 
     private findBody(

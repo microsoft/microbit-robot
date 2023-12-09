@@ -20,11 +20,12 @@ const MICROBIT_COLORS = {
     YELLOW: "rgb(255, 212, 58)",
     GREEN: "rgb(58, 255, 179)",
     RED: "rgb(255, 58, 84)",
-    BLUE: "rgb(58, 220, 254)"
+    BLUE: "rgb(58, 220, 254)",
 }
 
-const spec: MapSpec = {
-    name: "Test Map",
+export const name = "Test Map"
+export const create = (): MapSpec => ({
+    name,
     width: 90, // cm
     aspectRatio: MAP_ASPECT_RATIO,
     color: "#ffffff",
@@ -142,6 +143,4 @@ const spec: MapSpec = {
             ],
         },
     ],
-}
-
-export default spec
+})
