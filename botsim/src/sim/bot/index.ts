@@ -193,8 +193,6 @@ export class Bot {
     }
 
     public setColor(name: LEDSlotName, color: number) {
-        // TODO: should we allow this when held?
-        if (this.held) return
         /*
         const led = this.leds.get(name)
         if (!led) return
@@ -204,8 +202,6 @@ export class Bot {
     }
 
     public readLineSensors(): LineSensorValues {
-        // If the bot is held, return default empty values
-        if (this.held) return defaultLineSensorValues()
         return {
             ["outer-left"]: this.lineSensors.get("outer-left")?.value ?? -1,
             ["left"]: this.lineSensors.get("left")?.value ?? -1,
