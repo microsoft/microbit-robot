@@ -38,7 +38,8 @@
         "robots/kittenbotnanobit.ts",
         "robots/inksmithk8.ts",
         "robots/sim.ts",
-        "constants.ts"
+        "constants.ts",
+        "tutorials/getting-started.md"
     ],
     "testFiles": [
         "test.ts"
@@ -50,7 +51,7 @@
         "microbit.ts": "target:microbit"
     },
     "targetVersions": {
-        "target": "6.0.24",
+        "target": "6.0.25",
         "targetId": "microbit"
     },
     "supportedTargets": [
