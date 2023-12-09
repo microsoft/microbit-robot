@@ -55,6 +55,9 @@ export default class Physics {
 
     private createWorld() {
         if (this._world) {
+            this._world.off("begin-contact", this.onBeginContact)
+            this._world.off("end-contact", this.onEndContact)
+            this._world.off("remove-body", this.onRemoveBody)
             // Destroy all bodies and joints
             try {
                 for (
@@ -78,6 +81,9 @@ export default class Physics {
         this._world = Planck.World({
             gravity: Planck.Vec2(0, 0),
         })
+        this._world.on("begin-contact", this.onBeginContact)
+        this._world.on("end-contact", this.onEndContact)
+        this._world.on("remove-body", this.onRemoveBody)
         this._mouseGround = this._world.createBody()
         this._mouseJoint = undefined
     }
@@ -169,6 +175,18 @@ export default class Physics {
         // creates it)
         physicsObj.body.setActive(true)
     }
+
+    public on(obj: PhysicsObject, event: "begin-contact", handler: (contact: Planck.Contact) => void): void
+    public on(obj: PhysicsObject, event: "end-contact", handler: (contact: Planck.Contact) => void): void
+    public on(obj: PhysicsObject, event: string, handler: (contact: Planck.Contact) => void): void
+    {
+        // TODO: Register the object for contact events, filter and dispatch
+    }
+
+    // TODO: Dispatch contact events to entities from here
+    private onBeginContact = (contact: Planck.Contact) => {}
+    private onEndContact = (contact: Planck.Contact) => {}
+    private onRemoveBody = (body: Planck.Body) => {}
 }
 
 /**

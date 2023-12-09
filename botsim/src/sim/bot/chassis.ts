@@ -48,17 +48,19 @@ export class Chassis {
     public setColor(color: number) {
         if (this.cachedColor === color) return
         this.cachedColor = color
-        // this is the worst way possible to change the color. works for now. don't do this.
+        // This is the worst way possible to change the color. works for now. don't do this.
         const renderShape = this.bot.entity.renderObj.shapes.get("chassis")
         const newSpec = Chassis.makeShapeSpec(this.bot.spec)
         const newBrush = newSpec.brush
         if (newBrush.type === "color") {
             let rgb = numberToRgb(color)
+            // Brighten the color a little bit
             let hsl = rgbToHsl(rgb)
             hsl.l = clamp(hsl.l * 1.2, 0, 255)
             rgb = hslToRgb(hsl)
             const c = rgbToString(rgb)
-            newBrush.fillColor = c + "99"
+            const alpha = "99"
+            newBrush.fillColor = c + alpha
         }
         const newGfx = createGraphics[newSpec.type][newSpec.brush.type](
             newSpec,

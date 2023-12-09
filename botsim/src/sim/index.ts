@@ -9,6 +9,7 @@ import {
     defaultEntity,
     defaultShapePhysics,
     defaultEntityShape,
+    EntityShapeSpec,
 } from "./specs"
 import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
@@ -76,7 +77,9 @@ export class Simulation {
         this.buildWalls(this.renderer.logicalSize)
 
         // Keyboard/gamepad input is for debugging bot movement models, it is
-        // disabled in production
+        // disabled in production. To enable, set KEYBOARD_CONTROL_ENABLED in
+        // src/sim/bot/index.ts. Note this will disable motor control from the
+        // microbit sim.
         this._input = new InputState(
             [
                 // left wheel motor
@@ -256,10 +259,11 @@ export class Simulation {
             this.removeEntity(this.walls)
             this.walls = undefined
         }
-        const wallCommon = {
+        const wallCommon: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultEdgeShape(),
             offset: { x: 0, y: 0 },
+            roles: ["wall"],
             brush: {
                 ...defaultColorBrush(),
                 borderColor: "#fff",
@@ -284,7 +288,6 @@ export class Simulation {
                     ...wallCommon,
                     v0: { x: 0, y: 0 },
                     v1: { x: size.x, y: 0 },
-                    label: "wall.top",
                 },
                 {
                     ...defaultEntityShape(),
@@ -292,7 +295,6 @@ export class Simulation {
                     ...wallCommon,
                     v0: { x: size.x, y: 0 },
                     v1: { x: size.x, y: size.y },
-                    label: "wall.right",
                 },
                 {
                     ...defaultEntityShape(),
@@ -300,7 +302,6 @@ export class Simulation {
                     ...wallCommon,
                     v0: { x: size.x, y: size.y },
                     v1: { x: 0, y: size.y },
-                    label: "wall.bottom",
                 },
                 {
                     ...defaultEntityShape(),
@@ -308,7 +309,6 @@ export class Simulation {
                     ...wallCommon,
                     v0: { x: 0, y: size.y },
                     v1: { x: 0, y: 0 },
-                    label: "wall.left",
                 },
             ],
         })

@@ -82,5 +82,13 @@ export class RangeSensor {
 
     public destroy() {}
 
-    public update(dtSecs: number) {}
+    public update(dtSecs: number) {
+        this._value = -1
+        for (
+            let ce = this.bot.entity.physicsObj.body.getContactList();
+            ce;
+            ce = ce.next ?? null
+        ) {
+        }
+    }
 }

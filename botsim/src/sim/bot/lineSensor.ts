@@ -1,5 +1,6 @@
 import { Bot } from "."
 import { BotSpec, LineSensorSpec } from "../../bots/specs"
+import { nextId } from "../../util"
 import {
     EntityShapeSpec,
     defaultCircleShape,
@@ -9,6 +10,7 @@ import {
 } from "../specs"
 
 export class LineSensor {
+    sensorId: string
     _shapeSpecs: EntityShapeSpec[]
     _value: number
 
@@ -24,7 +26,7 @@ export class LineSensor {
         const onLineSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.name + ".on",
+            label: this.sensorId + ".on",
             offset: spec.pos,
             radius: 0.5,
             brush: {
@@ -43,7 +45,7 @@ export class LineSensor {
         const offLineSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.name + ".off",
+            label: this.sensorId + ".off",
             offset: spec.pos,
             radius: 0.5,
             brush: {
@@ -63,7 +65,7 @@ export class LineSensor {
         const sensorSpec: EntityShapeSpec = {
             ...defaultEntityShape(),
             ...defaultCircleShape(),
-            label: "line." + spec.name + ".sensor",
+            label: this.sensorId + ".sensor",
             offset: spec.pos,
             radius: 0.1,
             roles: ["line-sensor"],
@@ -89,6 +91,7 @@ export class LineSensor {
         private bot: Bot,
         private spec: LineSensorSpec
     ) {
+        this.sensorId = "line-sensor." + nextId()
         this._shapeSpecs = this.makeShapeSpecs(spec)
         this._value = 0
     }
@@ -102,9 +105,6 @@ export class LineSensor {
             ce;
             ce = ce.next ?? null
         ) {
-            // TODO: Support multiple bots in the scene. As implemented, this
-            // doesn't work for that scenario.
-
             // TODO: Refactor contacts to work from Simulation, providing a
             // single contact listener instead of embedding polling like this in
             // components.
@@ -119,11 +119,11 @@ export class LineSensor {
                 if (!labelA || !labelB) continue
                 const rolesA = userDataA.roles
                 const rolesB = userDataB.roles
-                if (labelA === "line." + this.spec.name + ".sensor") {
+                if (labelA === this.sensorId + ".sensor") {
                     if (rolesB.includes("follow-line")) {
                         this.setDetecting(true)
                     }
-                } else if (labelB === "line." + this.spec.name + ".sensor") {
+                } else if (labelB === this.sensorId + ".sensor") {
                     if (rolesA.includes("follow-line")) {
                         this.setDetecting(true)
                     }
@@ -135,10 +135,10 @@ export class LineSensor {
     public setDetecting(detecting: boolean) {
         this._value = detecting ? 1023 : 0
         const onShape = this.bot.entity.renderObj.shapes.get(
-            "line." + this.spec.name + ".on"
+            this.sensorId + ".on"
         )
         const offShape = this.bot.entity.renderObj.shapes.get(
-            "line." + this.spec.name + ".off"
+            this.sensorId + ".off"
         )
         if (onShape) onShape.visible = detecting
         if (offShape) offShape.visible = !detecting
