@@ -12,7 +12,7 @@ robot.elecfreaksCuteBot.start()
 
 ## Move forward
 
-Drag a `||robot:robot run||` block into on start. 
+Drag a `||robot:robot motor run||` block into on start. 
 It will instruct the robot to go full throttle on both motors.
 
 You will see the robot moving forward in the robot simulator.
@@ -37,7 +37,7 @@ robot.motorStop()
 
 ## Turn Right
 
-Add another `||robot:motor run with steering 100||`. The steering controls the distributing
+Add another `||robot:robot motor run with steering 100||`. The steering controls the distributing
 of forces between the two motors. Positive steering will favor the right motor
 where the left motor stops spinning at 100, and starts going negative beyond 100.
 
@@ -53,7 +53,7 @@ robot.motorRun(100, 100)
 
 ## Spin Right
 
-Add another `||robot:motor run with steering 200||`. The left motor will spin backward
+Add another `||robot:robot motor run with steering 200||`. The left motor will spin backward
 and the right motor will spin forward.
 
 ```blocks

@@ -39,6 +39,11 @@ The following features are found often those robots:
 -   Open https://makecode.microbit.org
 -   Add this extension to your project by adding url [https://github.com/microsoft/microbit-robot](https://github.com/microsoft/microbit-robot)
 
+## Tutorials
+
+-   [Getting started](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/getting-started)
+-   [Light and Sound](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/light-and-sound)
+
 ## Blocks
 
 ### Understanding the screen

@@ -39,7 +39,8 @@
         "robots/inksmithk8.ts",
         "robots/sim.ts",
         "constants.ts",
-        "tutorials/getting-started.md"
+        "tutorials/getting-started.md",
+        "tutorials/light-and-sound.md"
     ],
     "testFiles": [
         "test.ts"
