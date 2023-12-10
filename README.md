@@ -1,6 +1,7 @@
 # Micro:bit Robot for MakeCode
 
-This extension contains **blocks for most 2 wheeled robots available for the micro:bit**.
+This extension contains **blocks for most 2 wheeled robots available for the micro:bit**
+and **a web simulator**.
 This library is compatible with micro:bit V1 and V2.
 
 > The library is still in beta and is subject to changes.
@@ -43,6 +44,18 @@ The following features are found often those robots:
 
 -   [Getting started](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/getting-started)
 -   [Light and Sound](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/light-and-sound)
+
+## Simulator
+
+The simulator will load automatically in MakeCode once you use a robot block. 
+It is designed to help programming this kind of robot.
+
+-   The simulator supports the line sensors and obstacle detectors.
+-   You can drag the robot using the mouse to reset the movements.
+-   If you use radio, you will see a single simulator with multiple robots.
+-   On a small screen, click on the **full screen icon** to show the simulator.
+-   Remember that the simulation is not perfect. It does not capture all the subtle imperfections of the physical robot
+(motor wear, battery level, weight distribution, ground friction, ...).
 
 ## Blocks
 
