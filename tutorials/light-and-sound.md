@@ -23,7 +23,6 @@ If the robot does not have an RGB color, the intensity of the color will be used
 robot.elecfreaksCuteBot.start()
 // @highlight
 robot.setColor(0xff0000)
-robot.playTone(262, music.beat(BeatFraction.Whole))
 ```
 
 ## Sound
