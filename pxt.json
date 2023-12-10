@@ -40,7 +40,8 @@
         "robots/sim.ts",
         "constants.ts",
         "tutorials/getting-started.md",
-        "tutorials/light-and-sound.md"
+        "tutorials/light-and-sound.md",
+        "tutorials/line-follower.md"
     ],
     "testFiles": [
         "test.ts"

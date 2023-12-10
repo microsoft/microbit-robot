@@ -44,6 +44,7 @@ The following features are found often those robots:
 
 -   [Getting started](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/getting-started)
 -   [Light and Sound](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/light-and-sound)
+-   [Line follower](https://makecode.microbit.org/#tutorial:github:microsoft/microbit-robot/tutorials/line-follower)
 
 ## Simulator
 

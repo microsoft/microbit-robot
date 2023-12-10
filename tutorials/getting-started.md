@@ -1,5 +1,10 @@
 # Micro:bit Robot Getting Started
 
+## Getting started @showdialog
+
+In this tutorial, you will learn to configure your robot, use the simulator, move forward and do turns.
+Let's go!
+
 ## Choose the robot type @showhint
 
 Drag the `||robot:robot ... start||` at the start of `||basic:on start||` and choose the robot type
