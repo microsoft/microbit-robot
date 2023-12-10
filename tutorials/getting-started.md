@@ -72,7 +72,3 @@ robot.motorRun(200, 100)
 
 That's it. You can try to add any sequence of `||robot:motor run||` blocs to create fun
 dance robot movements.
-
-```package
-microbit-robot=github:microsoft/microbit-robot
-```
