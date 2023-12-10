@@ -10,6 +10,15 @@ in the dropdown. After restarting, you should also see the robot simulator.
 robot.elecfreaksCuteBot.start()
 ```
 
+## Simulator Pro Tips! @showdialog
+
+The robot simulator is there to help you create cool robot programs. 
+- If you are on a small screen, click on the **full screen icon** to see it.
+- Drag the robot around using the mouse.
+- The simulator is not perfect! There will be differences of behavior between the simulator
+and your physical robot based on the motors, gearing, weight, balance, and other imperfections
+of the real world!
+
 ## Move forward
 
 Drag a `||robot:robot motor run||` block into on start. 
