@@ -1,8 +1,8 @@
 namespace robot {
     /**
-     * Registers button A, B, A+B to change the radio group and drift.
-     */
-    export function startCalibrationButtons() {
+    * Registers button A, B, A+B to change the radio group and drift.
+    */
+    export function startCalibrationButtons(calibrate?: boolean) {
         const d = RobotDriver.instance()
         input.onButtonPressed(Button.A, () =>
             control.inBackground(() => {
@@ -31,6 +31,9 @@ namespace robot {
                 showConfigurationState(d, true)
             })
         )
+
+        if (calibrate)
+            showConfigurationState(d, true)
     }
 
     function showConfigurationState(d: RobotDriver, showTitle?: boolean) {

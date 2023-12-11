@@ -244,20 +244,35 @@ namespace robot {
     }
 
     /**
-     * Sets the group used for radio communication
-     * @param id group id
+     * Sets the group used for radio communication and stores it in flash.
+     * @param group group id
      */
-    //% block="robot set radio group $enabled"
+    //% block="robot set radio group $group"
     //% blockid="mbitrobotsetradiogroup"
     //% group="Configuration"
     //% group.min=1
     //% group.max=25
-    export function setRadioGroup(id: number) {
+    //% group.defl=1
+    export function setRadioGroup(group: number) {
         const robot = RobotDriver.instance()
-        id = (id >> 0) & 0xff
-        if (id === 0) return // not allowed
-        while (id < 0) id += configuration.MAX_GROUPS
-        id = id % configuration.MAX_GROUPS
-        robot.setRadioGroup(id)
+        group = (group >> 0) & 0xff
+        if (group === 0) return // not allowed
+        while (group < 0) group += configuration.MAX_GROUPS
+        group = group % configuration.MAX_GROUPS
+        robot.setRadioGroup(group)
+    }
+
+    /**
+     * Registers button A, B, A+B to change the radio group and drift.
+     * Puts motors to 80%.
+     */
+    //% block="robot calibrate"
+    //% blockid="mbitrobotcalibrate"
+    //% group="Configuration"
+    //% weight=100
+    export function calibrate() {
+        robot.motorStop()
+        robot.startCalibrationButtons(true)
+        robot.motorRun(0, 80)
     }
 }
