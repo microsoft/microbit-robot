@@ -109,7 +109,7 @@ namespace robot {
      * Checks the state of line detectors. Always returns false if the line detector is not available on the hardware
      */
     //% weight=40
-    //% block="robot detect line $line"
+    //% block="robot detect line $detector"
     //% blockId=microcoderobotdetectlines
     //% group="Lines"
     export function detectLine(detector: RobotLineDetector): boolean {
