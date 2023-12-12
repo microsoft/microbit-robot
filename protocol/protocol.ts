@@ -3,24 +3,30 @@
  */
 enum RobotLineDetector {
     /**
-     * block="outer left"
+     * Line detector located on the outer left of the robot. Few robots have this sensor.
      */
+    //% block="outer left"
     OuterLeft = 0,
     /**
-     * block="left"
+     * Line detector located on the left of the directional ball.
      */
+    //% block="left"
     Left = 1,
     /**
-     * block="middle"
+     * Line detector located between the left and right sensors, at the center of the robot.
+     * Few robots have this sensor.
      */
+    //% block="middle"
     Middle = 2,
     /**
-     * block="right"
+     * Line detector located on the right of the directional ball.
      */
+    //% block="right"
     Right = 3,
     /**
-     * block="outer right"
+     * Line detector located on the outer right of the robot. Few robots have this sensor.
      */
+    //% block="outer right"
     OuterRight = 4,
 }
 

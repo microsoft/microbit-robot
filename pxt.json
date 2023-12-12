@@ -1,6 +1,6 @@
 {
     "name": "microbit-robot",
-    "version": "2.5.34",
+    "version": "2.5.36",
     "dependencies": {
         "core": "*",
         "radio": "*",
@@ -39,7 +39,9 @@
         "robots/inksmithk8.ts",
         "robots/sim.ts",
         "constants.ts",
-        "tutorials/getting-started.md"
+        "tutorials/getting-started.md",
+        "tutorials/light-and-sound.md",
+        "tutorials/line-follower.md"
     ],
     "testFiles": [
         "test.ts"
