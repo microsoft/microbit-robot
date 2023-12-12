@@ -112,6 +112,7 @@ export class RangeSensor {
 
     public update(dtSecs: number) {
         this._value = -1
+        let detected = false;
         const botPos = this.bot.pos
         const myAngle = this.bot.angle
         const myPos = Vec2.transformDeg(
@@ -420,6 +421,7 @@ export class RangeSensor {
                 const d = p.dist / PHYSICS_SCALE
                 if (this.value === -1 || d < this.value) {
                     this._value = d
+                    detected = true;
                     //this.targetSpec.brush.visible = true
                 }
             }
@@ -427,7 +429,7 @@ export class RangeSensor {
 
         // Hitting the backstop doesn't count as a reading
         if (this.value >= this.spec.maxRange * 0.99) {
-            this._value = -1
+            detected = false;
         }
 
         // Update the visual representation of the sensor sweep
@@ -435,9 +437,9 @@ export class RangeSensor {
             ...this.visualSpec,
             verts,
             brush: {
-                ...(this.value === -1
-                    ? this.spec.brush.negative
-                    : this.spec.brush.positive),
+                ...(detected
+                    ? this.spec.brush.positive
+                    : this.spec.brush.negative),
             },
         }
 
