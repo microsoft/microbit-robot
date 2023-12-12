@@ -32,6 +32,7 @@ export const create = (): MapSpec => ({
     spawns: [
         {
             pos: { x: 20.5, y: 18 },
+            //pos: { x: 21, y: 45 / MAP_ASPECT_RATIO },
             angle: 90,
         },
         {

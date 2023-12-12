@@ -2,6 +2,7 @@ import { BoxShapeSpec, HorizontalAlignment, VerticalAlignment } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
+import Planck from "planck-js"
 import { clamp } from "../util"
 
 export function makeBoxVertices(
@@ -40,12 +41,16 @@ export function makeBoxVertices(
     return verts
 }
 
-export function boxToVertices(box: BoxShapeSpec): Vec2[] {
+export function boxToVertices(box: BoxShapeSpec): Vec2Like[] {
     return makeBoxVertices(box.size, box.halign, box.valign)
 }
 
 // https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Interpolation_on_the_unit_interval_with_matched_derivatives_at_endpoints
-export function catmullRom(p: Vec2Like[], closed: boolean, t: number): Vec2 {
+export function catmullRom(
+    p: Vec2Like[],
+    closed: boolean,
+    t: number
+): Vec2Like {
     if (!p.length) {
         return Vec2.zero()
     }
@@ -95,7 +100,7 @@ export function catmullRom(p: Vec2Like[], closed: boolean, t: number): Vec2 {
 }
 
 export function samplePath(
-    sampleFn: (p: Vec2Like[], closed: boolean, t: number) => Vec2,
+    sampleFn: (p: Vec2Like[], closed: boolean, t: number) => Vec2Like,
     p: Vec2Like[],
     closed: boolean,
     startT: number,
@@ -111,14 +116,14 @@ export function samplePath(
         startT = endT
         endT = tmp
     }
-    let samples: Vec2[] = []
+    let samples: Vec2Like[] = []
     // kinda hacky, but add 2 * stepT to endT to make sure we get the last point
     for (let t = startT; t <= endT + 2 * stepT; t += stepT) {
         samples.push(sampleFn(p, closed, t))
     }
     // remove duplicates
     samples = samples.filter(
-        (v, i) => samples.findIndex((v2) => v2.equals(v)) === i
+        (v, i) => samples.findIndex((v2) => Vec2.areEqual(v2, v)) === i
     )
     return samples
 }
@@ -126,8 +131,8 @@ export function samplePath(
 /**
  * Returns the average of the normals of the two adjacent line segments.
  */
-export function calcMidVectors(p: Vec2Like[]): Vec2[] {
-    const mids: Vec2[] = []
+export function calcMidVectors(p: Vec2Like[]): Vec2Like[] {
+    const mids: Vec2Like[] = []
 
     const nextIndex: (i: number) => number = (i) =>
         Math.min(i + 1, p.length - 1)
@@ -156,8 +161,11 @@ export function calcMidVectors(p: Vec2Like[]): Vec2[] {
     return mids
 }
 
-export function makePathPolygons(path: Vec2Like[], width: number): Vec2[][] {
-    const polygons: Vec2[][] = []
+export function makePathPolygons(
+    path: Vec2Like[],
+    width: number
+): Vec2Like[][] {
+    const polygons: Vec2Like[][] = []
 
     const mids = calcMidVectors(path)
 
@@ -298,4 +306,36 @@ export function toRenderScale(n: number): number {
 
 export function toPhysicsScale(n: number): number {
     return n * PHYSICS_SCALE
+}
+
+export function testOverlap(
+    fixtureA: Planck.Fixture,
+    fixtureB: Planck.Fixture
+): boolean {
+    return Planck.internal.Distance.testOverlap(
+        fixtureA.getShape(),
+        0,
+        fixtureB.getShape(),
+        0,
+        fixtureA.getBody().getTransform(),
+        fixtureB.getBody().getTransform()
+    )
+}
+
+/**
+ * Ensure angle is in 0..360
+ */
+export function angleTo360(angle: number): number {
+    while (angle < 0) angle += 360
+    while (angle > 360) angle -= 360
+    return angle
+}
+
+/**
+ * Ensure angle is in -180..180
+ */
+export function angleTo180(angle: number): number {
+    while (angle < -180) angle += 360
+    while (angle > 180) angle -= 360
+    return angle
 }

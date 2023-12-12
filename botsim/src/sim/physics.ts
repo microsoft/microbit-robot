@@ -176,10 +176,21 @@ export default class Physics {
         physicsObj.body.setActive(true)
     }
 
-    public on(obj: PhysicsObject, event: "begin-contact", handler: (contact: Planck.Contact) => void): void
-    public on(obj: PhysicsObject, event: "end-contact", handler: (contact: Planck.Contact) => void): void
-    public on(obj: PhysicsObject, event: string, handler: (contact: Planck.Contact) => void): void
-    {
+    public on(
+        obj: PhysicsObject,
+        event: "begin-contact",
+        handler: (contact: Planck.Contact) => void
+    ): void
+    public on(
+        obj: PhysicsObject,
+        event: "end-contact",
+        handler: (contact: Planck.Contact) => void
+    ): void
+    public on(
+        obj: PhysicsObject,
+        event: string,
+        handler: (contact: Planck.Contact) => void
+    ): void {
         // TODO: Register the object for contact events, filter and dispatch
     }
 

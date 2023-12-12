@@ -7,7 +7,7 @@ import {
 } from "../specs"
 import { PHYSICS_SCALE, RENDER_SCALE } from "../constants"
 import { Bot } from "."
-import { Vec2 } from "../../types/vec2"
+import { Vec2, Vec2Like } from "../../types/vec2"
 import Planck from "planck-js"
 
 export class Wheel {
@@ -24,7 +24,7 @@ export class Wheel {
             ...defaultEntityShape(),
             ...defaultBoxShape(),
             label: spec.name,
-            roles: ["mouse-target"],
+            roles: ["mouse-target", "robot"],
             offset: spec.pos,
             size: { x: spec.width, y: spec.radius * 2 },
             brush: {
@@ -42,7 +42,7 @@ export class Wheel {
 
     private maxSpeed: number
     private currSpeed: number
-    private localPos: Vec2
+    private localPos: Vec2Like
     private friction?: Planck.FrictionJoint
 
     constructor(

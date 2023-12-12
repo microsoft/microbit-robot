@@ -1,5 +1,5 @@
 import { Bot } from "."
-import { BotSpec, LineSensorSpec } from "../../bots/specs"
+import { LineSensorSpec } from "../../bots/specs"
 import { nextId } from "../../util"
 import {
     EntityShapeSpec,
@@ -8,9 +8,7 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import Planck from "planck-js"
-
-const testOverlap = Planck.internal.Distance.testOverlap
+import { testOverlap } from "../util"
 
 export class LineSensor {
     sensorId: string
@@ -125,14 +123,7 @@ export class LineSensor {
                 labelA === this.sensorId + ".sensor" &&
                 rolesB.includes("follow-line")
             ) {
-                const overlap = testOverlap(
-                    fixtureA.getShape(),
-                    0,
-                    fixtureB.getShape(),
-                    0,
-                    fixtureA.getBody().getTransform(),
-                    fixtureB.getBody().getTransform()
-                )
+                const overlap = testOverlap(fixtureA, fixtureB)
                 if (overlap) {
                     this.setDetecting(true)
                 }
@@ -140,14 +131,7 @@ export class LineSensor {
                 labelB === this.sensorId + ".sensor" &&
                 rolesA.includes("follow-line")
             ) {
-                const overlap = testOverlap(
-                    fixtureA.getShape(),
-                    0,
-                    fixtureB.getShape(),
-                    0,
-                    fixtureA.getBody().getTransform(),
-                    fixtureB.getBody().getTransform()
-                )
+                const overlap = testOverlap(fixtureA, fixtureB)
                 if (overlap) {
                     this.setDetecting(true)
                 }

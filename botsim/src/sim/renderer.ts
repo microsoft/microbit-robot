@@ -38,7 +38,7 @@ import { GradientFactory } from "@pixi-essentials/gradients"
  */
 export default class Renderer {
     private pixi: Pixi.Application
-    private _size: Vec2
+    private _size: Vec2Like
     private _debugLayer: Pixi.Container
 
     public get handle() {

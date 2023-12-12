@@ -39,6 +39,12 @@ export class Bot {
     public lineSensors = new Map<LineSensorSlotName, LineSensor>()
     public leds = new Map<LEDSlotName, LED>()
 
+    public get pos(): Vec2Like {
+        return this.entity.physicsObj.pos
+    }
+    public get angle(): number {
+        return this.entity.physicsObj.angle
+    }
     public get forward(): Vec2Like {
         return this.entity.physicsObj.forward
     }
@@ -74,7 +80,7 @@ export class Bot {
             ...wheelShapes,
             ...lineSensorShapes.flat(),
             //...ledShapes,
-            //...rangeSensorShapes,
+            ...rangeSensorShapes,
         ]
         if (ballastShape) shapes.push(ballastShape)
 
@@ -212,7 +218,6 @@ export class Bot {
     }
 
     public readRangeSensor(): number {
-        // TODO
-        return -1
+        return this.rangeSensor?.value ?? -1
     }
 }

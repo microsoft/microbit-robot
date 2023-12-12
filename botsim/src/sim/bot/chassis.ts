@@ -16,7 +16,7 @@ export class Chassis {
             ...defaultEntityShape(),
             ...chassisSpec.shape,
             label: "chassis",
-            roles: ["mouse-target"],
+            roles: ["mouse-target", "robot"],
             brush: {
                 ...chassisSpec.brush,
                 zIndex: 5,

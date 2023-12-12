@@ -47,7 +47,10 @@ export type RangeSensorSpec = {
     pos: Vec2Like // offset from chassis center
     beamAngle: number // degrees
     maxRange: number // cm
-    brush: BrushSpec
+    brush: {
+        positive: BrushSpec
+        negative: BrushSpec
+    }
 }
 
 export type LEDSpec = {

@@ -1,3 +1,5 @@
+import { toDegrees, toRadians } from "../util"
+
 export interface Vec2Like {
     x: number
     y: number
@@ -9,64 +11,54 @@ export class Vec2 implements Vec2Like {
         public y = 0
     ) {}
 
-    public set(x: number, y: number) {
-        this.x = x
-        this.y = x
+    public static from(v: Vec2Like): Vec2Like {
+        return { x: v.x, y: v.y }
     }
 
-    public copyFrom(v: Vec2Like) {
-        this.x = v.x
-        this.y = v.y
-    }
-
-    public equals(v: Vec2Like) {
-        return this.x === v.x && this.y === v.y
-    }
-
-    public static from(v: Vec2Like): Vec2 {
-        return new Vec2(v.x, v.y)
+    public static areEqual(a: Vec2Like, b: Vec2Like): boolean {
+        return a.x === b.x && a.y === b.y
     }
 
     /**
      * Returns the result of adding the two vectors
      */
-    public static add(a: Vec2Like, b: Vec2Like): Vec2 {
-        return new Vec2(a.x + b.x, a.y + b.y)
+    public static add(a: Vec2Like, b: Vec2Like): Vec2Like {
+        return { x: a.x + b.x, y: a.y + b.y }
     }
 
     /**
      * Returns the result of subtracting the second vector from the first
      */
-    public static sub(a: Vec2Like, b: Vec2Like): Vec2 {
-        return new Vec2(a.x - b.x, a.y - b.y)
+    public static sub(a: Vec2Like, b: Vec2Like): Vec2Like {
+        return { x: a.x - b.x, y: a.y - b.y }
     }
 
     /**
      * Returns the result of multiplying the two vectors
      */
-    public static mul(a: Vec2Like, b: Vec2Like): Vec2 {
-        return new Vec2(a.x * b.x, a.y * b.y)
+    public static mul(a: Vec2Like, b: Vec2Like): Vec2Like {
+        return { x: a.x * b.x, y: a.y * b.y }
     }
 
     /**
      * Returns the result of dividing the first vector by the second
      */
-    public static div(a: Vec2Like, b: Vec2Like): Vec2 {
-        return new Vec2(a.x / b.x, a.y / b.y)
+    public static div(a: Vec2Like, b: Vec2Like): Vec2Like {
+        return { x: a.x / b.x, y: a.y / b.y }
     }
 
     /**
      * Returns the negation of the given vector
      */
-    public static neg(v: Vec2Like): Vec2 {
-        return new Vec2(-v.x, -v.y)
+    public static neg(v: Vec2Like): Vec2Like {
+        return { x: -v.x, y: -v.y }
     }
 
     /**
      * Returns the given vector scaled by the given value
      */
-    public static scale(v: Vec2Like, n: number): Vec2 {
-        return new Vec2(v.x * n, v.y * n)
+    public static scale(v: Vec2Like, n: number): Vec2Like {
+        return { x: v.x * n, y: v.y * n }
     }
 
     /**
@@ -91,26 +83,33 @@ export class Vec2 implements Vec2Like {
     }
 
     /**
+     * Returns the cross product of the two vectors (also known as the determinant)
+     */
+    public static cross(a: Vec2Like, b: Vec2Like): number {
+        return a.x * b.y - a.y * b.x
+    }
+
+    /**
      * Returns the normal of the vector, or throws an error if the vector is
      * zero and no fallback is provided
      */
-    public static normalize(v: Vec2Like, fallback?: Vec2Like): Vec2 {
+    public static normalize(v: Vec2Like, fallback?: Vec2Like): Vec2Like {
         const len = Vec2.len(v)
         if (len === 0) {
             if (fallback) return Vec2.from(fallback)
             throw new Error("Cannot normalize zero vector")
         }
-        return new Vec2(v.x / len, v.y / len)
+        return { x: v.x / len, y: v.y / len }
     }
 
     /**
      * Returns a vector perpendicular to the given vector
      */
-    public static perp(v: Vec2Like, up: boolean): Vec2 {
+    public static perp(v: Vec2Like, up: boolean): Vec2Like {
         if (up) {
-            return new Vec2(-v.y, v.x)
+            return { x: -v.y, y: v.x }
         } else {
-            return new Vec2(v.y, -v.x)
+            return { x: v.y, y: -v.x }
         }
     }
 
@@ -122,17 +121,36 @@ export class Vec2 implements Vec2Like {
     }
 
     /**
+     * Returns the squared distance between two vectors
+     */
+    public static distSq(a: Vec2Like, b: Vec2Like): number {
+        return Vec2.lenSq(Vec2.sub(a, b))
+    }
+
+    /**
      * Returns a vector with swapped x and y values
      */
-    public static transpose(v: Vec2Like): Vec2 {
-        return new Vec2(v.y, v.x)
+    public static transpose(v: Vec2Like): Vec2Like {
+        return { x: v.y, y: v.x }
     }
 
     /**
      * Returns a vector with absolute values
      */
-    public static abs(v: Vec2Like): Vec2 {
-        return new Vec2(Math.abs(v.x), Math.abs(v.y))
+    public static abs(v: Vec2Like): Vec2Like {
+        return { x: Math.abs(v.x), y: Math.abs(v.y) }
+    }
+
+    public static major(v: Vec2Like): Vec2Like {
+        if (Math.abs(v.x) > Math.abs(v.y)) {
+            return { x: v.x, y: 0 }
+        } else {
+            return { x: 0, y: v.y }
+        }
+    }
+
+    public static sign(v: Vec2Like): Vec2Like {
+        return { x: Math.sign(v.x), y: Math.sign(v.y) }
     }
 
     /**
@@ -146,96 +164,130 @@ export class Vec2 implements Vec2Like {
      * Returns the angle of the vector in degrees
      */
     public static angleDeg(v: Vec2Like): number {
-        return (Vec2.angle(v) * 180) / Math.PI
+        return toDegrees(Vec2.angle(v))
     }
 
     /**
      * Given an angle in radians, returns a vector with that angle
      */
-    public static fromAngle(angle: number): Vec2 {
-        return new Vec2(Math.cos(angle), Math.sin(angle))
+    public static fromAngle(angle: number): Vec2Like {
+        return { x: Math.cos(angle), y: Math.sin(angle) }
     }
 
     /**
      * Given an angle in degrees, returns a vector with that angle
      */
-    public static fromAngleDeg(angle: number): Vec2 {
-        return Vec2.fromAngle((angle * Math.PI) / 180)
+    public static fromAngleDeg(angle: number): Vec2Like {
+        return Vec2.fromAngle(toRadians(angle))
     }
 
     /**
      * Returns a vector rotated by the given angle in radians
      */
-    public static rotate(v: Vec2Like, angle: number): Vec2 {
+    public static rotate(v: Vec2Like, angle: number): Vec2Like {
         const s = Math.sin(angle)
         const c = Math.cos(angle)
-        return new Vec2(v.x * c - v.y * s, v.y * c + v.x * s)
+        return { x: v.x * c - v.y * s, y: v.y * c + v.x * s }
     }
 
     /**
      * Returns a vector rotated by the given angle in degrees
      */
-    public static rotateDeg(v: Vec2Like, angle: number): Vec2 {
-        return Vec2.rotate(v, (angle * Math.PI) / 180)
+    public static rotateDeg(v: Vec2Like, angle: number): Vec2Like {
+        return Vec2.rotate(v, toRadians(angle))
     }
 
-    public static zero(): Vec2 {
-        return new Vec2(0, 0)
+    /**
+     * Returns a vector transformed by the given position and angle in radians
+     */
+    public static transform(v: Vec2Like, p: Vec2Like, angle: number): Vec2Like {
+        return Vec2.add(Vec2.rotate(v, angle), p)
     }
 
-    public static one(): Vec2 {
-        return new Vec2(1, 1)
+    /**
+     * Returns a vector transformed by the given position and angle in degrees
+     */
+    public static transformDeg(
+        v: Vec2Like,
+        p: Vec2Like,
+        angle: number
+    ): Vec2Like {
+        return Vec2.add(Vec2.rotateDeg(v, angle), p)
     }
 
-    public static up(): Vec2 {
-        return new Vec2(0, -1)
+    public static untransform(
+        v: Vec2Like,
+        p: Vec2Like,
+        angle: number
+    ): Vec2Like {
+        return Vec2.rotate(Vec2.sub(v, p), -angle)
     }
 
-    public static down(): Vec2 {
-        return new Vec2(0, 1)
+    public static untransformDeg(
+        v: Vec2Like,
+        p: Vec2Like,
+        angle: number
+    ): Vec2Like {
+        return Vec2.rotateDeg(Vec2.sub(v, p), -angle)
     }
 
-    public static left(): Vec2 {
-        return new Vec2(-1, 0)
+    public static zero(): Vec2Like {
+        return { x: 0, y: 0 }
     }
 
-    public static right(): Vec2 {
-        return new Vec2(1, 0)
+    public static one(): Vec2Like {
+        return { x: 1, y: 1 }
+    }
+
+    public static up(): Vec2Like {
+        return { x: 0, y: -1 }
+    }
+
+    public static down(): Vec2Like {
+        return { x: 0, y: 1 }
+    }
+
+    public static left(): Vec2Like {
+        return { x: -1, y: 0 }
+    }
+
+    public static right(): Vec2Like {
+        return { x: 1, y: 0 }
     }
 
     /**
      * Returns a random vector with components between 0 and 1
      */
-    public static random(): Vec2 {
-        return new Vec2(Math.random(), Math.random())
+    public static random(): Vec2Like {
+        return { x: Math.random(), y: Math.random() }
     }
 
     /**
      * Returns a random vector with components between the given min and max
      */
-    public static randomRange(min: number, max: number): Vec2 {
-        return new Vec2(
-            Math.random() * (max - min) + min,
-            Math.random() * (max - min) + min
-        )
+    public static randomRange(min: number, max: number): Vec2Like {
+        return {
+            x: Math.random() * (max - min) + min,
+            y: Math.random() * (max - min) + min,
+        }
     }
 
     /**
      * Returns a vector clamped between the given min and max
      */
-    public static clamp(v: Vec2Like, min: Vec2Like, max: Vec2Like): Vec2 {
-        return new Vec2(
-            Math.min(Math.max(v.x, min.x), max.x),
-            Math.min(Math.max(v.y, min.y), max.y)
-        )
+    public static clamp(v: Vec2Like, min: Vec2Like, max: Vec2Like): Vec2Like {
+        return {
+            x: Math.min(Math.max(v.x, min.x), max.x),
+            y: Math.min(Math.max(v.y, min.y), max.y),
+        }
     }
 
     /**
      * Returns a vector with components interpolated between the two given
      * vectors by the given amount
      */
-    public static lerp(a: Vec2Like, b: Vec2Like, t: number): Vec2 {
-        return new Vec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
+    public static lerp(a: Vec2Like, b: Vec2Like, t: number): Vec2Like {
+        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }
     }
 
     /**
@@ -252,13 +304,15 @@ export class Vec2 implements Vec2Like {
      * Returns the angle between two vectors in radians
      */
     public static angleBetween(a: Vec2Like, b: Vec2Like): number {
-        return Math.atan2(b.y - a.y, b.x - a.x)
+        const a0 = Vec2.angle(a)
+        const a1 = Vec2.angle(b)
+        return a1 - a0
     }
 
     /**
      * Returns the angle between two vectors in degrees
      */
     public static angleBetweenDeg(a: Vec2Like, b: Vec2Like): number {
-        return (Vec2.angleBetween(a, b) * 180) / Math.PI
+        return toDegrees(Vec2.angleBetween(a, b))
     }
 }
