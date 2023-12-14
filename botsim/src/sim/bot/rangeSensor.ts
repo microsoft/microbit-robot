@@ -429,7 +429,7 @@ export class RangeSensor {
         }
 
         // Hitting the backstop doesn't count as a reading
-        if (this.value >= this.spec.maxRange * 0.99) {
+        if (this.value >= this.spec.maxRange * PHYSICS_SCALE * 0.99) {
             detected = false
         }
 
