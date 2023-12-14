@@ -12,7 +12,7 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import Planck from "planck-js"
-import { angleTo180, testOverlap } from "../util"
+import { angleTo180, appoximateArc, testOverlap } from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
 import { PHYSICS_SCALE } from "../constants"
@@ -142,13 +142,15 @@ export class RangeSensor {
         const leftEdgeDir = Vec2.scale(leftEdgeDelta, 1 / leftEdgeDist)
         const rightEdgeDir = Vec2.scale(rightEdgeDelta, 1 / rightEdgeDist)
         const halfBeamAngle = this.spec.beamAngle / 2
-        // Returns true if the roles contains a value we should consider an obstacle
+        // Returns true if `roles` contains a value we should consider an
+        // obstacle
         const isObstacle = (roles: string[]) =>
             roles.includes("obstacle") || roles.includes("robot")
         // Returns true if the fixture is part of the bot's own body
         const isMe = (fixture: Planck.Fixture) =>
             fixture.getBody() === this.bot.entity.physicsObj.body
-        // Returns the normalized direction to the given point, and the angle of that direction (all relative to the bot's forward vector)
+        // Returns the normalized direction to the given point, and the angle of
+        // that direction (all relative to the bot's forward vector)
         const calcPointInfo = (
             p: Vec2Like
         ): { dir: Vec2Like; angle: number; dist: number; p: Vec2Like } => {
@@ -195,7 +197,7 @@ export class RangeSensor {
         const ingestVerts = (verts: Vec2Like[], closed: boolean) => {
             if (verts.length < 2) return
             // NOTE: verts are assumed to be:
-            // - in world space
+            // - in world space, scaled in physics units
             // - in counter-clockwise order
             // - represent a contiguous set of line segments
             for (
@@ -250,16 +252,33 @@ export class RangeSensor {
         // - face the bot
         for (const fixture of overlaps) {
             const overlapShape = fixture.getShape()
+            const itPos = fixture.getBody().getPosition()
+            const itAngle = fixture.getBody().getAngle()
             switch (overlapShape.getType()) {
                 case "circle":
-                    // TODO: Tesselate the arc of the circle that overlaps the
-                    // cone into line segments.
+                    const circleShape = overlapShape as Planck.Circle
+                    const circlePos = circleShape.m_p
+                    const circleRadius = circleShape.getRadius()
+                    // Transform the circle's center to world space
+                    const circleCenter = Vec2.transform(
+                        circlePos,
+                        itPos,
+                        itAngle
+                    )
+                    // TODO: Only generate the part of the circle inside the
+                    // sensor cone and facing the bot
+                    const verts = appoximateArc(
+                        circleCenter,
+                        circleRadius,
+                        0,
+                        360,
+                        16
+                    )
+                    ingestVerts(verts, true)
                     break
                 case "polygon": {
                     const polygonShape = overlapShape as Planck.Polygon
                     // Transform verts to world space
-                    const itPos = fixture.getBody().getPosition()
-                    const itAngle = fixture.getBody().getAngle()
                     const verts = polygonShape.m_vertices.map(
                         (v) => Vec2.transform(v, itPos, itAngle) // angle in radians here
                     )
@@ -384,7 +403,8 @@ export class RangeSensor {
         // Sort the points by angle
         points.sort((a, b) => a.angle - b.angle)
 
-        // Cast a ray through each point to get the nearest intersection with a segment.
+        // Cast a ray through each point to get the nearest intersection with a
+        // segment.
         const nearestIntersection = (
             p: ContactPointBase
         ): Vec2Like | undefined => {

@@ -3,7 +3,7 @@ import { Vec2, Vec2Like } from "../types/vec2"
 import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
 import Planck from "planck-js"
-import { clamp } from "../util"
+import { clamp, toRadians } from "../util"
 
 export function makeBoxVertices(
     size: Vec2Like,
@@ -338,4 +338,30 @@ export function angleTo180(angle: number): number {
     while (angle < -180) angle += 360
     while (angle > 180) angle -= 360
     return angle
+}
+
+/**
+ * Returns the approximation of the circle as a polyline.
+ */
+export function appoximateArc(
+    center: Vec2Like,
+    radius: number,
+    startAngleDeg: number,
+    endAngleDeg: number,
+    numSegments: number
+): Vec2Like[] {
+    const startAngle = toRadians(startAngleDeg)
+    const endAngle = toRadians(endAngleDeg)
+    const verts: Vec2Like[] = []
+    const angleStep = (endAngle - startAngle) / numSegments
+    for (let i = 0; i < numSegments; i++) {
+        const angle = startAngle + i * angleStep
+        verts.push(
+            new Vec2(
+                center.x + radius * Math.cos(angle),
+                center.y + radius * Math.sin(angle)
+            )
+        )
+    }
+    return verts
 }
