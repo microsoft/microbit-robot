@@ -6,6 +6,7 @@ import {
     EntityShapeSpec,
     defaultCircleShape,
     defaultColorBrush,
+    defaultEdgeShape,
     defaultEntityShape,
     defaultPolygonShape,
     defaultShapePhysics,
@@ -84,7 +85,7 @@ export class RangeSensor {
         // A marker to place on the point of nearest range, if any
         this.targetSpec = {
             ...defaultEntityShape(),
-            ...defaultCircleShape(),
+            ...defaultEdgeShape(),
             label: this.sensorId + ".target",
             physics: {
                 ...defaultShapePhysics(),
@@ -112,7 +113,7 @@ export class RangeSensor {
 
     public update(dtSecs: number) {
         this._value = -1
-        let detected = false;
+        let detected = false
         const botPos = this.bot.pos
         const myAngle = this.bot.angle
         const myPos = Vec2.transformDeg(
@@ -124,9 +125,13 @@ export class RangeSensor {
         const overlaps: Planck.Fixture[] = []
         const edges: ContactEdge[] = []
         // Transform the edges of the cone to world space
-        const leftEdge = LineSegment.transformDeg(this.leftEdge, myPos, myAngle)
+        const leftEdge = LineSegment.transformDeg(
+            LineSegment.scale(this.leftEdge, PHYSICS_SCALE),
+            myPos,
+            myAngle
+        )
         const rightEdge = LineSegment.transformDeg(
-            this.rightEdge,
+            LineSegment.scale(this.rightEdge, PHYSICS_SCALE),
             myPos,
             myAngle
         )
@@ -144,14 +149,18 @@ export class RangeSensor {
         const isMe = (fixture: Planck.Fixture) =>
             fixture.getBody() === this.bot.entity.physicsObj.body
         // Returns the normalized direction to the given point, and the angle of that direction (all relative to the bot's forward vector)
-        const calcDirectionAndAngleTo = (
+        const calcPointInfo = (
             p: Vec2Like
-        ): { dir: Vec2Like; angle: number; dist: number } => {
+        ): { dir: Vec2Like; angle: number; dist: number; p: Vec2Like } => {
             const delta = Vec2.sub(p, myPos)
-            const dist = Vec2.len(delta)
+            let dist = Vec2.len(delta)
             const dir = Vec2.scale(delta, 1 / dist)
+            if (dist > this.spec.maxRange * PHYSICS_SCALE) {
+                dist = this.spec.maxRange * PHYSICS_SCALE
+                p = Vec2.add(myPos, Vec2.scale(dir, dist))
+            }
             const angle = angleTo180(Vec2.angleBetweenDeg(myForward, dir))
-            return { dir, angle, dist }
+            return { dir, angle, dist, p }
         }
         // Gather the line segment
         const ingestEdge = (p0: Vec2Like, p1: Vec2Like) => {
@@ -161,8 +170,8 @@ export class RangeSensor {
             const dot = Vec2.dot(myForward, perp)
             // If the dot product is negative, the line is facing the bot
             if (dot < 0) {
-                const da0 = calcDirectionAndAngleTo(p0)
-                const da1 = calcDirectionAndAngleTo(p1)
+                const da0 = calcPointInfo(p0)
+                const da1 = calcPointInfo(p1)
                 // skip if edge falls to the left or right of the cone
                 if (da0.angle > halfBeamAngle && da1.angle > halfBeamAngle) {
                     return
@@ -172,11 +181,9 @@ export class RangeSensor {
                 }
                 const edge: ContactEdge = {
                     c0: {
-                        p: p0,
                         ...da0,
                     },
                     c1: {
-                        p: p1,
                         ...da1,
                     },
                     perp: Vec2.normalize(perp),
@@ -276,8 +283,7 @@ export class RangeSensor {
                 )
                 if (int.type === "point") {
                     edge.c0.clipped = {
-                        p: int.p,
-                        ...calcDirectionAndAngleTo(int.p),
+                        ...calcPointInfo(int.p),
                     }
                 }
             } else if (edge.c0.angle > halfBeamAngle) {
@@ -290,8 +296,7 @@ export class RangeSensor {
                 )
                 if (int.type === "point") {
                     edge.c0.clipped = {
-                        p: int.p,
-                        ...calcDirectionAndAngleTo(int.p),
+                        ...calcPointInfo(int.p),
                     }
                 }
             }
@@ -305,8 +310,7 @@ export class RangeSensor {
                 )
                 if (int.type === "point") {
                     edge.c1.clipped = {
-                        p: int.p,
-                        ...calcDirectionAndAngleTo(int.p),
+                        ...calcPointInfo(int.p),
                     }
                 }
             } else if (edge.c1.angle > halfBeamAngle) {
@@ -319,8 +323,7 @@ export class RangeSensor {
                 )
                 if (int.type === "point") {
                     edge.c1.clipped = {
-                        p: int.p,
-                        ...calcDirectionAndAngleTo(int.p),
+                        ...calcPointInfo(int.p),
                     }
                 }
             }
@@ -342,8 +345,7 @@ export class RangeSensor {
                 const sclv = Vec2.scale(angv, edge.c0.dist)
                 const p = Vec2.add(sclv, myPos)
                 points.push({
-                    p,
-                    ...calcDirectionAndAngleTo(p),
+                    ...calcPointInfo(p),
                 })
             }
             if (!edge.c1.clipped) {
@@ -353,8 +355,7 @@ export class RangeSensor {
                 const sclv = Vec2.scale(angv, edge.c1.dist)
                 const p = Vec2.add(sclv, myPos)
                 points.push({
-                    p,
-                    ...calcDirectionAndAngleTo(p),
+                    ...calcPointInfo(p),
                 })
             }
         }
@@ -421,7 +422,7 @@ export class RangeSensor {
                 const d = p.dist / PHYSICS_SCALE
                 if (this.value === -1 || d < this.value) {
                     this._value = d
-                    detected = true;
+                    detected = true
                     //this.targetSpec.brush.visible = true
                 }
             }
@@ -429,7 +430,7 @@ export class RangeSensor {
 
         // Hitting the backstop doesn't count as a reading
         if (this.value >= this.spec.maxRange * 0.99) {
-            detected = false;
+            detected = false
         }
 
         // Update the visual representation of the sensor sweep

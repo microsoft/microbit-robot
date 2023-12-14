@@ -54,7 +54,7 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
 
             // Is this message from the primary sim frame? This frame will reliably exist at index zero.
             // Secondary frame index cannot be relied upon to exist at a knowable index. The check for <= 0
-            // is for backwards compatibility with older versions of the simulator, before the frame index
+            // is for backwards compatibility with older versions of the editor before the frame index
             // was added to the message.
             const isPrimarySim = srcFrameIndex <= 0
 

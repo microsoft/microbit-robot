@@ -35,6 +35,10 @@ export class LineSegment implements LineSegmentLike {
         public p1: Vec2Like
     ) {}
 
+    public static from(p0: Vec2Like, p1: Vec2Like): LineSegment {
+        return new LineSegment(p0, p1)
+    }
+
     public static intersection(
         l0: LineSegmentLike,
         l1: LineSegmentLike
@@ -70,7 +74,7 @@ export class LineSegment implements LineSegmentLike {
         l: LineSegmentLike,
         p: Vec2Like,
         angle: number
-    ): LineSegment {
+    ): LineSegmentLike {
         const p0 = Vec2.transform(l.p0, p, angle)
         const p1 = Vec2.transform(l.p1, p, angle)
         return new LineSegment(p0, p1)
@@ -80,7 +84,7 @@ export class LineSegment implements LineSegmentLike {
         l: LineSegmentLike,
         p: Vec2Like,
         angle: number
-    ): LineSegment {
+    ): LineSegmentLike {
         return LineSegment.transform(l, p, toRadians(angle))
     }
 
@@ -88,7 +92,7 @@ export class LineSegment implements LineSegmentLike {
         l: LineSegmentLike,
         p: Vec2Like,
         angle: number
-    ): LineSegment {
+    ): LineSegmentLike {
         const p0 = Vec2.untransform(l.p0, p, angle)
         const p1 = Vec2.untransform(l.p1, p, angle)
         return new LineSegment(p0, p1)
@@ -98,8 +102,14 @@ export class LineSegment implements LineSegmentLike {
         l: LineSegmentLike,
         p: Vec2Like,
         angle: number
-    ): LineSegment {
+    ): LineSegmentLike {
         return LineSegment.untransform(l, p, toRadians(angle))
+    }
+
+    public static scale(l: LineSegmentLike, scale: number): LineSegmentLike {
+        const p0 = Vec2.scale(l.p0, scale)
+        const p1 = Vec2.scale(l.p1, scale)
+        return new LineSegment(p0, p1)
     }
 }
 

@@ -66,7 +66,7 @@ const spec: BotSpec = {
     ],
     rangeSensor: {
         beamAngle: 25, // degrees
-        maxRange: 90, // cm
+        maxRange: 40, // cm
         pos: { x: 0, y: -4.2 },
         brush: {
             positive: {
