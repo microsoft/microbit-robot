@@ -38,6 +38,7 @@ export class Bot {
     public rangeSensor?: RangeSensor
     public lineSensors = new Map<LineSensorSlotName, LineSensor>()
     public leds = new Map<LEDSlotName, LED>()
+    public paused = false;
 
     public get pos(): Vec2Like {
         return this.entity.physicsObj.pos

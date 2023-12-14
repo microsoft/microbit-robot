@@ -115,7 +115,6 @@ function handleMessagePacket(msg: any) {
 }
 
 function handleDebuggerMessage(msg: any) {
-    // TODO: pause/step, etc
     switch (msg.subtype) {
         case "traceConfig": {
             // NOTE: This msg seems to be sent at the strart of a debug run, but
@@ -125,17 +124,17 @@ function handleDebuggerMessage(msg: any) {
         }
         case "stepinto": {
             const sim = Simulation.instance
-            sim.unpause()
+            sim.unpauseBots()
             break
         }
         case "pause": {
             const sim = Simulation.instance
-            sim.pause()
+            sim.pauseBots()
             break
         }
         case "resume": {
             const sim = Simulation.instance
-            sim.unpause()
+            sim.unpauseBots()
             break
         }
         default:

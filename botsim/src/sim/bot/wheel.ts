@@ -67,8 +67,8 @@ export class Wheel {
     public destroy() {}
 
     public update(dtSecs: number) {
-        // If bot is held, don't apply movement forces
-        if (this.bot.held) return
+        // If bot is held or paused, don't apply movement forces
+        if (this.bot.held || this.bot.paused) return
         this.updateFriction(dtSecs)
         this.updateForce(dtSecs)
     }

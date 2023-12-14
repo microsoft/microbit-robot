@@ -129,6 +129,18 @@ export class Simulation {
         this.paused = false
     }
 
+    public pauseBots() {
+        for (let [_, bot] of this.bots) {
+            bot.paused = true
+        }
+    }
+
+    public unpauseBots() {
+        for (let [_, bot] of this.bots) {
+            bot.paused = false
+        }
+    }
+
     public clear() {
         this._entities.forEach((ent) => ent.destroy())
         this._entities = []
