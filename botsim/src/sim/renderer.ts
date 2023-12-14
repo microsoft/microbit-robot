@@ -60,6 +60,12 @@ export default class Renderer {
     public get debugLayer() {
         return this._debugLayer
     }
+    public setCanvasCursor(cursor: string) {
+        const canvas = (this.pixi.view as HTMLCanvasElement)
+        if (canvas?.style) {
+            canvas.style.cursor = cursor
+        }
+    }
 
     constructor(private sim: Simulation) {
         this._size = new Vec2(10 * MAP_ASPECT_RATIO, 10)

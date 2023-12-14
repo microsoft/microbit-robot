@@ -50,6 +50,7 @@ export class Simulation {
     private spawns: SpawnSpec[] = []
     private bots = new Map<number, Bot>()
     private walls?: Entity
+    private mousePhysPos = Vec2.zero() // mouse position in physics space
 
     public debugDraw = false
 
@@ -168,6 +169,8 @@ export class Simulation {
                 this.step(dtSecs)
             }
 
+            this.updateCursor()
+
             if (this.running) {
                 this.animframe = window.requestAnimationFrame(loop)
             }
@@ -244,28 +247,31 @@ export class Simulation {
         this.buildWalls(size)
     }
 
-    public mouseDown(p: Vec2Like) {
-        p = Vec2.div(p, this.renderer.canvasSize)
-        p = Vec2.mul(p, this.renderer.logicalSize)
-        {
-            const physp = Vec2.scale(p, PHYSICS_SCALE)
-            this.physics.mouseDown(physp)
-        }
+    public mouseDown(canvasp: Vec2Like) {
+        const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
+        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
+        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.physics.mouseDown(this.mousePhysPos)
     }
-    public mouseMove(p: Vec2Like) {
-        p = Vec2.div(p, this.renderer.canvasSize)
-        p = Vec2.mul(p, this.renderer.logicalSize)
-        {
-            const physp = Vec2.scale(p, PHYSICS_SCALE)
-            this.physics.mouseMove(physp)
-        }
+    public mouseMove(canvasp: Vec2Like) {
+        const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
+        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
+        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.physics.mouseMove(this.mousePhysPos)
     }
-    public mouseUp(p: Vec2Like) {
-        p = Vec2.div(p, this.renderer.canvasSize)
-        p = Vec2.mul(p, this.renderer.logicalSize)
-        {
-            const physp = Vec2.scale(p, PHYSICS_SCALE)
-            this.physics.mouseUp(physp)
+    public mouseUp(canvasp: Vec2Like) {
+        const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
+        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
+        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.physics.mouseUp(this.mousePhysPos)
+    }
+    private updateCursor() {
+        if (this.physics.mouseJoint) {
+            this.renderer.setCanvasCursor("grabbing")
+        } else {
+            const isMouseTarget = this.physics.isMouseTarget(this.mousePhysPos)
+            this.renderer.setCanvasCursor
+            this.renderer.setCanvasCursor(isMouseTarget ? "grab" : "default")
         }
     }
 

@@ -139,6 +139,13 @@ export default class Physics {
         this.releaseMouseJoint()
     }
 
+    public isMouseTarget(p: Vec2Like) {
+        return !!this.findBody(p, (fixt) => {
+            const spec = fixt.getUserData() as EntityShapeSpec
+            return spec.roles?.includes("mouse-target") ?? false
+        })
+    }
+
     private findBody(
         p: Vec2Like,
         filterFn?: (fixture: Planck.Fixture) => boolean
