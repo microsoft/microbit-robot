@@ -116,6 +116,31 @@ function handleMessagePacket(msg: any) {
 
 function handleDebuggerMessage(msg: any) {
     // TODO: pause/step, etc
+    switch (msg.subtype) {
+        case "traceConfig": {
+            // NOTE: This msg seems to be sent at the strart of a debug run, but
+            // not sure if it can be relied upon for that.
+            restartSim()
+            break
+        }
+        case "stepinto": {
+            const sim = Simulation.instance
+            sim.unpause()
+            break
+        }
+        case "pause": {
+            const sim = Simulation.instance
+            sim.pause()
+            break
+        }
+        case "resume": {
+            const sim = Simulation.instance
+            sim.unpause()
+            break
+        }
+        default:
+            console.log(`unknown debugger message: ${JSON.stringify(msg)}`)
+    }
 }
 
 async function handleStopMessage(msg: any) {

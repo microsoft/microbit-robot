@@ -125,6 +125,10 @@ export class Simulation {
         this.paused = true
     }
 
+    public unpause() {
+        this.paused = false
+    }
+
     public clear() {
         this._entities.forEach((ent) => ent.destroy())
         this._entities = []
