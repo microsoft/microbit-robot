@@ -341,7 +341,7 @@ export function angleTo180(angle: number): number {
 }
 
 /**
- * Returns the approximation of the circle as a polyline.
+ * Returns the approximation of the circle segment as a polyline.
  */
 export function appoximateArc(
     center: Vec2Like,

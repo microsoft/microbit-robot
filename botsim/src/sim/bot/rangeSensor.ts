@@ -25,6 +25,7 @@ export class RangeSensor {
     leftEdge!: LineSegmentLike
     rightEdge!: LineSegmentLike
     _value: number
+    used: boolean = false;
 
     public get shapeSpecs() {
         return [this.coneSpec, this.visualSpec, this.targetSpec]
@@ -461,6 +462,7 @@ export class RangeSensor {
                 ...(detected
                     ? this.spec.brush.positive
                     : this.spec.brush.negative),
+                visible: this.used,
             },
         }
 
@@ -474,6 +476,10 @@ export class RangeSensor {
             )
             sensorShape.setGfx(newGfx)
         }
+    }
+
+    public setUsed(used: boolean) {
+        this.used = used;
     }
 }
 

@@ -207,6 +207,14 @@ export class Bot {
         this.chassis.setColor(color)
     }
 
+    public setLineSensorUsed(used: boolean) {
+        this.lineSensors.forEach((sensor) => sensor.setUsed(used))
+    }
+
+    public setRangeSensorUsed(used: boolean) {
+        this.rangeSensor?.setUsed(used)
+    }
+
     public readLineSensors(): LineSensorValues {
         return {
             ["outer-left"]: this.lineSensors.get("outer-left")?.value ?? -1,

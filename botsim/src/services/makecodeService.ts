@@ -73,6 +73,12 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
             // Apply state to bot
             bot.setMotors(motorLeft, motorRight)
             bot.setColor("general", color)
+            bot.setLineSensorUsed(
+                !!(sensors & Protocol.robot.robots.Sensors.LineDetector)
+            )
+            bot.setRangeSensorUsed(
+                !!(sensors & Protocol.robot.robots.Sensors.Sonar)
+            )
 
             // Read bot sensors
             const lineSensors = bot.readLineSensors()

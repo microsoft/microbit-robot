@@ -150,4 +150,8 @@ export class LineSensor {
         if (onShape) onShape.visible = detecting
         if (offShape) offShape.visible = !detecting
     }
+
+    public setUsed(used: boolean) {
+        // Anything to do here?
+    }
 }
