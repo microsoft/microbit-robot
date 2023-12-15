@@ -142,7 +142,7 @@ export class RangeSensor {
     public destroy() {}
 
     public update(dtSecs: number) {
-        this._value = -1
+        this._value = this.spec.maxRange
         let detected = false
         const botPos = this.bot.pos
         const myAngle = this.bot.angle
@@ -471,7 +471,7 @@ export class RangeSensor {
 
         // Hitting the backstop doesn't count as a reading
         if (this.value >= this.spec.maxRange * 0.99) {
-            this._value = -1
+            this._value = this.spec.maxRange
             detected = false
             targetDir = undefined
         }
@@ -501,7 +501,7 @@ export class RangeSensor {
             this.sensorId + ".target"
         )
         if (targetShape) {
-            if (targetDir && detected && this._value >= 0) {
+            if (targetDir && detected) {
                 let pt = Vec2.add(Vec2.scale(targetDir, this.value), myPos)
                 pt = Vec2.untransformDeg(pt, botPos, myAngle)
 
