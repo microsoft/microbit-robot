@@ -47,11 +47,9 @@ export type RangeSensorSpec = {
     pos: Vec2Like // offset from chassis center
     beamAngle: number // degrees
     maxRange: number // cm
-    brush: {
-        positive: BrushSpec
-        negative: BrushSpec
-        targetColor: string
-    }
+    beamPositiveColor: string // beam color when it has a target
+    beamNegativeColor: string // beam color when it doesn't have a target
+    targetColor: string
 }
 
 export type LEDSpec = {

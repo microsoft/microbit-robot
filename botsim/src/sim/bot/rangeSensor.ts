@@ -3,6 +3,7 @@ import { RangeSensorSpec } from "../../bots/specs"
 import { Vec2, Vec2Like } from "../../types/vec2"
 import { nextId } from "../../util"
 import {
+    ColorBrushSpec,
     EntityShapeSpec,
     defaultCircleShape,
     defaultColorBrush,
@@ -11,7 +12,17 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import Planck from "planck-js"
-import { angleTo180, appoximateArc, testOverlap } from "../util"
+import {
+    angleTo180,
+    appoximateArc,
+    darken,
+    hslToRgb,
+    numberToRgb,
+    rgbToHsl,
+    rgbToString,
+    testOverlap,
+    toColor,
+} from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
 import { PHYSICS_SCALE } from "../constants"
@@ -25,6 +36,9 @@ export class RangeSensor {
     rightEdge!: LineSegmentLike
     _value: number
     used: boolean = false
+    positiveBrush!: ColorBrushSpec
+    negativeBrush!: ColorBrushSpec
+    targetBrush!: ColorBrushSpec
 
     public get shapeSpecs() {
         return [this.coneSpec, this.visualSpec, this.targetSpec]
@@ -37,6 +51,32 @@ export class RangeSensor {
     }
 
     private constructShapeSpecs() {
+        const beamPositiveColor = this.spec.beamPositiveColor
+        const beamNegativeColor = this.spec.beamNegativeColor
+        const targetColor = this.spec.targetColor
+
+        this.positiveBrush = {
+            ...defaultColorBrush(),
+            fillColor: beamPositiveColor,
+            borderColor: beamPositiveColor,
+            borderWidth: 0.25,
+            zIndex: 5,
+        }
+        this.negativeBrush = {
+            ...defaultColorBrush(),
+            fillColor: beamNegativeColor,
+            borderColor: beamNegativeColor,
+            borderWidth: 0.25,
+            zIndex: 5,
+        }
+        this.targetBrush = {
+            ...defaultColorBrush(),
+            fillColor: "transparent",
+            borderColor: targetColor,
+            borderWidth: 0.5,
+            zIndex: 6,
+        }
+
         this.leftEdge = {
             p0: Vec2.zero(),
             p1: Vec2.rotateDeg(
@@ -81,8 +121,8 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...this.spec.brush.negative,
-                zIndex: 5,
+                ...this.negativeBrush,
+                visible: false,
             },
         }
         // A marker to place on the point of nearest range, if any
@@ -97,10 +137,8 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...defaultColorBrush(),
-                borderColor: this.spec.brush.targetColor,
-                borderWidth: 0.5,
-                fillColor: "transparent",
+                ...this.targetBrush,
+                visible: false,
             },
         }
     }
@@ -471,9 +509,7 @@ export class RangeSensor {
                 ...this.visualSpec,
                 verts,
                 brush: {
-                    ...(detected
-                        ? this.spec.brush.positive
-                        : this.spec.brush.negative),
+                    ...(detected ? this.positiveBrush : this.negativeBrush),
                     visible: this.used,
                 },
             }

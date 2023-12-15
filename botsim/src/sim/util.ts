@@ -291,6 +291,12 @@ export function lighten(hsl: Hsl, amount: number): Hsl {
     return hsl
 }
 
+export function darken(hsl: Hsl, amount: number): Hsl {
+    hsl = { ...hsl }
+    hsl.l = Math.round(clamp(hsl.l - amount * 255, 0, 255))
+    return hsl
+}
+
 export function rgbToString(rgb: Rgb): string {
     return (
         "#" +

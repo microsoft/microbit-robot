@@ -68,21 +68,9 @@ const spec: BotSpec = {
         beamAngle: 25, // degrees
         maxRange: 40, // cm
         pos: { x: 0, y: -4.2 },
-        brush: {
-            positive: {
-                ...defaultColorBrush(),
-                fillColor: "#00F76530",
-                borderColor: "#00F76540",
-                borderWidth: 0.25,
-            },
-            negative: {
-                ...defaultColorBrush(),
-                fillColor: "#A1A1A120",
-                borderColor: "#A1A1A130",
-                borderWidth: 0.25,
-            },
-            targetColor: "#00F765",
-        },
+        beamPositiveColor: "#68aed420",
+        beamNegativeColor: "#68aed420",
+        targetColor: "#00F765",
     },
     // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
     lineSensors: [

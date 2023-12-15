@@ -64,6 +64,7 @@ export default class Renderer {
         const canvas = this.pixi.view as HTMLCanvasElement
         if (canvas?.style) {
             canvas.style.cursor = cursor
+            canvas.style.backgroundColor = "white"
         }
     }
 
