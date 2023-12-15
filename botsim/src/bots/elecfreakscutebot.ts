@@ -4,6 +4,7 @@ const spec: BotSpec = {
     name: "Elecfreaks Cutebot",
     productId: 0x3818d146,
     mass: 1,
+    silkColor: "#0000F0",
     chassis: {
         shape: "circle",
         radius: 8.6 / 2, // cm

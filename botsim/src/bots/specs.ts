@@ -35,7 +35,6 @@ export type ChassisSpec = CircleChassisSpec | BoxChassisSpec
 
 export type WheelSpec = {
     name: WheelSlotName
-
     /**
      * max speed forward (positive).
      * no units, just influences force computation.
@@ -140,6 +139,10 @@ export type BotSpec = {
      * mass of the robot without the ballast
      */
     mass: number
+    /**
+     * Robot PCB chassi color, default is black.
+     */
+    silkColor?: string
     chassis: ChassisSpec
     wheels: WheelSpec[]
     rangeSensor?: RangeSensorSpec
