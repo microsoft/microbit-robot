@@ -66,8 +66,7 @@ function handleRobotMessage(buf: any, srcFrameIndex: number) {
             const sim = Simulation.instance
             const bot =
                 sim.bot(deviceId) ??
-                sim.spawnBot(deviceId, BOTS[productId]) ??
-                sim.spawnBot(deviceId, BOTS[0])
+                sim.spawnBot(deviceId, BOTS[productId] ?? BOTS[DEFAULT_BOT])
             if (!bot) return
 
             // Apply state to bot
