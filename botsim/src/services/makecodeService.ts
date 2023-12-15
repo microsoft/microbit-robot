@@ -6,6 +6,8 @@ import * as Protocol from "../external/protocol"
 // TODO: Move this to simulation?
 let currRunId: string | undefined
 
+const DEFAULT_BOT = 0x3818d146
+
 function stopSim() {
     const sim = Simulation.instance
     sim.stop()

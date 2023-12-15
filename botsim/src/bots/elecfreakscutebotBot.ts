@@ -3,6 +3,7 @@ import { BotSpec } from "./specs"
 const spec: BotSpec = {
     name: "Elecfreaks Cutebot",
     productId: 0x3818d146,
+    mass: 1,
     chassis: {
         shape: "circle",
         radius: 8.6 / 2, // cm
@@ -18,6 +19,7 @@ const spec: BotSpec = {
             width: 1.3,
             // wheel radius
             radius: 3.6 / 2,
+            dashTime: 0.5,
         },
         {
             name: "right",
@@ -28,6 +30,7 @@ const spec: BotSpec = {
             width: 1.3,
             // wheel radius
             radius: 3.6 / 2,
+            dashTime: 0.5,
         },
     ],
     rangeSensor: {
