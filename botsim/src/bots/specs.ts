@@ -50,6 +50,7 @@ export type RangeSensorSpec = {
     brush: {
         positive: BrushSpec
         negative: BrushSpec
+        targetColor: string
     }
 }
 

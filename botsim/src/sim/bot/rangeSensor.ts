@@ -6,7 +6,6 @@ import {
     EntityShapeSpec,
     defaultCircleShape,
     defaultColorBrush,
-    defaultEdgeShape,
     defaultEntityShape,
     defaultPolygonShape,
     defaultShapePhysics,
@@ -25,13 +24,16 @@ export class RangeSensor {
     leftEdge!: LineSegmentLike
     rightEdge!: LineSegmentLike
     _value: number
-    used: boolean = false;
+    used: boolean = false
 
     public get shapeSpecs() {
         return [this.coneSpec, this.visualSpec, this.targetSpec]
     }
     public get value(): number {
         return this._value
+    }
+    public setUsed(used: boolean) {
+        this.used = used
     }
 
     private constructShapeSpecs() {
@@ -86,8 +88,9 @@ export class RangeSensor {
         // A marker to place on the point of nearest range, if any
         this.targetSpec = {
             ...defaultEntityShape(),
-            ...defaultEdgeShape(),
+            ...defaultCircleShape(),
             label: this.sensorId + ".target",
+            radius: 1.5,
             physics: {
                 ...defaultShapePhysics(),
                 sensor: true, // don't collide with anything
@@ -95,8 +98,9 @@ export class RangeSensor {
             },
             brush: {
                 ...defaultColorBrush(),
-                visible: false, // start hidden
-                zIndex: 10,
+                borderColor: this.spec.brush.targetColor,
+                borderWidth: 0.5,
+                fillColor: "transparent",
             },
         }
     }
@@ -429,12 +433,14 @@ export class RangeSensor {
             return collector[0]
         }
 
+        let targetDir: Vec2Like | undefined
+
         const verts: Vec2Like[] = []
         verts.push(Vec2.zero())
         for (const p of points) {
             const int = nearestIntersection(p)
             if (int) {
-                // Convert the intersection point to local unscaled space
+                // Convert the intersection point to unscaled space, relative to the range sensor
                 const lint = Vec2.scale(
                     Vec2.untransformDeg(int, myPos, myAngle),
                     1 / PHYSICS_SCALE
@@ -444,42 +450,62 @@ export class RangeSensor {
                 if (this.value === -1 || d < this.value) {
                     this._value = d
                     detected = true
-                    //this.targetSpec.brush.visible = true
+                    targetDir = p.dir
                 }
             }
         }
 
         // Hitting the backstop doesn't count as a reading
         if (this.value >= this.spec.maxRange * PHYSICS_SCALE * 0.99) {
+            this._value = -1
             detected = false
+            targetDir = undefined
         }
 
         // Update the visual representation of the sensor sweep
-        const newSpec = {
-            ...this.visualSpec,
-            verts,
-            brush: {
-                ...(detected
-                    ? this.spec.brush.positive
-                    : this.spec.brush.negative),
-                visible: this.used,
-            },
-        }
-
         const sensorShape = this.bot.entity.renderObj.shapes.get(
             this.sensorId + ".visual"
         )
         if (sensorShape) {
-            const newGfx = createGraphics[newSpec.type][newSpec.brush.type](
-                newSpec,
-                newSpec.brush
-            )
+            const newSensorSpec = {
+                ...this.visualSpec,
+                verts,
+                brush: {
+                    ...(detected
+                        ? this.spec.brush.positive
+                        : this.spec.brush.negative),
+                    visible: this.used,
+                },
+            }
+
+            const newGfx = createGraphics[newSensorSpec.type][
+                newSensorSpec.brush.type
+            ](newSensorSpec, newSensorSpec.brush)
             sensorShape.setGfx(newGfx)
         }
-    }
 
-    public setUsed(used: boolean) {
-        this.used = used;
+        // Update the target marker
+        const targetShape = this.bot.entity.renderObj.shapes.get(
+            this.sensorId + ".target"
+        )
+        if (targetShape) {
+            if (targetDir && detected && this._value >= 0) {
+                let pt = Vec2.add(Vec2.scale(targetDir, this.value), myPos)
+                pt = Vec2.untransformDeg(pt, botPos, myAngle)
+
+                const newTargetSpec = {
+                    ...this.targetSpec,
+                    offset: pt,
+                }
+                const newGfx = createGraphics[newTargetSpec.type][
+                    newTargetSpec.brush.type
+                ](newTargetSpec, newTargetSpec.brush)
+                targetShape.setGfx(newGfx)
+                targetShape.visible = this.used
+            } else {
+                targetShape.visible = false
+            }
+        }
     }
 }
 

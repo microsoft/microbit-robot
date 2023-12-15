@@ -61,7 +61,7 @@ export default class Renderer {
         return this._debugLayer
     }
     public setCanvasCursor(cursor: string) {
-        const canvas = (this.pixi.view as HTMLCanvasElement)
+        const canvas = this.pixi.view as HTMLCanvasElement
         if (canvas?.style) {
             canvas.style.cursor = cursor
         }

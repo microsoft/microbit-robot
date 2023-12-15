@@ -81,6 +81,7 @@ const spec: BotSpec = {
                 borderColor: "#A1A1A130",
                 borderWidth: 0.25,
             },
+            targetColor: "#00F765",
         },
     },
     // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
