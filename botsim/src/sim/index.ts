@@ -15,7 +15,6 @@ import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
 import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
-import { PHYSICS_SCALE } from "./constants"
 import { MapSpec, SpawnSpec } from "../maps/specs"
 
 export type LineSensorValues = {
@@ -249,20 +248,17 @@ export class Simulation {
 
     public mouseDown(canvasp: Vec2Like) {
         const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
-        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
-        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.mousePhysPos = Vec2.mul(pctp, this.renderer.logicalSize)
         this.physics.mouseDown(this.mousePhysPos)
     }
     public mouseMove(canvasp: Vec2Like) {
         const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
-        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
-        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.mousePhysPos = Vec2.mul(pctp, this.renderer.logicalSize)
         this.physics.mouseMove(this.mousePhysPos)
     }
     public mouseUp(canvasp: Vec2Like) {
         const pctp = Vec2.div(canvasp, this.renderer.canvasSize)
-        const logip = Vec2.mul(pctp, this.renderer.logicalSize)
-        this.mousePhysPos = Vec2.scale(logip, PHYSICS_SCALE)
+        this.mousePhysPos = Vec2.mul(pctp, this.renderer.logicalSize)
         this.physics.mouseUp(this.mousePhysPos)
     }
     private updateCursor() {
@@ -270,7 +266,6 @@ export class Simulation {
             this.renderer.setCanvasCursor("grabbing")
         } else {
             const isMouseTarget = this.physics.isMouseTarget(this.mousePhysPos)
-            this.renderer.setCanvasCursor
             this.renderer.setCanvasCursor(isMouseTarget ? "grab" : "default")
         }
     }

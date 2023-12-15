@@ -1,6 +1,6 @@
 import { BoxShapeSpec, HorizontalAlignment, VerticalAlignment } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
-import { RENDER_SCALE, PHYSICS_SCALE } from "./constants"
+import { RENDER_SCALE } from "./constants"
 import * as Pixi from "pixi.js"
 import Planck from "planck-js"
 import { clamp, toRadians } from "../util"
@@ -308,10 +308,6 @@ export function rgbToString(rgb: Rgb): string {
 
 export function toRenderScale(n: number): number {
     return n * RENDER_SCALE
-}
-
-export function toPhysicsScale(n: number): number {
-    return n * PHYSICS_SCALE
 }
 
 export function testOverlap(

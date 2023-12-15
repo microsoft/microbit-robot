@@ -15,7 +15,6 @@ import Planck from "planck-js"
 import { angleTo180, appoximateArc, testOverlap } from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
-import { PHYSICS_SCALE } from "../constants"
 
 export class RangeSensor {
     sensorId: string
@@ -149,22 +148,14 @@ export class RangeSensor {
         let detected = false
         const botPos = this.bot.pos
         const myAngle = this.bot.angle
-        const myPos = Vec2.transformDeg(
-            Vec2.scale(this.visualSpec.offset, PHYSICS_SCALE),
-            botPos,
-            myAngle
-        )
+        const myPos = Vec2.transformDeg(this.visualSpec.offset, botPos, myAngle)
         const myForward = this.bot.forward
         const overlaps: Planck.Fixture[] = []
         const edges: ContactEdge[] = []
         // Transform the edges of the cone to world space
-        const leftEdge = LineSegment.transformDeg(
-            LineSegment.scale(this.leftEdge, PHYSICS_SCALE),
-            myPos,
-            myAngle
-        )
+        const leftEdge = LineSegment.transformDeg(this.leftEdge, myPos, myAngle)
         const rightEdge = LineSegment.transformDeg(
-            LineSegment.scale(this.rightEdge, PHYSICS_SCALE),
+            this.rightEdge,
             myPos,
             myAngle
         )
@@ -190,8 +181,8 @@ export class RangeSensor {
             const delta = Vec2.sub(p, myPos)
             let dist = Vec2.len(delta)
             const dir = Vec2.scale(delta, 1 / dist)
-            if (dist > this.spec.maxRange * PHYSICS_SCALE) {
-                dist = this.spec.maxRange * PHYSICS_SCALE
+            if (dist > this.spec.maxRange) {
+                dist = this.spec.maxRange
                 p = Vec2.add(myPos, Vec2.scale(dir, dist))
             }
             const angle = angleTo180(Vec2.angleBetweenDeg(myForward, dir))
@@ -445,7 +436,7 @@ export class RangeSensor {
                 p0: myPos,
                 p1: Vec2.add(
                     myPos,
-                    Vec2.scale(p.dir, this.spec.maxRange * PHYSICS_SCALE * 1.25)
+                    Vec2.scale(p.dir, this.spec.maxRange * 1.25)
                 ),
             }
             const collector: Vec2Like[] = []
@@ -469,12 +460,9 @@ export class RangeSensor {
             const int = nearestIntersection(p)
             if (int) {
                 // Convert the intersection point to unscaled space, relative to the range sensor
-                const lint = Vec2.scale(
-                    Vec2.untransformDeg(int, myPos, myAngle),
-                    1 / PHYSICS_SCALE
-                )
+                const lint = Vec2.untransformDeg(int, myPos, myAngle)
                 verts.push(lint)
-                const d = p.dist / PHYSICS_SCALE
+                const d = p.dist
                 if (this.value === -1 || d < this.value) {
                     this._value = d
                     detected = true
@@ -484,7 +472,7 @@ export class RangeSensor {
         }
 
         // Hitting the backstop doesn't count as a reading
-        if (this.value >= this.spec.maxRange * PHYSICS_SCALE * 0.99) {
+        if (this.value >= this.spec.maxRange * 0.99) {
             this._value = -1
             detected = false
             targetDir = undefined

@@ -1,12 +1,6 @@
 import Planck from "planck-js"
 import { Vec2, Vec2Like } from "../types/vec2"
-import {
-    boxToVertices,
-    catmullRom,
-    samplePath,
-    toPhysicsScale,
-    makePathPolygons,
-} from "./util"
+import { boxToVertices, catmullRom, samplePath, makePathPolygons } from "./util"
 import { Simulation } from "."
 import {
     EntitySpec,
@@ -22,7 +16,7 @@ import {
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
-import { PHYSICS_TO_RENDER_SCALE } from "./constants"
+import { RENDER_SCALE } from "./constants"
 
 type Dampening = {
     linear: number
@@ -278,10 +272,7 @@ export class PhysicsObject {
                     const poly = fixt.getShape() as Planck.Polygon
                     const verts = poly.m_vertices
                     const worldVerts = verts.map((v) => {
-                        return Vec2.scale(
-                            this.getWorldPoint(v),
-                            PHYSICS_TO_RENDER_SCALE
-                        )
+                        return Vec2.scale(this.getWorldPoint(v), RENDER_SCALE)
                     })
                     const graphics = new Pixi.Graphics()
                     this._debugRenderObj.addChild(graphics as any)
@@ -299,9 +290,9 @@ export class PhysicsObject {
                     graphics.lineStyle(0)
                     graphics.beginFill(color, alpha)
                     graphics.drawCircle(
-                        pos.x * PHYSICS_TO_RENDER_SCALE,
-                        pos.y * PHYSICS_TO_RENDER_SCALE,
-                        circle.m_radius * PHYSICS_TO_RENDER_SCALE
+                        pos.x * RENDER_SCALE,
+                        pos.y * RENDER_SCALE,
+                        circle.m_radius * RENDER_SCALE
                     )
                     graphics.endFill()
                     break
@@ -326,7 +317,7 @@ export class PhysicsObject {
             graphics.beginFill(0x00ffff)
             const p = Vec2.scale(
                 this.getWorldPoint(massData.center),
-                PHYSICS_TO_RENDER_SCALE
+                RENDER_SCALE
             )
             graphics.drawCircle(p.x, p.y, 10)
             graphics.endFill()
@@ -495,7 +486,7 @@ function addBoxFixture(
     const verts = boxToVertices(spec).map((v) => {
         v = Vec2.rotateDeg(v, spec.angle)
         v = Vec2.add(v, spec.offset)
-        return Planck.Vec2(toPhysicsScale(v.x), toPhysicsScale(v.y))
+        return Planck.Vec2(v.x, v.y)
     })
     const shape = Planck.Polygon(verts)
     const fixt = body.createFixture(shape, fixtureOptions(phys))
@@ -507,10 +498,7 @@ function addCircleFixture(
     spec: EntityCircleShapeSpec,
     phys: ShapePhysicsSpec
 ) {
-    const shape = Planck.Circle(
-        Planck.Vec2(spec.offset),
-        toPhysicsScale(spec.radius)
-    )
+    const shape = Planck.Circle(Planck.Vec2(spec.offset), spec.radius)
     const fixt = body.createFixture(shape, fixtureOptions(phys))
     fixt.setUserData(spec)
 }
@@ -558,7 +546,7 @@ function addPolygonFixture(
         spec.verts.map((v) => {
             v = Vec2.rotateDeg(v, spec.angle)
             v = Vec2.add(v, spec.offset)
-            return Planck.Vec2(toPhysicsScale(v.x), toPhysicsScale(v.y))
+            return Planck.Vec2(v.x, v.y)
         })
     )
     const fixt = body.createFixture(shape, {
@@ -578,27 +566,20 @@ function addEdgeFixture(
     const v0 = Vec2.add(spec.offset, Vec2.rotateDeg(spec.v0, spec.angle))
     const v1 = Vec2.add(spec.offset, Vec2.rotateDeg(spec.v1, spec.angle))
 
-    const shape = Planck.Edge(
-        Planck.Vec2(toPhysicsScale(v0.x), toPhysicsScale(v0.y)),
-        Planck.Vec2(toPhysicsScale(v1.x), toPhysicsScale(v1.y))
-    )
+    const shape = Planck.Edge(Planck.Vec2(v0.x, v0.y), Planck.Vec2(v1.x, v1.y))
     if (spec.vPrev) {
         const vPrev = Vec2.add(
             spec.offset,
             Vec2.rotateDeg(spec.vPrev, spec.angle)
         )
-        shape.setPrev(
-            Planck.Vec2(toPhysicsScale(vPrev.x), toPhysicsScale(vPrev.y))
-        )
+        shape.setPrev(Planck.Vec2(vPrev.x, vPrev.y))
     }
     if (spec.vNext) {
         const vNext = Vec2.add(
             spec.offset,
             Vec2.rotateDeg(spec.vNext, spec.angle)
         )
-        shape.setNext(
-            Planck.Vec2(toPhysicsScale(vNext.x), toPhysicsScale(vNext.y))
-        )
+        shape.setNext(Planck.Vec2(vNext.x, vNext.y))
     }
 
     const fixt = body.createFixture(shape, fixtureOptions(phys))
@@ -610,7 +591,7 @@ function createBody(world: Planck.World, spec: EntitySpec): Planck.Body {
 
     const body = world.createBody({
         type: physics.type,
-        position: Planck.Vec2(toPhysicsScale(pos.x), toPhysicsScale(pos.y)),
+        position: Planck.Vec2(pos.x, pos.y),
         angle: toRadians(angle),
         angularDamping: physics.angularDamping ?? 0,
         linearDamping: physics.linearDamping ?? 0,

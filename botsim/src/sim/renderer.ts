@@ -25,11 +25,7 @@ import {
 } from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
-import {
-    MAP_ASPECT_RATIO,
-    PHYSICS_TO_RENDER_SCALE,
-    RENDER_SCALE,
-} from "./constants"
+import { MAP_ASPECT_RATIO, RENDER_SCALE } from "./constants"
 import { nextId } from "../util"
 import { GradientFactory } from "@pixi-essentials/gradients"
 
@@ -184,10 +180,7 @@ export class RenderObject {
         // Copy current pos and angle from the entity to the renderable
         const pos = this.entity.pos
         const angle = this.entity.angle
-        this._container.position.set(
-            pos.x * PHYSICS_TO_RENDER_SCALE,
-            pos.y * PHYSICS_TO_RENDER_SCALE
-        )
+        this._container.position.set(pos.x * RENDER_SCALE, pos.y * RENDER_SCALE)
         this._container.rotation = toRadians(angle)
     }
 }

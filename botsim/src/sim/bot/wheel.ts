@@ -7,7 +7,6 @@ import {
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import { PHYSICS_SCALE } from "../constants"
 import { Bot } from "."
 import { Vec2, Vec2Like } from "../../types/vec2"
 import Planck from "planck-js"
@@ -60,13 +59,13 @@ export class Wheel {
         private bot: Bot,
         private spec: WheelSpec
     ) {
-        this.localPos = Vec2.scale(this.spec.pos, PHYSICS_SCALE)
+        this.localPos = this.spec.pos
         this.maxSpeed = spec.maxSpeed
         this.currSpeed = 0
         // Handles some of the friction between wheel and ground. Additional
         // friction is handled in updateFriction(), below.
         this.friction = this.bot.entity.physicsObj.addFrictionJoint(
-            Vec2.scale(this.spec.pos, PHYSICS_SCALE)
+            this.spec.pos
         )
         // hand-tuned values
         this.friction?.m_bodyB.setAngularDamping(10)
