@@ -148,6 +148,9 @@ async function handleStopMessage(msg: any) {
 
 export function init() {
     window.addEventListener("message", (ev) => {
+        if (ev.data?.source?.startsWith("react-devtools")) return
+        if (ev.data?.type?.startsWith("webpack")) return
+
         try {
             switch (ev.data?.type) {
                 case "messagepacket":
