@@ -16,10 +16,10 @@ export class LED {
     ): EntityShapeSpec {
         if (ledSpec.name === "general") {
             let radius = 0
-            if (bot.chassis.shape.type === "circle") {
-                radius = bot.chassis.shape.radius * 2
-            } else if (bot.chassis.shape.type === "box") {
-                radius = 1.5 * Vec2.len(bot.chassis.shape.size)
+            if (bot.chassis.shape === "circle") {
+                radius = bot.chassis.radius * 2
+            } else if (bot.chassis.shape === "box") {
+                radius = 1.5 * Vec2.len(bot.chassis.size)
             }
             const shapeSpec: EntityShapeSpec = {
                 ...defaultEntityShape(),

@@ -1,14 +1,25 @@
 import { BotSpec, WheelSpec } from "../../bots/specs"
 import {
+    BrushSpec,
     EntityShapeSpec,
     defaultBoxShape,
+    defaultColorBrush,
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
-import { PHYSICS_SCALE, RENDER_SCALE } from "../constants"
+import { PHYSICS_SCALE } from "../constants"
 import { Bot } from "."
 import { Vec2, Vec2Like } from "../../types/vec2"
 import Planck from "planck-js"
+
+const wheelBrush: BrushSpec = {
+    // TODO: Make this an animated texture or pattern
+    ...defaultColorBrush(),
+    fillColor: "#212738",
+    borderColor: "black",
+    borderWidth: 0.2,
+    zIndex: 1,
+}
 
 export class Wheel {
     public static makeShapeSpecs(botSpec: BotSpec): EntityShapeSpec[] {
@@ -28,7 +39,7 @@ export class Wheel {
             offset: spec.pos,
             size: { x: spec.width, y: spec.radius * 2 },
             brush: {
-                ...spec.brush,
+                ...wheelBrush,
                 zIndex: 6,
             },
             physics: {

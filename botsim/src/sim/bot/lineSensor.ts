@@ -10,6 +10,21 @@ import {
 } from "../specs"
 import { testOverlap } from "../util"
 
+const lineSensorBrush = {
+    on: {
+        ...defaultColorBrush(),
+        fillColor: "white",
+        borderColor: "white",
+        borderWidth: 0.1,
+    },
+    off: {
+        ...defaultColorBrush(),
+        fillColor: "black",
+        borderColor: "black",
+        borderWidth: 0.1,
+    },
+}
+
 export class LineSensor {
     sensorId: string
     _shapeSpecs: EntityShapeSpec[]
@@ -31,7 +46,7 @@ export class LineSensor {
             offset: spec.pos,
             radius: 0.5,
             brush: {
-                ...spec.brush.on,
+                ...lineSensorBrush.on,
                 visible: false,
                 zIndex: 6,
             },
@@ -50,7 +65,7 @@ export class LineSensor {
             offset: spec.pos,
             radius: 0.5,
             brush: {
-                ...spec.brush.off,
+                ...lineSensorBrush.off,
                 visible: true,
                 zIndex: 6,
             },

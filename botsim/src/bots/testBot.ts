@@ -1,43 +1,11 @@
-import { defaultCircleShape, defaultColorBrush } from "../sim/specs"
 import { BotSpec } from "./specs"
-
-const wheelBrush = {
-    // TODO: Make this an animated texture or pattern
-    ...defaultColorBrush(),
-    fillColor: "#212738",
-    borderColor: "black",
-    borderWidth: 0.2,
-    zIndex: 1,
-}
-
-const lineSensorBrush = {
-    on: {
-        ...defaultColorBrush(),
-        fillColor: "white",
-        borderColor: "white",
-        borderWidth: 0.1,
-    },
-    off: {
-        ...defaultColorBrush(),
-        fillColor: "black",
-        borderColor: "black",
-        borderWidth: 0.1,
-    },
-}
 
 const spec: BotSpec = {
     name: "Test Bot",
     productId: 0,
     chassis: {
-        shape: {
-            ...defaultCircleShape(),
-            radius: 8.6 / 2, // cm
-        },
-        brush: {
-            ...defaultColorBrush(),
-            fillColor: "#11B5E499",
-            borderColor: "#555555",
-        },
+        shape: "circle",
+        radius: 8.6 / 2, // cm
     },
     // Recognized wheel names: "left", "right"
     wheels: [
@@ -50,7 +18,6 @@ const spec: BotSpec = {
             width: 1.3,
             // wheel radius
             radius: 3.6 / 2,
-            brush: wheelBrush,
         },
         {
             name: "right",
@@ -61,16 +28,12 @@ const spec: BotSpec = {
             width: 1.3,
             // wheel radius
             radius: 3.6 / 2,
-            brush: wheelBrush,
         },
     ],
     rangeSensor: {
         beamAngle: 25, // degrees
         maxRange: 40, // cm
         pos: { x: 0, y: -4.2 },
-        beamPositiveColor: "#68aed420",
-        beamNegativeColor: "#68aed420",
-        targetColor: "#00F765",
     },
     // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
     lineSensors: [
@@ -78,13 +41,11 @@ const spec: BotSpec = {
             name: "left",
             // offset to center of sensor from chassis center
             pos: { x: -0.58, y: -2.74 },
-            brush: lineSensorBrush,
         },
         {
             name: "right",
             // offset to center of sensor from chassis center
             pos: { x: 0.58, y: -2.74 },
-            brush: lineSensorBrush,
         },
     ],
     leds: [

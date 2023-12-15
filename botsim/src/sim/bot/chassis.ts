@@ -1,24 +1,53 @@
 import { BotSpec, ChassisSpec } from "../../bots/specs"
 import {
+    BoxShapeSpec,
+    BrushSpec,
+    CircleShapeSpec,
     EntityShapeSpec,
+    defaultBoxShape,
+    defaultCircleShape,
+    defaultColorBrush,
     defaultEntityShape,
     defaultShapePhysics,
 } from "../specs"
 import { Bot } from "."
-import { hslToRgb, lighten, numberToRgb, rgbToHsl, rgbToString } from "../util"
+import { hslToRgb, numberToRgb, rgbToHsl, rgbToString } from "../util"
 import { createGraphics } from "../renderer"
 import { clamp } from "../../util"
+
+const chassisBrush: BrushSpec = {
+    ...defaultColorBrush(),
+    fillColor: "#11B5E499",
+    borderColor: "#555555",
+}
 
 export class Chassis {
     public static makeShapeSpec(botSpec: BotSpec): EntityShapeSpec {
         const chassisSpec = botSpec.chassis
+        let chassisShape: CircleShapeSpec | BoxShapeSpec
+        switch (chassisSpec.shape) {
+            case "circle":
+                chassisShape = {
+                    ...defaultCircleShape(),
+                    radius: chassisSpec.radius,
+                }
+                break
+            case "box":
+                chassisShape = {
+                    ...defaultBoxShape(),
+                    size: chassisSpec.size,
+                }
+                break
+            default:
+                throw new Error("Unknown chassis type")
+        }
         return {
             ...defaultEntityShape(),
-            ...chassisSpec.shape,
+            ...chassisShape,
             label: "chassis",
             roles: ["mouse-target", "robot"],
             brush: {
-                ...chassisSpec.brush,
+                ...chassisBrush,
                 zIndex: 5,
             },
             physics: {

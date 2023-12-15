@@ -12,17 +12,7 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import Planck from "planck-js"
-import {
-    angleTo180,
-    appoximateArc,
-    darken,
-    hslToRgb,
-    numberToRgb,
-    rgbToHsl,
-    rgbToString,
-    testOverlap,
-    toColor,
-} from "../util"
+import { angleTo180, appoximateArc, testOverlap } from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
 import { PHYSICS_SCALE } from "../constants"
@@ -51,9 +41,9 @@ export class RangeSensor {
     }
 
     private constructShapeSpecs() {
-        const beamPositiveColor = this.spec.beamPositiveColor
-        const beamNegativeColor = this.spec.beamNegativeColor
-        const targetColor = this.spec.targetColor
+        const beamPositiveColor = "#68aed420"
+        const beamNegativeColor = "#68aed420"
+        const targetColor = "#00F765"
 
         this.positiveBrush = {
             ...defaultColorBrush(),

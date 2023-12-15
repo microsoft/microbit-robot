@@ -1,10 +1,5 @@
 import { Vec2Like } from "../types/vec2"
-import {
-    BoxShapeSpec,
-    BrushSpec,
-    CircleShapeSpec,
-    PolygonShapeSpec,
-} from "../sim/specs"
+import { BoxShapeSpec, CircleShapeSpec } from "../sim/specs"
 
 export const LINE_SENSORS = {
     ["outer-left"]: 0,
@@ -20,10 +15,17 @@ export type LEDSlotName = "left" | "right" | "general"
 
 export type ChassisShapeSpec = CircleShapeSpec | BoxShapeSpec
 
-export type ChassisSpec = {
-    shape: ChassisShapeSpec
-    brush: BrushSpec
+export type CircleChassisSpec = {
+    shape: "circle"
+    radius: number // cm
 }
+
+export type BoxChassisSpec = {
+    shape: "box"
+    size: Vec2Like // cm
+}
+
+export type ChassisSpec = CircleChassisSpec | BoxChassisSpec
 
 export type WheelSpec = {
     name: WheelSlotName // identification label
@@ -31,25 +33,17 @@ export type WheelSpec = {
     pos: Vec2Like // offset from chassis center
     width: number // cm
     radius: number // cm
-    brush: BrushSpec
 }
 
 export type LineSensorSpec = {
     name: LineSensorSlotName // identification label
     pos: Vec2Like // offset from chassis center
-    brush: {
-        on: BrushSpec
-        off: BrushSpec
-    }
 }
 
 export type RangeSensorSpec = {
     pos: Vec2Like // offset from chassis center
     beamAngle: number // degrees
     maxRange: number // cm
-    beamPositiveColor: string // beam color when it has a target
-    beamNegativeColor: string // beam color when it doesn't have a target
-    targetColor: string
 }
 
 export type LEDSpec = {

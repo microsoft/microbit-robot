@@ -1,4 +1,4 @@
-import { LineSensorValues, Simulation, defaultLineSensorValues } from ".."
+import { LineSensorValues, Simulation } from ".."
 import {
     BotSpec,
     LEDSlotName,
