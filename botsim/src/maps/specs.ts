@@ -15,6 +15,6 @@ export type MapSpec = {
     width: number // cm
     aspectRatio: number // width / height
     color: string // background color
-    spawns: SpawnSpec[] // robot spawn location
-    entities: EntitySpec[] // obstacles, etc.
+    spawns: SpawnSpec[] // robot spawn locations
+    entities: EntitySpec[] // obstacles, paths, etc.
 }

@@ -16,7 +16,7 @@ import {
 import { Entity } from "./entity"
 import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
-import { RENDER_SCALE } from "./constants"
+import { RENDER_SCALE } from "../constants"
 
 type Dampening = {
     linear: number

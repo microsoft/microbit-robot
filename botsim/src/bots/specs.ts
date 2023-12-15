@@ -37,7 +37,7 @@ export type WheelSpec = {
     name: WheelSlotName
 
     /**
-     * max speed forward (positive). 
+     * max speed forward (positive).
      * no units, just influences force computation.
      */
     maxSpeed: number
@@ -98,7 +98,7 @@ export type LEDSpec = {
      */
     radius: number
     /**
-     * 
+     *
      */
     filter?: [number, number, number]
 }
@@ -120,18 +120,18 @@ export type BallastSpec = {
 
 /**
  * A specification for a bot.
- * 
+ *
  * - the coordinate 0,0 is the center of the chassis.
  * - x is horizontal, y is inverted vertical
  * - all units are `cm`, `degrees` and `g` unless specified
- * 
+ *
  *    ---------
  *   -          -
  *   -          -
  *   [    ->  x ]
  *   -    |     -
  *   -    y     -
- *   
+ *
  */
 export type BotSpec = {
     name: string

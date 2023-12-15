@@ -1,7 +1,5 @@
-import { MAP_ASPECT_RATIO } from "../sim/constants"
+import { MAP_ASPECT_RATIO, MICROBIT_COLORS } from "../constants"
 import {
-    BrushSpec,
-    ShapePhysicsSpec,
     defaultBoxShape,
     defaultColorBrush,
     defaultDynamicPhysics,
@@ -15,13 +13,6 @@ import { MapSpec } from "./specs"
 
 const MAP_WIDTH = 90 // cm
 const MAP_HEIGHT = MAP_WIDTH / MAP_ASPECT_RATIO
-
-const MICROBIT_COLORS = {
-    YELLOW: "rgb(255, 212, 58)",
-    GREEN: "rgb(58, 255, 179)",
-    RED: "rgb(255, 58, 84)",
-    BLUE: "rgb(58, 220, 254)",
-}
 
 export const name = "Test Map"
 export const create = (): MapSpec => ({

@@ -1,12 +1,10 @@
 import { Simulation } from "../sim"
 import { MAPS } from "../maps"
-import { BOTS } from "../bots"
+import { BOTS, DEFAULT_BOT } from "../bots"
 import * as Protocol from "../external/protocol"
 
 // TODO: Move this to simulation?
 let currRunId: string | undefined
-
-const DEFAULT_BOT = 0x3818d146
 
 function stopSim() {
     const sim = Simulation.instance

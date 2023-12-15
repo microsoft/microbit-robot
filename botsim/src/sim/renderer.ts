@@ -25,7 +25,7 @@ import {
 } from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
-import { MAP_ASPECT_RATIO, RENDER_SCALE } from "./constants"
+import { MAP_ASPECT_RATIO, RENDER_SCALE } from "../constants"
 import { nextId } from "../util"
 import { GradientFactory } from "@pixi-essentials/gradients"
 
