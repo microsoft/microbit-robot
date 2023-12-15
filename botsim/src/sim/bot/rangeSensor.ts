@@ -3,6 +3,7 @@ import { RangeSensorSpec } from "../../bots/specs"
 import { Vec2, Vec2Like } from "../../types/vec2"
 import { nextId } from "../../util"
 import {
+    BrushSpec,
     ColorBrushSpec,
     EntityShapeSpec,
     defaultCircleShape,
@@ -16,6 +17,32 @@ import { angleTo180, appoximateArc, testOverlap } from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
 
+const beamPositiveColor = "#68aed420"
+const beamNegativeColor = "#68aed420"
+const targetColor = "#00F765"
+
+const positiveBrush: BrushSpec = {
+    ...defaultColorBrush(),
+    fillColor: beamPositiveColor,
+    borderColor: beamPositiveColor,
+    borderWidth: 0.25,
+    zIndex: 5,
+}
+const negativeBrush: BrushSpec = {
+    ...defaultColorBrush(),
+    fillColor: beamNegativeColor,
+    borderColor: beamNegativeColor,
+    borderWidth: 0.25,
+    zIndex: 5,
+}
+const targetBrush: BrushSpec = {
+    ...defaultColorBrush(),
+    fillColor: "transparent",
+    borderColor: targetColor,
+    borderWidth: 0.5,
+    zIndex: 6,
+}
+
 export class RangeSensor {
     sensorId: string
     coneSpec!: EntityShapeSpec
@@ -25,9 +52,6 @@ export class RangeSensor {
     rightEdge!: LineSegmentLike
     _value: number
     used: boolean = false
-    positiveBrush!: ColorBrushSpec
-    negativeBrush!: ColorBrushSpec
-    targetBrush!: ColorBrushSpec
 
     public get shapeSpecs() {
         return [this.coneSpec, this.visualSpec, this.targetSpec]
@@ -40,32 +64,6 @@ export class RangeSensor {
     }
 
     private constructShapeSpecs() {
-        const beamPositiveColor = "#68aed420"
-        const beamNegativeColor = "#68aed420"
-        const targetColor = "#00F765"
-
-        this.positiveBrush = {
-            ...defaultColorBrush(),
-            fillColor: beamPositiveColor,
-            borderColor: beamPositiveColor,
-            borderWidth: 0.25,
-            zIndex: 5,
-        }
-        this.negativeBrush = {
-            ...defaultColorBrush(),
-            fillColor: beamNegativeColor,
-            borderColor: beamNegativeColor,
-            borderWidth: 0.25,
-            zIndex: 5,
-        }
-        this.targetBrush = {
-            ...defaultColorBrush(),
-            fillColor: "transparent",
-            borderColor: targetColor,
-            borderWidth: 0.5,
-            zIndex: 6,
-        }
-
         this.leftEdge = {
             p0: Vec2.zero(),
             p1: Vec2.rotateDeg(
@@ -110,7 +108,7 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...this.negativeBrush,
+                ...negativeBrush,
                 visible: false,
             },
         }
@@ -126,7 +124,7 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...this.targetBrush,
+                ...targetBrush,
                 visible: false,
             },
         }
@@ -487,7 +485,7 @@ export class RangeSensor {
                 ...this.visualSpec,
                 verts,
                 brush: {
-                    ...(detected ? this.positiveBrush : this.negativeBrush),
+                    ...(detected ? positiveBrush : negativeBrush),
                     visible: this.used,
                 },
             }
