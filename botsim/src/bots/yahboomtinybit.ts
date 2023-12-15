@@ -1,28 +1,28 @@
 import { BotSpec } from "./specs"
 
 const spec: BotSpec = {
-    name: "DFRobot Maqueen",
-    productId: 0x325e1e40,
+    name: "Yahboom Tiny:bit",
+    productId: 0x345f8369,
     mass: 1,
     silkColor: "#000000",
     chassis: {
-        shape: "box",
-        size: { x: 8.1, y: 8.4 },
+        shape: "circle",
+        radius: 9.9,
     },
     wheels: [
         {
             name: "left",
             maxSpeed: 100,
-            pos: { x: -(6.2 / 2 - 0.9 / 2), y: 1.9 },
-            width: 0.9,
+            pos: { x: -(7.2 / 2 - 1.7 / 2), y: 1.9 },
+            width: 1.7,
             radius: 4.2 / 2,
             dashTime: 0.5,
         },
         {
             name: "right",
             maxSpeed: 100,
-            pos: { x: 6.2 / 2 - 0.9 / 2, y: 1.9 },
-            width: 0.9,
+            pos: { x: 7.2 / 2 - 1.7 / 2, y: 1.9 },
+            width: 1.7,
             radius: 4.2 / 2,
             dashTime: 0.5,
         },
@@ -30,19 +30,19 @@ const spec: BotSpec = {
     rangeSensor: {
         beamAngle: 25, // degrees
         maxRange: 40, // cm
-        pos: { x: 0, y: -1.5 },
+        pos: { x: 0, y: -2.5 },
     },
     // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
     lineSensors: [
         {
             name: "left",
             // offset to center of sensor from chassis center
-            pos: { x: -0.6, y: -1.6 },
+            pos: { x: -2.8 / 3, y: -2.3 },
         },
         {
             name: "right",
             // offset to center of sensor from chassis center
-            pos: { x: 0.6, y: -1.6 },
+            pos: { x: 2.8 / 2, y: -2.3 },
         },
     ],
     leds: [
