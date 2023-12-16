@@ -8,7 +8,7 @@ const spec: BotSpec = {
     silkColor: "#000000",
     chassis: {
         shape: "circle",
-        radius: 9.9,
+        radius: 10 / 2,
     },
     wheels: [
         {
