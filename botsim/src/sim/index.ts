@@ -193,7 +193,7 @@ export class Simulation {
     public loadMap(map: MapSpec) {
         this.clear()
         const height = map.width / map.aspectRatio
-        const size = new Vec2(map.width, height)
+        const size = Vec2.like(map.width, height)
         this.resize(size)
         this.renderer.color(map.color)
         this.spawns = map.spawns

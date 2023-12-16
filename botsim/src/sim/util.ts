@@ -13,10 +13,10 @@ export function makeBoxVertices(
     const halfW = size.x / 2
     const halfH = size.y / 2
     const verts = [
-        new Vec2(-halfW, -halfH),
-        new Vec2(halfW, -halfH),
-        new Vec2(halfW, halfH),
-        new Vec2(-halfW, halfH),
+        Vec2.like(-halfW, -halfH),
+        Vec2.like(halfW, -halfH),
+        Vec2.like(halfW, halfH),
+        Vec2.like(-halfW, halfH),
     ]
     switch (halign) {
         case "left":
@@ -93,7 +93,7 @@ export function catmullRom(
     const q2 = -3 * remainderT ** 3 + 4 * remainderT ** 2 + remainderT
     const q3 = remainderT ** 3 - remainderT ** 2
 
-    return new Vec2(
+    return Vec2.like(
         0.5 * (p0.x * q0 + p1.x * q1 + p2.x * q2 + p3.x * q3),
         0.5 * (p0.y * q0 + p1.y * q1 + p2.y * q2 + p3.y * q3)
     )
@@ -359,7 +359,7 @@ export function appoximateArc(
     for (let i = 0; i < numSegments; i++) {
         const angle = startAngle + i * angleStep
         verts.push(
-            new Vec2(
+            Vec2.like(
                 center.x + radius * Math.cos(angle),
                 center.y + radius * Math.sin(angle)
             )
@@ -375,7 +375,7 @@ export function drawDashedLine(
     dashLength: number,
     gapLength: number
 ) {
-    const delta = new Vec2(p1.x - p0.x, p1.y - p0.y)
+    const delta = Vec2.like(p1.x - p0.x, p1.y - p0.y)
     const len = Vec2.len(delta)
     const dir = Vec2.normalize(delta)
     const gap = Vec2.scale(dir, gapLength)

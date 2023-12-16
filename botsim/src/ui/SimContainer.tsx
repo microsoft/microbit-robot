@@ -29,17 +29,17 @@ export const SimContainer: React.FC<Props> = ({}) => {
         if (simContainer) {
             const handleMouseDown = (e: MouseEvent) => {
                 if (e.button === 0) {
-                    const p = new Vec2(e.offsetX, e.offsetY)
+                    const p = Vec2.like(e.offsetX, e.offsetY)
                     Simulation.instance.mouseDown(p)
                 }
             }
             const handleMouseMove = (e: MouseEvent) => {
-                const p = new Vec2(e.offsetX, e.offsetY)
+                const p = Vec2.like(e.offsetX, e.offsetY)
                 Simulation.instance.mouseMove(p)
             }
             const handleMouseUp = (e: MouseEvent) => {
                 if (e.button === 0) {
-                    const p = new Vec2(e.offsetX, e.offsetY)
+                    const p = Vec2.like(e.offsetX, e.offsetY)
                     Simulation.instance.mouseUp(p)
                 }
             }

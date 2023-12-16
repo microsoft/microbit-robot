@@ -6,17 +6,15 @@ export interface Vec2Like {
 }
 
 export class Vec2 implements Vec2Like {
-    constructor(
-        public x = 0,
-        public y = 0
-    ) {}
+    public x = 0
+    public y = 0
 
     public static like(x: number, y: number): Vec2Like {
         return { x, y }
     }
 
-    public static from(v: Vec2Like): Vec2Like {
-        return { x: v.x, y: v.y }
+    public static copy(v: Vec2Like): Vec2Like {
+        return { ...v }
     }
 
     public static areEqual(a: Vec2Like, b: Vec2Like): boolean {
@@ -100,7 +98,7 @@ export class Vec2 implements Vec2Like {
     public static normalize(v: Vec2Like, fallback?: Vec2Like): Vec2Like {
         const len = Vec2.len(v)
         if (len === 0) {
-            if (fallback) return Vec2.from(fallback)
+            if (fallback) return Vec2.copy(fallback)
             throw new Error("Cannot normalize zero vector")
         }
         return { x: v.x / len, y: v.y / len }
@@ -292,16 +290,6 @@ export class Vec2 implements Vec2Like {
      */
     public static lerp(a: Vec2Like, b: Vec2Like, t: number): Vec2Like {
         return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }
-    }
-
-    /**
-     * Interpolates the components of this vector towards the given vector by
-     * the given amount
-     */
-    public lerp(b: Vec2Like, t: number): this {
-        this.x += (b.x - this.x) * t
-        this.y += (b.y - this.y) * t
-        return this
     }
 
     /**

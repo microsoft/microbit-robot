@@ -49,9 +49,9 @@ export default class Renderer {
         const rect = this.pixi.view.getBoundingClientRect?.()
         if (!rect) {
             // Fallback to something that won't cause divide-by-zero elsewhere
-            return new Vec2(1, 1)
+            return Vec2.one()
         }
-        return new Vec2(rect.width, rect.height)
+        return Vec2.like(rect.width, rect.height)
     }
     public get debugLayer() {
         return this._debugLayer
@@ -65,7 +65,7 @@ export default class Renderer {
     }
 
     constructor(private sim: Simulation) {
-        this._size = new Vec2(10 * MAP_ASPECT_RATIO, 10)
+        this._size = Vec2.like(10 * MAP_ASPECT_RATIO, 10)
         this.pixi = new Pixi.Application({
             width: toRenderScale(this._size.x),
             height: toRenderScale(this._size.y),
@@ -99,7 +99,7 @@ export default class Renderer {
     public update(dtSecs: number) {}
 
     public resize(size: Vec2Like) {
-        this._size = Vec2.from(size)
+        this._size = Vec2.copy(size)
         this.pixi.renderer.resize(toRenderScale(size.x), toRenderScale(size.y))
     }
 
