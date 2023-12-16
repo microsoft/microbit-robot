@@ -13,7 +13,6 @@ import {
 } from "./specs"
 import { BotSpec } from "../bots/specs"
 import { Bot } from "./bot"
-import { InputState, registerInputState } from "../services/inputService"
 import { Vec2, Vec2Like } from "../types/vec2"
 import { MapSpec, SpawnSpec } from "../maps/specs"
 
@@ -44,7 +43,6 @@ export class Simulation {
 
     private _physics: Physics
     private _renderer: Renderer
-    private _input: InputState
     private _entities: Entity[] = []
     private spawns: SpawnSpec[] = []
     private bots = new Map<number, Bot>()
@@ -59,9 +57,6 @@ export class Simulation {
     public get physics() {
         return this._physics
     }
-    public get input() {
-        return this._input
-    }
     public get entities() {
         return this._entities
     }
@@ -73,33 +68,7 @@ export class Simulation {
         //this.debugDraw = true
         this._renderer = new Renderer(this)
         this._physics = new Physics(this)
-
         this.buildWalls(this.renderer.logicalSize)
-
-        // Keyboard/gamepad input is for debugging bot movement models, it is
-        // disabled in production. To enable, set KEYBOARD_CONTROL_ENABLED in
-        // src/sim/bot/index.ts. Note this will disable motor control from the
-        // microbit sim.
-        this._input = new InputState(
-            [
-                // left wheel motor
-                "KeyW",
-                "KeyS",
-                "GamepadAxisLeftStickY",
-                // right wheel motor
-                "KeyI",
-                "KeyK",
-                "GamepadAxisRightStickY",
-                // general direction
-                "ArrowUp",
-                "ArrowDown",
-                "ArrowLeft",
-                "ArrowRight",
-            ],
-            {}
-        )
-
-        registerInputState(this._input)
     }
 
     private static _instance: Simulation

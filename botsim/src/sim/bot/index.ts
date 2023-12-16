@@ -21,11 +21,6 @@ import { Entity } from "../entity"
 import { Vec2Like } from "../../types/vec2"
 import { SpawnSpec } from "../../maps/specs"
 
-// Debug flag for keyboard control. When true, the bot will not be controlled by
-// the simulator, only by the keyboard and gamepad. Can be useful to tune a bot's
-// movement characteristics. See the Simulation class for keybindings.
-const KEYBOARD_CONTROL_ENABLED = false
-
 /**
  * The Bot class is a controller for a robot in the simulation. It contains
  * references to the Entity objects that make up the robot, and provides
@@ -118,72 +113,11 @@ export class Bot {
     }
 
     public update(dtSecs: number) {
-        if (KEYBOARD_CONTROL_ENABLED) this.handleInput()
         this.chassis.update(dtSecs)
         this.wheels.forEach((wheel) => wheel.update(dtSecs))
         this.rangeSensor?.update(dtSecs)
         this.lineSensors.forEach((sensor) => sensor.update(dtSecs))
         this.leds.forEach((led) => led.update(dtSecs))
-    }
-
-    private handleInput() {
-        const { input } = this.sim
-
-        // Hack: use first wheel's speed settings for all wheels
-        const maxSpeed = 100
-        let leftSpeed = 0
-        let rightSpeed = 0
-
-        // Control left motor with W/S keys
-        if (input.isDown("KeyW")) {
-            leftSpeed += maxSpeed
-        }
-        if (input.isDown("KeyS")) {
-            leftSpeed -= maxSpeed
-        }
-
-        // Control right motor with I/K keys
-        if (input.isDown("KeyI")) {
-            rightSpeed += maxSpeed
-        }
-        if (input.isDown("KeyK")) {
-            rightSpeed -= maxSpeed
-        }
-
-        // Control both motors with arrow keys
-        if (input.isDown("ArrowUp")) {
-            leftSpeed += maxSpeed
-            rightSpeed += maxSpeed
-        }
-        if (input.isDown("ArrowDown")) {
-            leftSpeed -= maxSpeed
-            rightSpeed -= maxSpeed
-        }
-        if (input.isDown("ArrowLeft")) {
-            if (!rightSpeed) rightSpeed = maxSpeed
-            leftSpeed = leftSpeed / 2
-        }
-        if (input.isDown("ArrowRight")) {
-            if (!leftSpeed) leftSpeed = maxSpeed
-            rightSpeed = rightSpeed / 2
-        }
-
-        // Control both motors with gamepad stick Y axes
-        const leftStickY = input.value("GamepadAxisLeftStickY")
-        const rightStickY = input.value("GamepadAxisRightStickY")
-
-        if (leftStickY) {
-            leftSpeed += -leftStickY * maxSpeed
-        }
-        if (rightStickY) {
-            rightSpeed += -rightStickY * maxSpeed
-        }
-
-        leftSpeed = Math.max(-maxSpeed, Math.min(maxSpeed, leftSpeed))
-        rightSpeed = Math.max(-maxSpeed, Math.min(maxSpeed, rightSpeed))
-
-        this.setWheelSpeed("left", leftSpeed)
-        this.setWheelSpeed("right", rightSpeed)
     }
 
     private setWheelSpeed(name: WheelSlotName, speed: number) {
@@ -194,7 +128,6 @@ export class Bot {
 
     public setMotors(left: number, right: number) {
         if (this.held) return
-        if (KEYBOARD_CONTROL_ENABLED) return
         this.setWheelSpeed("left", left)
         this.setWheelSpeed("right", right)
     }
