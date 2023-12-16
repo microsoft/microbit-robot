@@ -4,7 +4,7 @@ const spec: BotSpec = {
     name: "DFRobot Maqueen Plus V2",
     productId: 0x3375036b,
     mass: 1,
-    weight: 198,
+    weight: 208,
     silkColor: "#000000",
     chassis: {
         shape: "box",
