@@ -1,4 +1,4 @@
-import { BotSpec } from "./specs"
+import { BotSpec, toWheels } from "./specs"
 
 const spec: BotSpec = {
     name: "DFRobot Maqueen Plus V2",
@@ -10,24 +10,12 @@ const spec: BotSpec = {
         shape: "box",
         size: { x: 10.0, y: 10.7 },
     },
-    wheels: [
-        {
-            name: "left",
-            maxSpeed: 100,
-            pos: { x: -(8.7 / 2 - 1 / 2), y: 1.4 },
-            width: 1,
-            radius: 4.2 / 2,
-            dashTime: 0.5,
-        },
-        {
-            name: "left",
-            maxSpeed: 100,
-            pos: { x: (8.7 / 2 - 1 / 2), y: 1.4 },
-            width: 1,
-            radius: 4.2 / 2,
-            dashTime: 0.5,
-        },
-    ],
+    wheels: toWheels({
+        separation: 8.7,
+        diameter: 4.2,
+        width: 1,
+        y: 1.4,
+    }),
     rangeSensor: {
         beamAngle: 25, // degrees
         maxRange: 40, // cm

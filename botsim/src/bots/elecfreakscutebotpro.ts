@@ -1,4 +1,4 @@
-import { BotSpec } from "./specs"
+import { BotSpec, toWheels } from "./specs"
 
 const spec: BotSpec = {
     name: "Elecfreaks Cutebot PRO",
@@ -10,24 +10,12 @@ const spec: BotSpec = {
         shape: "box",
         size: { x: 11.4, y: 12.8 },
     },
-    wheels: [
-        {
-            name: "left",
-            maxSpeed: 100,
-            pos: { x: -(7.4 / 2 + 1.8 / 2), y: 1.5 },
-            width: 1.8,
-            radius: 50 / 2,
-            dashTime: 0.5,
-        },
-        {
-            name: "left",
-            maxSpeed: 100,
-            pos: { x: 7.4 / 2 + 1.8 / 2, y: 1.5 },
-            width: 1.8,
-            radius: 50 / 2,
-            dashTime: 0.5,
-        },
-    ],
+    wheels: toWheels({
+        separation: 7.4,
+        diameter: 5.0,
+        width: 1.8,
+        y: 1.5,
+    }),
     rangeSensor: {
         beamAngle: 25,
         maxRange: 40,

@@ -1,4 +1,4 @@
-import { BotSpec } from "./specs"
+import { BotSpec, toWheels } from "./specs"
 
 const spec: BotSpec = {
     name: "Yahboom Tiny:bit",
@@ -10,24 +10,12 @@ const spec: BotSpec = {
         shape: "circle",
         radius: 10 / 2,
     },
-    wheels: [
-        {
-            name: "left",
-            maxSpeed: 100,
-            pos: { x: -(7.2 / 2 - 1.7 / 2), y: 1.9 },
-            width: 1.7,
-            radius: 4.2 / 2,
-            dashTime: 0.5,
-        },
-        {
-            name: "right",
-            maxSpeed: 100,
-            pos: { x: 7.2 / 2 - 1.7 / 2, y: 1.9 },
-            width: 1.7,
-            radius: 4.2 / 2,
-            dashTime: 0.5,
-        },
-    ],
+    wheels: toWheels({
+        separation: 7.2,
+        diameter: 4.2,
+        width: 1.7,
+        y: 1.9,
+    }),
     rangeSensor: {
         beamAngle: 25, // degrees
         maxRange: 40, // cm

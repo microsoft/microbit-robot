@@ -1,7 +1,7 @@
 /**
- * 
+ *
  * This file contains the data structures that describe a bot.
- * 
+ *
  */
 import { Vec2Like } from "../types/vec2"
 import { BoxShapeSpec, CircleShapeSpec } from "../sim/specs"
@@ -159,4 +159,32 @@ export type BallastSpec = {
      * Additional mass added to the robot
      */
     mass: number
+}
+
+export function toWheels(spec: {
+    separation: number
+    diameter: number
+    width: number
+    y: number
+}): WheelSpec[] {
+    const { separation, diameter, width, y } = spec
+    const radius = diameter / 2
+    return [
+        {
+            name: "left",
+            maxSpeed: 100,
+            pos: { x: -(separation - width) / 2, y },
+            width,
+            radius,
+            dashTime: 0.5,
+        },
+        {
+            name: "right",
+            maxSpeed: 100,
+            pos: { x: (separation - width) / 2, y },
+            width,
+            radius,
+            dashTime: 0.5,
+        },
+    ]
 }
