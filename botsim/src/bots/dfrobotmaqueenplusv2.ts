@@ -1,28 +1,28 @@
 import { BotSpec } from "./specs"
 
 const spec: BotSpec = {
-    name: "DFRobot Maqueen",
-    productId: 0x325e1e40,
+    name: "DFRobot Maqueen Plus V2",
+    productId: 0x3375036b,
     mass: 1,
-    weight: 126,
+    weight: 198,
     silkColor: "#000000",
     chassis: {
         shape: "box",
-        size: { x: 8.1, y: 8.4 },
+        size: { x: 10.0, y: 10.7 },
     },
     wheels: [
         {
             name: "left",
             maxSpeed: 100,
-            pos: { x: -(6.2 / 2 - 1 / 2), y: 1.9 },
+            pos: { x: -(8.7 / 2 - 1 / 2), y: 1.4 },
             width: 1,
             radius: 4.2 / 2,
             dashTime: 0.5,
         },
         {
-            name: "right",
+            name: "left",
             maxSpeed: 100,
-            pos: { x: 6.2 / 2 - 1 / 2, y: 1.9 },
+            pos: { x: -(8.7 / 2 - 1 / 2), y: 1.4 },
             width: 1,
             radius: 4.2 / 2,
             dashTime: 0.5,
@@ -38,12 +38,17 @@ const spec: BotSpec = {
         {
             name: "left",
             // offset to center of sensor from chassis center
-            pos: { x: -0.6, y: -1.6 },
+            pos: { x: -0.9, y: -3.8 },
+        },
+        {
+            name: "middle",
+            // offset to center of sensor from chassis center
+            pos: { x: 0, y: -3.8 },
         },
         {
             name: "right",
             // offset to center of sensor from chassis center
-            pos: { x: 0.6, y: -1.6 },
+            pos: { x: 0.9, y: -3.8 },
         },
     ],
     leds: [
