@@ -31,7 +31,7 @@ const spec: BotSpec = {
     rangeSensor: {
         beamAngle: 25, // degrees
         maxRange: 40, // cm
-        pos: { x: 0, y: -1.5 },
+        pos: { x: 0, y: -4.7 },
     },
     // Recognized line sensor names: "outer-left", "left", "middle", "right", "outer-right"
     lineSensors: [
