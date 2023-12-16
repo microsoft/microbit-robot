@@ -22,7 +22,7 @@ const spec: BotSpec = {
         {
             name: "left",
             maxSpeed: 100,
-            pos: { x: -(8.7 / 2 - 1 / 2), y: 1.4 },
+            pos: { x: (8.7 / 2 - 1 / 2), y: 1.4 },
             width: 1,
             radius: 4.2 / 2,
             dashTime: 0.5,
