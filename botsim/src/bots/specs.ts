@@ -14,12 +14,12 @@ import { BoxShapeSpec, CircleShapeSpec } from "../sim/specs"
  * - all units are `cm`, `degrees` and `g` unless specified
  *
  *    ---------
- *   -          -
- *   -          -
- *   [    ->  x ]
- *   -    |     -
- *   -    y     -
- *
+ *   /   o  o   \
+ *   |          |
+ *  []    ->  x []
+ *   |    |     |
+ *   |    y     |
+ *.   \ - - - - /
  */
 export type BotSpec = {
     name: string
