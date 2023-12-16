@@ -173,7 +173,7 @@ export function toWheels(spec: {
         {
             name: "left",
             maxSpeed: 100,
-            pos: { x: -(separation - width) / 2, y },
+            pos: { x: -(separation + width) / 2, y },
             width,
             radius,
             dashTime: 0.5,
@@ -181,7 +181,7 @@ export function toWheels(spec: {
         {
             name: "right",
             maxSpeed: 100,
-            pos: { x: (separation - width) / 2, y },
+            pos: { x: (separation + width) / 2, y },
             width,
             radius,
             dashTime: 0.5,
