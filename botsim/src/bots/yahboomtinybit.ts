@@ -4,6 +4,7 @@ const spec: BotSpec = {
     name: "Yahboom Tiny:bit",
     productId: 0x345f8369,
     mass: 1,
+    weight: 179,
     silkColor: "#000000",
     chassis: {
         shape: "circle",

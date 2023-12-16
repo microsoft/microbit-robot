@@ -1,5 +1,49 @@
+/**
+ * 
+ * This file contains the data structures that describe a bot.
+ * 
+ */
 import { Vec2Like } from "../types/vec2"
 import { BoxShapeSpec, CircleShapeSpec } from "../sim/specs"
+
+/**
+ * A specification for a bot.
+ *
+ * - the coordinate 0,0 is the center of the chassis.
+ * - x is horizontal, y is inverted vertical
+ * - all units are `cm`, `degrees` and `g` unless specified
+ *
+ *    ---------
+ *   -          -
+ *   -          -
+ *   [    ->  x ]
+ *   -    |     -
+ *   -    y     -
+ *
+ */
+export type BotSpec = {
+    name: string
+    productId: number
+    /**
+     * mass of the robot without the ballast
+     * TODO: replace with weight?
+     */
+    mass: number
+    /**
+     * weight of the robot without the ballast in grams
+     */
+    weight?: number
+    /**
+     * Robot PCB chassi color, default is black.
+     */
+    silkColor?: string
+    chassis: ChassisSpec
+    wheels: WheelSpec[]
+    rangeSensor?: RangeSensorSpec
+    lineSensors?: LineSensorSpec[]
+    leds?: LEDSpec[]
+    ballast?: BallastSpec
+}
 
 export const LINE_SENSORS = {
     ["outer-left"]: 0,
@@ -115,38 +159,4 @@ export type BallastSpec = {
      * Additional mass added to the robot
      */
     mass: number
-}
-
-/**
- * A specification for a bot.
- *
- * - the coordinate 0,0 is the center of the chassis.
- * - x is horizontal, y is inverted vertical
- * - all units are `cm`, `degrees` and `g` unless specified
- *
- *    ---------
- *   -          -
- *   -          -
- *   [    ->  x ]
- *   -    |     -
- *   -    y     -
- *
- */
-export type BotSpec = {
-    name: string
-    productId: number
-    /**
-     * mass of the robot without the ballast
-     */
-    mass: number
-    /**
-     * Robot PCB chassi color, default is black.
-     */
-    silkColor?: string
-    chassis: ChassisSpec
-    wheels: WheelSpec[]
-    rangeSensor?: RangeSensorSpec
-    lineSensors?: LineSensorSpec[]
-    leds?: LEDSpec[]
-    ballast?: BallastSpec
 }
