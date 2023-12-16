@@ -11,6 +11,10 @@ export class Vec2 implements Vec2Like {
         public y = 0
     ) {}
 
+    public static like(x: number, y: number): Vec2Like {
+        return { x, y }
+    }
+
     public static from(v: Vec2Like): Vec2Like {
         return { x: v.x, y: v.y }
     }

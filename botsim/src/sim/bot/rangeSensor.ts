@@ -4,7 +4,6 @@ import { Vec2, Vec2Like } from "../../types/vec2"
 import { nextId } from "../../util"
 import {
     BrushSpec,
-    ColorBrushSpec,
     EntityShapeSpec,
     defaultCircleShape,
     defaultColorBrush,
@@ -13,13 +12,22 @@ import {
     defaultShapePhysics,
 } from "../specs"
 import Planck from "planck-js"
-import { angleTo180, appoximateArc, testOverlap } from "../util"
+import {
+    angleTo180,
+    appoximateArc,
+    drawDashedLine,
+    testOverlap,
+    toRenderScale,
+} from "../util"
 import { LineSegment, LineSegmentLike, intersection } from "../../types/line"
 import { createGraphics } from "../renderer"
+import * as Pixi from "pixi.js"
+import { RENDER_SCALE } from "../../constants"
 
 const beamPositiveColor = "#68aed420"
 const beamNegativeColor = "#68aed420"
-const targetColor = "#00F765"
+//const targetColor = "#212738"
+const targetColor = "#1c4a62"
 
 const positiveBrush: BrushSpec = {
     ...defaultColorBrush(),
@@ -502,17 +510,34 @@ export class RangeSensor {
         )
         if (targetShape) {
             if (targetDir && detected) {
-                let pt = Vec2.add(Vec2.scale(targetDir, this.value), myPos)
-                pt = Vec2.untransformDeg(pt, botPos, myAngle)
-
-                const newTargetSpec = {
-                    ...this.targetSpec,
-                    offset: pt,
-                }
-                const newGfx = createGraphics[newTargetSpec.type][
-                    newTargetSpec.brush.type
-                ](newTargetSpec, newTargetSpec.brush)
-                targetShape.setGfx(newGfx)
+                const pt0 = Vec2.scale(
+                    Vec2.untransformDeg(myPos, botPos, myAngle),
+                    RENDER_SCALE
+                )
+                const pt1 = Vec2.scale(
+                    Vec2.untransformDeg(
+                        Vec2.add(Vec2.scale(targetDir, this.value), myPos),
+                        botPos,
+                        myAngle
+                    ),
+                    RENDER_SCALE
+                )
+                const newGfx = new Pixi.Graphics()
+                newGfx.lineStyle({
+                    width: toRenderScale(0.5),
+                    color: targetColor + "A0",
+                    alignment: 0.5,
+                })
+                newGfx.drawCircle(pt1.x, pt1.y, toRenderScale(1))
+                newGfx.zIndex = 6
+                drawDashedLine(
+                    newGfx,
+                    pt0,
+                    pt1,
+                    toRenderScale(1),
+                    toRenderScale(1)
+                )
+                targetShape.setGfx(newGfx as any)
                 targetShape.visible = this.used
             } else {
                 targetShape.visible = false

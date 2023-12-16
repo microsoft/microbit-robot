@@ -367,3 +367,26 @@ export function appoximateArc(
     }
     return verts
 }
+
+export function drawDashedLine(
+    graphics: Pixi.Graphics,
+    p0: Vec2Like,
+    p1: Vec2Like,
+    dashLength: number,
+    gapLength: number
+) {
+    const delta = new Vec2(p1.x - p0.x, p1.y - p0.y)
+    const len = Vec2.len(delta)
+    const dir = Vec2.normalize(delta)
+    const gap = Vec2.scale(dir, gapLength)
+    const dash = Vec2.scale(dir, dashLength)
+    const numDashes = Math.floor(len / (dashLength + gapLength))
+    for (let i = 0; i < numDashes; i++) {
+        let p = Vec2.like(p0.x, p0.y)
+        p = Vec2.add(p, gap)
+        graphics.moveTo(p.x, p.y)
+        p = Vec2.add(p, dash)
+        graphics.lineTo(p.x, p.y)
+        p0 = Vec2.add(Vec2.add(p0, dash), gap)
+    }
+}
