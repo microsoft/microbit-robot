@@ -71,6 +71,7 @@ namespace robot {
 
         currentLineState: number[] = [-1, -1, -1, -1, -1]
         private lineLostCounter: number
+        private lineResendCount: number = 0
 
         private stopToneMillis: number = 0
         runDrift = 0
@@ -401,6 +402,8 @@ namespace robot {
 
         private computeLineState(): void {
             const state = this.readLineState()
+            this.lineResendCount = (this.lineResendCount + 1) % configuration.LINE_RESEND_RESET_COUNT
+            const resend = this.lineResendCount === 0
             const threshold = this.robot.lineHighThreshold
             const changed = state.map(
                 (v, i) =>
@@ -415,7 +418,7 @@ namespace robot {
                 detectors: LineDetectorEvent,
                 code: robots.RobotCompactCommand
             ) => {
-                let send = false
+                let send = resend
                 for (let i = 0; i < 5; ++i) {
                     if (detectors & (1 << i)) {
                         if (changed[i])
@@ -429,7 +432,7 @@ namespace robot {
                     messages.raiseEvent(event, code)
             }
 
-            if (changed.some(v => v)) {
+            if (changed.some(v => v) || resend) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
