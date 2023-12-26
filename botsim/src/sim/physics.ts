@@ -18,6 +18,8 @@ import { toDegrees, toRadians } from "../util"
 import * as Pixi from "pixi.js"
 import { RENDER_SCALE } from "../constants"
 
+Planck.Settings.maxPolygonVertices = 32
+
 type Dampening = {
     linear: number
     angular: number

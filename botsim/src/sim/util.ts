@@ -390,3 +390,55 @@ export function drawDashedLine(
         p0 = Vec2.add(Vec2.add(p0, dash), gap)
     }
 }
+
+export enum Orientation {
+    Collinear,
+    Clockwise,
+    CounterClockwise,
+}
+
+export function orientation(
+    p: Vec2Like,
+    q: Vec2Like,
+    r: Vec2Like
+): Orientation {
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
+
+    if (val == 0) return Orientation.Collinear
+    return val > 0 ? Orientation.Clockwise : Orientation.CounterClockwise
+}
+
+/**
+ * Returns an array of points comprising the convex hull in counter-clockwise
+ * order, or an empty array if there are less than 3 points.
+ * Reference: https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
+ */
+export function convexHull(verts: Vec2Like[]): Vec2Like[] {
+    const n = verts.length
+    if (n < 3) return []
+
+    const hull: Vec2Like[] = []
+
+    let iLeftmost = 0
+    for (let i = 1; i < n; i++) {
+        if (verts[i].x < verts[iLeftmost].x) iLeftmost = i
+    }
+
+    let p = iLeftmost,
+        q = 0
+    do {
+        hull.push(verts[p])
+        q = (p + 1) % n
+        for (let i = 0; i < n; i++) {
+            if (
+                orientation(verts[p], verts[i], verts[q]) ==
+                Orientation.CounterClockwise
+            ) {
+                q = i
+            }
+        }
+        p = q
+    } while (p != iLeftmost)
+
+    return hull
+}

@@ -4,7 +4,6 @@
  *
  */
 import { Vec2Like } from "../types/vec2"
-import { BoxShapeSpec, CircleShapeSpec } from "../sim/specs"
 
 /**
  * A specification for a bot.
@@ -57,8 +56,6 @@ export type WheelSlotName = "left" | "right"
 export type LineSensorSlotName = keyof typeof LINE_SENSORS
 export type LEDSlotName = "left" | "right" | "general" // TODO: rename to all
 
-export type ChassisShapeSpec = CircleShapeSpec | BoxShapeSpec
-
 export type CircleChassisSpec = {
     shape: "circle"
     /**
@@ -75,7 +72,16 @@ export type BoxChassisSpec = {
     size: Vec2Like
 }
 
-export type ChassisSpec = CircleChassisSpec | BoxChassisSpec
+export type PolygonChassisSpec = {
+    shape: "polygon"
+    /**
+     * vertices of the polygon, relative to the center of the chassis.
+     * unit: cm
+     */
+    verts: Vec2Like[]
+}
+
+export type ChassisSpec = CircleChassisSpec | BoxChassisSpec | PolygonChassisSpec
 
 export type WheelSpec = {
     name: WheelSlotName

@@ -4,10 +4,12 @@ import {
     BrushSpec,
     CircleShapeSpec,
     EntityShapeSpec,
+    PolygonShapeSpec,
     defaultBoxShape,
     defaultCircleShape,
     defaultColorBrush,
     defaultEntityShape,
+    defaultPolygonShape,
     defaultShapePhysics,
 } from "../specs"
 import { Bot } from "."
@@ -24,7 +26,7 @@ const chassisBrush: BrushSpec = {
 export class Chassis {
     public static makeShapeSpec(botSpec: BotSpec): EntityShapeSpec {
         const chassisSpec = botSpec.chassis
-        let chassisShape: CircleShapeSpec | BoxShapeSpec
+        let chassisShape: CircleShapeSpec | BoxShapeSpec | PolygonShapeSpec
         switch (chassisSpec.shape) {
             case "circle":
                 chassisShape = {
@@ -36,6 +38,12 @@ export class Chassis {
                 chassisShape = {
                     ...defaultBoxShape(),
                     size: chassisSpec.size,
+                }
+                break
+            case "polygon":
+                chassisShape = {
+                    ...defaultPolygonShape(),
+                    verts: chassisSpec.verts,
                 }
                 break
             default:
