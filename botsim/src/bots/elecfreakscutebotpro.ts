@@ -1,3 +1,4 @@
+import { convexHull } from "../sim/util"
 import { BotSpec, toWheels } from "./specs"
 
 const spec: BotSpec = {
@@ -12,7 +13,7 @@ const spec: BotSpec = {
         // The vertices below are an approximation of the hull shape, but this
         // is a concave polygon. The collidable geometry for this shape will be
         // a convex polygon wrapping these points.
-        verts: [
+        verts: convexHull([
             { x: 0.0, y: -6.5 },
             { x: 1.0, y: -6.4 },
             { x: 2.0, y: -6.3 },
@@ -57,7 +58,7 @@ const spec: BotSpec = {
             { x: -3.0, y: -6.1 },
             { x: -2.0, y: -6.3 },
             { x: -1.0, y: -6.4 },
-        ],
+        ]),
     },
     wheels: toWheels({
         separation: 7.4,
