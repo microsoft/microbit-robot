@@ -81,7 +81,16 @@ export type PolygonChassisSpec = {
     verts: Vec2Like[]
 }
 
-export type ChassisSpec = CircleChassisSpec | BoxChassisSpec | PolygonChassisSpec
+export type ChassisSpec = (
+    | CircleChassisSpec
+    | BoxChassisSpec
+    | PolygonChassisSpec
+) & {
+    /**
+     * Chassis texture (optional)
+     */
+    texture?: string
+}
 
 export type WheelSpec = {
     name: WheelSlotName

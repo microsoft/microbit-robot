@@ -306,6 +306,10 @@ export function rgbToString(rgb: Rgb): string {
     )
 }
 
+export function rgbToFloatArray(rgb: Rgb): number[] {
+    return [rgb.r / 255, rgb.g / 255, rgb.b / 255]
+}
+
 export function toRenderScale(n: number): number {
     return n * RENDER_SCALE
 }
@@ -441,4 +445,66 @@ export function convexHull(verts: Vec2Like[]): Vec2Like[] {
     } while (p != iLeftmost)
 
     return hull
+}
+
+/**
+ * Returns UV coordinates for the given vertices.
+ */
+export function calcUvs(verts: Vec2Like[]): Vec2Like[] {
+    const uvs: Vec2Like[] = []
+
+    const aabb = calcAabb(verts)
+    const w = aabb.max.x - aabb.min.x
+    const h = aabb.max.y - aabb.min.y
+
+    for (const v of verts) {
+        const uv = Vec2.like(
+            (v.x - aabb.min.x) / w,
+            (v.y - aabb.min.y) / h
+        )
+        uvs.push(uv)
+    }
+
+    return uvs
+}
+
+export type AABB = {
+    min: Vec2Like
+    max: Vec2Like
+}
+
+export function calcAabb(verts: Vec2Like[]): AABB {
+    const min = Vec2.like(Infinity, Infinity)
+    const max = Vec2.like(-Infinity, -Infinity)
+    for (const v of verts) {
+        min.x = Math.min(min.x, v.x)
+        min.y = Math.min(min.y, v.y)
+        max.x = Math.max(max.x, v.x)
+        max.y = Math.max(max.y, v.y)
+    }
+    return { min, max }
+}
+
+export function flattenVerts(verts: Vec2Like[]): number[] {
+    const flatVerts: number[] = []
+    for (const v of verts) {
+        flatVerts.push(v.x, v.y)
+    }
+    return flatVerts
+}
+
+export function unflattenVerts(flat: number[]): Vec2Like[] {
+    const verts: Vec2Like[] = []
+    for (let i = 0; i < flat.length; i += 2) {
+        verts.push(Vec2.like(flat[i], flat[i + 1]))
+    }
+    return verts
+}
+
+export function expandMesh(verts: Vec2Like[], indices: number[]): Vec2Like[] {
+    const expanded: Vec2Like[] = []
+    for (const i of indices) {
+        expanded.push(verts[i])
+    }
+    return expanded
 }

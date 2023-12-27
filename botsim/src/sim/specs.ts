@@ -213,9 +213,20 @@ export const defaultColorBrush = (): ColorBrushSpec => ({
 
 export type TextureBrushSpec = BrushCommonSpec & {
     type: "texture"
-    resource: string
-    // TODOL u, v, wrap, etc.
+    texture: string
+    color: string
+    alpha: number
+    // TODO: u, v, wrap, align, etc.
 }
+
+export const defaultTextureBrush = (): TextureBrushSpec => ({
+    type: "texture",
+    texture: "placeholder.png",
+    color: "#FFFFFF",
+    alpha: 1,
+    zIndex: 0,
+    visible: true,
+})
 
 export type PatternType = "lines" | "grid" | "hatch" | "blobs" | "maze"
 

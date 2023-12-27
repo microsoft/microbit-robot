@@ -5,6 +5,9 @@ import {
     toRenderScale,
     samplePath,
     catmullRom,
+    calcUvs,
+    flattenVerts,
+    expandMesh,
 } from "./util"
 import { Simulation } from "."
 import { Vec2, Vec2Like } from "../types/vec2"
@@ -28,6 +31,7 @@ import { toRadians } from "../util"
 import { MAP_ASPECT_RATIO, RENDER_SCALE } from "../constants"
 import { nextId } from "../util"
 import { GradientFactory } from "@pixi-essentials/gradients"
+import earcut from "earcut"
 
 /**
  * Renderer is responsible for rendering the simulation to a canvas element.
@@ -184,6 +188,31 @@ export class RenderObject {
         this._container.rotation = toRadians(angle)
     }
 }
+
+const pgm_textured_colored = Pixi.Program.from(
+    // Vertex shader
+    `
+    precision mediump float;
+    attribute vec2 aVerts;
+    attribute vec2 aUvs;
+    uniform mat3 translationMatrix;
+    uniform mat3 projectionMatrix;
+    varying vec2 vUvs;
+    void main() {
+        vUvs = aUvs;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVerts, 1.0)).xy, 0.0, 1.0);
+    }`,
+    // Fragment shader
+    `
+    precision mediump float;
+    varying vec2 vUvs;
+    uniform sampler2D uSampler2;
+    uniform vec3 uColor;
+    uniform float uAlpha;
+    void main() {
+        gl_FragColor = texture2D(uSampler2, vUvs) * vec4(uColor.rgb, uAlpha);
+    }`
+)
 
 // Factory functions for creating renderable objects
 export const createGraphics: {
@@ -462,8 +491,30 @@ function createTexturePolygonGraphics(
     shape: EntityPolygonShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
+    const verts = shape.verts.map((v) => Vec2.scale(v, RENDER_SCALE))
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const color = toColor(brush.color)
+    const alpha = brush.alpha
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+
+    // TODO: Cache and share shaders
+    const shader = new Pixi.Shader(pgm_textured_colored, {
+        // TODO: Cache textures in asset loader
+        uSampler2: Pixi.Texture.from(brush.texture),
+        uColor: color.toRgbArray(),
+        uAlpha: alpha
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
     g.visible = brush.visible
     return g as any
 }
