@@ -8,6 +8,7 @@ import {
     calcUvs,
     flattenVerts,
     expandMesh,
+    appoximateArc,
 } from "./util"
 import { Simulation } from "."
 import { Vec2, Vec2Like } from "../types/vec2"
@@ -345,8 +346,31 @@ function createTextureCircleGraphics(
     shape: EntityCircleShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
+    const radius = toRenderScale(shape.radius)
+    const verts = appoximateArc(Vec2.zero(), radius, 0, 360, 32)
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const color = toColor(brush.color)
+    const alpha = brush.alpha
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+
+    // TODO: Cache and share shaders
+    const shader = new Pixi.Shader(pgm_textured_colored, {
+        // TODO: Cache textures in asset loader
+        uSampler2: Pixi.Texture.from(brush.texture),
+        uColor: color.toRgbArray(),
+        uAlpha: alpha
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
     g.visible = brush.visible
     return g as any
 }
@@ -445,8 +469,30 @@ function createTextureBoxGraphics(
     shape: EntityBoxShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
+    const verts = boxToVertices(shape).map((v) => Vec2.scale(v, RENDER_SCALE))
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const color = toColor(brush.color)
+    const alpha = brush.alpha
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+
+    // TODO: Cache and share shaders
+    const shader = new Pixi.Shader(pgm_textured_colored, {
+        // TODO: Cache textures in asset loader
+        uSampler2: Pixi.Texture.from(brush.texture),
+        uColor: color.toRgbArray(),
+        uAlpha: alpha
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
     g.visible = brush.visible
     return g as any
 }

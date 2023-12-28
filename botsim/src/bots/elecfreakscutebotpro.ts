@@ -9,7 +9,7 @@ const spec: BotSpec = {
     silkColor: "#0000F0",
     chassis: {
         shape: "polygon",
-        texture: "sim/bots/elecfreakscutebotpro/chassis.png",
+        texture: "bots/elecfreakscutebotpro/chassis.png",
         // The vertices below are an approximation of the hull shape, but this
         // is a concave polygon. The collidable geometry for this shape will be
         // a convex polygon wrapping these points.

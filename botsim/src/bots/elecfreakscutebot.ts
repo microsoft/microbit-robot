@@ -7,6 +7,7 @@ const spec: BotSpec = {
     silkColor: "#0000F0",
     chassis: {
         shape: "circle",
+        texture: "bots/elecfreakscutebot/chassis.png",
         radius: 8.6 / 2, // cm
     },
     wheels: [
