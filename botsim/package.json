@@ -44,10 +44,13 @@
   },
   "devDependencies": {
     "@types/earcut": "^2.1.4",
+    "commander": "^11.1.0",
+    "get-pixels": "^3.3.3",
     "html-webpack-plugin": "^5.5.3",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "prettier": "^3.1.0",
     "react-app-alias-ex": "^2.1.0",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "simplify-js": "^1.2.4"
   }
 }

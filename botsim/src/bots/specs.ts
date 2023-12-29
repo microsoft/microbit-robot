@@ -33,7 +33,7 @@ export type BotSpec = {
      */
     weight?: number
     /**
-     * Robot PCB chassi color, default is black.
+     * Robot PCB chassis color, default is black.
      */
     silkColor?: string
     chassis: ChassisSpec
@@ -118,6 +118,12 @@ export type WheelSpec = {
      * unit: cm
      */
     radius: number
+
+    /**
+     * If true, the wheel will be rendered.
+     * default: true
+     */
+    visible?: boolean
 }
 
 export type LineSensorSpec = {
@@ -161,9 +167,11 @@ export type LEDSpec = {
     filter?: [number, number, number]
 }
 
-// Ballast is an invisible mass that can be added to the bot to change its
-// center of mass and movement characteristics. It can be used to simulate a
-// battery or other heavy component.
+/**
+ * Ballast is an invisible mass that can be added to the bot to change its
+ * center of mass and movement characteristics. It can be used to simulate a
+ * battery or other heavy component.
+ */
 export type BallastSpec = {
     /**
      * offset from chassis center
@@ -181,8 +189,9 @@ export function toWheels(spec: {
     diameter: number
     width: number
     y: number
+    visible?: boolean
 }): WheelSpec[] {
-    const { separation, diameter, width, y } = spec
+    const { separation, diameter, width, y, visible } = spec
     const radius = diameter / 2
     return [
         {
@@ -192,6 +201,7 @@ export function toWheels(spec: {
             width,
             radius,
             dashTime: 0.5,
+            visible
         },
         {
             name: "right",
@@ -200,6 +210,7 @@ export function toWheels(spec: {
             width,
             radius,
             dashTime: 0.5,
+            visible
         },
     ]
 }

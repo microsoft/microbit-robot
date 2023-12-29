@@ -24,22 +24,24 @@ export class Wheel {
     public static makeShapeSpecs(botSpec: BotSpec): EntityShapeSpec[] {
         const specs: EntityShapeSpec[] = []
         for (const wheelSpec of botSpec.wheels) {
-            specs.push(Wheel.makeShapeSpec(wheelSpec))
+            specs.push(Wheel.makeShapeSpec(botSpec, wheelSpec))
         }
         return specs
     }
 
-    public static makeShapeSpec(spec: WheelSpec): EntityShapeSpec {
+    public static makeShapeSpec(botSpec: BotSpec, wheelSpec: WheelSpec): EntityShapeSpec {
         return {
             ...defaultEntityShape(),
             ...defaultBoxShape(),
-            label: spec.name,
+            label: wheelSpec.name,
             roles: ["mouse-target", "robot"],
-            offset: spec.pos,
-            size: { x: spec.width, y: spec.radius * 2 },
+            offset: wheelSpec.pos,
+            size: { x: wheelSpec.width, y: wheelSpec.radius * 2 },
             brush: {
                 ...wheelBrush,
                 zIndex: 6,
+                //visible: wheelSpec.visible ?? !botSpec.chassis.texture,
+                visible: wheelSpec.visible ?? true,
             },
             physics: {
                 ...defaultShapePhysics(),
