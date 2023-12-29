@@ -44,7 +44,7 @@ export const create = (): MapSpec => ({
                     offset: { x: 0, y: 0 },
                     angle: 0,
                     roles: ["follow-line"],
-                    width: 4, // cm
+                    width: 3, // cm
                     stepSize: 0.1,
                     closed: true,
                     verts: [
