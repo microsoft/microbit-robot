@@ -7,8 +7,14 @@ const spec: BotSpec = {
     weight: 126,
     silkColor: "#000000",
     chassis: {
-        shape: "box",
-        size: { x: 8.1, y: 8.4 },
+        shape: "polygon",
+        texture: "bots/dfrobotmaqueen/chassis.png",
+        verts: [
+            { x: -4.05, y: -4.05 },
+            { x: 4.018359375, y: -4.05 },
+            { x: 4.018359375, y: 4.02 },
+            { x: -4.05, y: 4.02 },
+        ],
     },
     wheels: toWheels({
         separation: 6.2,

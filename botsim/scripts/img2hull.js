@@ -30,17 +30,6 @@ getPixels(imagePath, (err, pixels) => {
         process.exit(1)
     }
 
-    const hull = computeHull(pixels)
-
-    console.warn("Outputting hull...")
-    console.log(JSON.stringify(hull))
-
-
-    console.warn("Done.")
-})
-
-// Algorithm: https://www.sciencedirect.com/science/article/pii/S1077314203001401
-function computeHull(pixels) {
     console.warn("Computing hull...")
     const imgWidth = pixels.shape[0]
     const imgHalfWidth = imgWidth >> 1
@@ -66,9 +55,7 @@ function computeHull(pixels) {
         if (last < 0) last = imgWidth - 1
         markers.push([first, last])
     }
-
     // Convert markers to polygon vertices
-    console.warn("Converting markers to vertices...")
     const verts = []
     for (let y = 0; y < imgHeight; y++) {
         const [first, last] = markers[y]
@@ -78,25 +65,29 @@ function computeHull(pixels) {
         const [first, last] = markers[y]
         verts.push({ x: last, y })
     }
+    console.warn(`\t${verts.length} vertices`)
 
     // Get the convex hull
     console.warn("Computing convex hull...")
     const hull = convexHull(verts)
-    
+    console.warn(`\t${hull.length} vertices`)
+
     // Simplify the polygon
     console.warn("Simplifying hull...")
     const tolerance = 1
     const simplified = simplify(hull, tolerance, false)
+    console.warn(`\t${simplified.length} vertices`)
 
     // Scale the hull
     console.warn("Scaling hull...")
     const scaledHull = simplified.map(({ x, y }) => ({
-        x: scale * (x - imgHalfWidth) / imgWidth,
-        y: scale * (y - imgHalfHeight) / imgHeight,
+        x: (scale * (x - imgHalfWidth)) / imgWidth,
+        y: (scale * (y - imgHalfHeight)) / imgHeight,
     }))
+    console.log(JSON.stringify(scaledHull))
 
-    return scaledHull
-}
+    console.warn("Done.")
+})
 
 const Orientation = {
     Collinear: 0,
@@ -129,7 +120,7 @@ function convexHull(verts) {
         q = (p + 1) % n
         for (let i = 0; i < n; i++) {
             if (
-                orientation(verts[p], verts[i], verts[q]) ==
+                orientation(verts[p], verts[i], verts[q]) ===
                 Orientation.CounterClockwise
             ) {
                 q = i
