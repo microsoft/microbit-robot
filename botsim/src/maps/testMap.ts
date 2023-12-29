@@ -19,7 +19,7 @@ export const create = (): MapSpec => ({
     name,
     width: 90, // cm
     aspectRatio: MAP_ASPECT_RATIO,
-    color: "#ffffff",
+    color: "#E7E9E7",
     spawns: [
         {
             pos: { x: 20.5, y: 18 },
@@ -44,7 +44,7 @@ export const create = (): MapSpec => ({
                     offset: { x: 0, y: 0 },
                     angle: 0,
                     roles: ["follow-line"],
-                    width: 3, // cm
+                    width: 4, // cm
                     stepSize: 0.1,
                     closed: true,
                     verts: [
@@ -61,7 +61,7 @@ export const create = (): MapSpec => ({
                     ],
                     brush: {
                         ...defaultColorBrush(),
-                        fillColor: "#666666",
+                        fillColor: "#555555",
                         zIndex: -5,
                     },
                     physics: {

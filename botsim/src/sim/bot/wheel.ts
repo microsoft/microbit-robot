@@ -43,8 +43,8 @@ export class Wheel {
             },
             physics: {
                 ...defaultShapePhysics(),
-                friction: 0.3,
-                restitution: 0.9,
+                friction: 0.2,
+                restitution: 0.2,
                 density: 10,
             },
         }
@@ -121,7 +121,7 @@ export class Wheel {
         //if (dampenLateralVelocity)
         {
             const lateralDamping = 1 // The amount of lateral velocity dampening to apply
-            const lateralDampingScalar = 2 // hand-tuned
+            const lateralDampingScalar = 3 // hand-tuned
             const lateralVel =
                 this.bot.entity.physicsObj.getLateralVelocity(worldPos)
             this.bot.entity.physicsObj.applyForce(
