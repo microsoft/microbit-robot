@@ -23,10 +23,10 @@ const spec: BotSpec = {
         ],
     },
     wheels: toWheels({
-        separation: 8.7,
-        diameter: 4.2,
-        width: 1,
-        y: 1.4,
+        separation: 8.2,
+        diameter: 4.3,
+        width: 0.9,
+        y: 2.3,
     }),
     rangeSensor: {
         beamAngle: 25, // degrees
