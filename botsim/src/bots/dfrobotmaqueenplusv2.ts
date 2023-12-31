@@ -38,17 +38,17 @@ const spec: BotSpec = {
         {
             name: "left",
             // offset to center of sensor from chassis center
-            pos: { x: -0.9, y: -3.8 },
+            pos: { x: -0.9, y: -3.0 },
         },
         {
             name: "middle",
             // offset to center of sensor from chassis center
-            pos: { x: 0, y: -3.8 },
+            pos: { x: 0, y: -3.0 },
         },
         {
             name: "right",
             // offset to center of sensor from chassis center
-            pos: { x: 0.9, y: -3.8 },
+            pos: { x: 0.9, y: -3.0 },
         },
     ],
     leds: [
