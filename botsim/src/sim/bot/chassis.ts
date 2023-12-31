@@ -104,9 +104,9 @@ export class Chassis {
         this.cachedColor = color
         let rgb = numberToRgb(color)
         // Brighten the color a little bit
-        let hsl = rgbToHsl(rgb)
-        hsl.l = clamp(hsl.l * 1.2, 0, 255)
-        rgb = hslToRgb(hsl)
+        //let hsl = rgbToHsl(rgb)
+        //hsl.l = clamp(hsl.l * 1.2, 0, 255)
+        //rgb = hslToRgb(hsl)
         // This is the worst way possible to change the color. works for now. don't do this.
         const renderShape = this.bot.entity.renderObj.shapes.get("chassis")
         const newSpec = Chassis.makeShapeSpec(this.bot.spec)

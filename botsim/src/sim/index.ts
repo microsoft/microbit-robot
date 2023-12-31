@@ -185,6 +185,8 @@ export class Simulation {
 
         const spawnIndex = this.bots.size % this.spawns.length
         const spawn = this.spawns[spawnIndex]
+        if (!spawn) return
+
         const bot = new Bot(this, spawn, botSpec)
         this.bots.set(deviceId, bot)
         return bot

@@ -149,6 +149,7 @@ export function init() {
     window.addEventListener("message", (ev) => {
         if (ev.data?.source?.startsWith("react-devtools")) return
         if (ev.data?.type?.startsWith("webpack")) return
+        if (ev.data?.startsWith?.("webpack")) return
 
         try {
             switch (ev.data?.type) {
