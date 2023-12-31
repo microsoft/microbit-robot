@@ -51,17 +51,24 @@ getPixels(imagePath, (err, pixels) => {
                 last = x
             }
         }
-        if (first < 0) first = 0
-        if (last < 0) last = imgWidth - 1
+        if (first < 0 && last > 0) first = last
+        if (first > 0 && last < 0) last = first
+        if (first < 0 && last < 0) continue
         markers.push([first, last])
     }
+
+    if (!markers.length) {
+        console.error("No markers found")
+        process.exit(1)
+    }
+
     // Convert markers to polygon vertices
     const verts = []
-    for (let y = 0; y < imgHeight; y++) {
+    for (let y = 0; y < markers.length; y++) {
         const [first, last] = markers[y]
         verts.push({ x: first, y })
     }
-    for (let y = imgHeight - 1; y >= 0; y--) {
+    for (let y = markers.length - 1; y >= 0; y--) {
         const [first, last] = markers[y]
         verts.push({ x: last, y })
     }
@@ -71,12 +78,14 @@ getPixels(imagePath, (err, pixels) => {
     console.warn("Computing convex hull...")
     const hull = convexHull(verts)
     console.warn(`\t${hull.length} vertices`)
+    //console.warn(JSON.stringify(hull))
 
     // Simplify the polygon
     console.warn("Simplifying hull...")
-    const tolerance = 1
+    const tolerance = 5
     const simplified = simplify(hull, tolerance, false)
     console.warn(`\t${simplified.length} vertices`)
+    //console.warn(JSON.stringify(simplified))
 
     // Scale the hull
     console.warn("Scaling hull...")
