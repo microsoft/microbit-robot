@@ -30,7 +30,7 @@ export class Chassis {
         const chassisSpec = botSpec.chassis
         const chassisColorBrush: BrushSpec = {
             ...defaultColorBrush(),
-            fillColor: "#11B5E499",
+            fillColor: "#11B5E4" + "C0",
             borderColor: "#555555",
             zIndex: 5,
         }
@@ -38,7 +38,7 @@ export class Chassis {
             ...defaultTextureBrush(),
             texture: chassisSpec.texture!,
             color: "#FFFFFF",
-            alpha: 0.6,
+            alpha: 0.75,
             zIndex: 5,
         }
 
@@ -104,9 +104,9 @@ export class Chassis {
         this.cachedColor = color
         let rgb = numberToRgb(color)
         // Brighten the color a little bit
-        //let hsl = rgbToHsl(rgb)
-        //hsl.l = clamp(hsl.l * 1.2, 0, 255)
-        //rgb = hslToRgb(hsl)
+        let hsl = rgbToHsl(rgb)
+        hsl.l = clamp(hsl.l * 1.2, 0, 255)
+        rgb = hslToRgb(hsl)
         // This is the worst way possible to change the color. works for now. don't do this.
         const renderShape = this.bot.entity.renderObj.shapes.get("chassis")
         const newSpec = Chassis.makeShapeSpec(this.bot.spec)

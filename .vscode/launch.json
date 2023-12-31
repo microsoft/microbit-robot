@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "img2hull.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/botsim/scripts/img2hull.js",
+            "args": [
+                "-i",
+                "${workspaceFolder}/botsim/public/bots/elecfreakscutebot/chassis.png",
+                "-s",
+                "8.6",
+            ]
+        }
+    ]
+}
