@@ -276,14 +276,9 @@ namespace robot {
             // render left/right lines
             const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
-            const left = s[RobotLineDetector.Left] >= threshold
-            const right = s[RobotLineDetector.Right] >= threshold
-            const middle = s[RobotLineDetector.Middle] >= threshold
             for (let i = 0; i < 5; ++i) {
-                if (left || middle) led.plot(4, i)
+                if (s[RobotLineDetector.Left] >= threshold) led.plot(4, i)
                 else led.unplot(4, i)
-                if (right || middle) led.plot(0, i)
-                else led.unplot(0, i)
             }
         }
 
@@ -317,7 +312,7 @@ namespace robot {
                 this.lastSonarValue !== undefined
             ) {
                 const d = this.lastSonarValue
-                for (let y = 0; y < 5; y++)
+                for (let y = 0; y < 4; y++)
                     if (5 - y <= d) led.plot(2, y)
                     else led.unplot(2, y)
             }
