@@ -262,23 +262,6 @@ namespace robot {
             this.currentThrottle[0] = left
             this.currentThrottle[1] = right
             this.robot.motorRun(left, right)
-            if (this.showConfiguration || !(this.assists & RobotAssist.Display))
-                return
-            this.showSingleMotorState(3, left)
-            this.showSingleMotorState(1, right)
-        }
-
-        private showSingleMotorState(x: number, speed: number) {
-            if (Math.abs(speed) < 30) led.unplot(x, 2)
-            else led.plot(x, 2)
-            if (speed >= 30) led.plot(x, 1)
-            else led.unplot(x, 1)
-            if (speed >= 50) led.plot(x, 0)
-            else led.unplot(x, 0)
-            if (speed <= -30) led.plot(x, 3)
-            else led.unplot(x, 3)
-            if (speed <= -50) led.plot(x, 4)
-            else led.unplot(x, 4)
         }
 
         private updateLineState() {
