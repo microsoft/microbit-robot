@@ -1,3 +1,5 @@
+set -e
+
 makecode -f size
 makecode -c mkc-elecfreakscutebot.json -f size
 cp ./built/mbdal-binary.hex ./assets/elecfreaks-cutebot-for-microbit-v1.hex
