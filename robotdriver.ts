@@ -1,13 +1,14 @@
 namespace robot {
     const enum LineDetectorEvent {
-        LeftRight = (1 << RobotLineDetector.Left) | (1 << RobotLineDetector.Right),
+        LeftRight = (1 << RobotLineDetector.Left) |
+            (1 << RobotLineDetector.Right),
         LeftMiddleRight = (1 << RobotLineDetector.Left) |
             (1 << RobotLineDetector.Right) |
             (1 << RobotLineDetector.Middle),
-        OuterLeftLeftRightOuterRight = (1<<RobotLineDetector.OuterLeft) |
-            (1<<RobotLineDetector.Left) |
-            (1<<RobotLineDetector.Right) |
-            (1<<RobotLineDetector.OuterRight),
+        OuterLeftLeftRightOuterRight = (1 << RobotLineDetector.OuterLeft) |
+            (1 << RobotLineDetector.Left) |
+            (1 << RobotLineDetector.Right) |
+            (1 << RobotLineDetector.OuterRight),
     }
 
     function radioGroupFromDeviceSerialNumber() {
@@ -380,13 +381,20 @@ namespace robot {
 
         private computeLineState(): void {
             const state = this.readLineState()
-            this.lineResendCount = (this.lineResendCount + 1) % configuration.LINE_RESEND_RESET_COUNT
+            this.lineResendCount =
+                (this.lineResendCount + 1) %
+                configuration.LINE_RESEND_RESET_COUNT
             const resend = this.lineResendCount === 0
             const threshold = this.robot.lineHighThreshold
-            const changed = state.map(
-                (v, i) =>
-                    (v >= threshold) !== (this.currentLineState[i] >= threshold)
-            )
+            const changed: boolean[] = []
+            let someChanged = false
+            for (let i = 0; i < state.length; ++i) {
+                const v =
+                    state[i] >= threshold !==
+                    this.currentLineState[i] >= threshold
+                changed.push(v)
+                someChanged = someChanged || v
+            }
             const leftOrRight =
                 state[RobotLineDetector.Left] >= threshold ||
                 state[RobotLineDetector.Right] >= threshold
@@ -399,18 +407,16 @@ namespace robot {
                 let send = resend
                 for (let i = 0; i < 5; ++i) {
                     if (detectors & (1 << i)) {
-                        if (changed[i])
-                            send = true
+                        if (changed[i]) send = true
                         if (state[i] >= threshold) {
                             code |= 1 << i
                         }
                     }
                 }
-                if (send)
-                    messages.raiseEvent(event, code)
+                if (send) messages.raiseEvent(event, code)
             }
 
-            if (changed.some(v => v) || resend) {
+            if (someChanged || resend) {
                 this.currentLineState = state
                 if (leftOrRight) this.lineLostCounter = 0
 
