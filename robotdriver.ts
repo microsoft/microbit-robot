@@ -85,7 +85,7 @@ namespace robot {
         readonly id: string
 
         constructor(robot: robots.Robot) {
-            this.id = (Math.random() + "").slice(2)
+            this.id = Math.random() + ""
             this.robot = robot
         }
 
