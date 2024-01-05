@@ -29,14 +29,29 @@ export type LineSegmentLike = {
     p1: Vec2Like
 }
 
-export class LineSegment implements LineSegmentLike {
-    constructor(
-        public p0: Vec2Like,
-        public p1: Vec2Like
-    ) {}
+export type LineSegmentInfo = {
+    delta: Vec2Like
+    dir: Vec2Like
+    len: number
+}
 
-    public static from(p0: Vec2Like, p1: Vec2Like): LineSegment {
-        return new LineSegment(p0, p1)
+export type LineSegmentWithInfo = LineSegmentLike & LineSegmentInfo
+
+export class LineSegment implements LineSegmentLike {
+    public p0 = Vec2.zero()
+    public p1 = Vec2.zero()
+
+    public static like(p0: Vec2Like, p1: Vec2Like): LineSegmentLike {
+        return { p0, p1 }
+    }
+    public static withInfo(p0: Vec2Like, p1: Vec2Like): LineSegmentWithInfo {
+        const line = LineSegment.like(p0, p1)
+        const info = LineSegment.info(line)
+        return { ...line, ...info }
+    }
+    public static addInfo(l: LineSegmentLike): LineSegmentWithInfo {
+        const info = LineSegment.info(l)
+        return { ...l, ...info }
     }
 
     public static intersection(
@@ -44,6 +59,13 @@ export class LineSegment implements LineSegmentLike {
         l1: LineSegmentLike
     ): IntersectionResult {
         return intersection(l0.p0, l0.p1, l1.p0, l1.p1)
+    }
+
+    public static intersectionAll(
+        l: LineSegmentLike,
+        ls: LineSegmentLike[]
+    ): IntersectionResult[] {
+        return ls.map((l2) => LineSegment.intersection(l, l2))
     }
 
     public static angleBetween(
@@ -77,7 +99,7 @@ export class LineSegment implements LineSegmentLike {
     ): LineSegmentLike {
         const p0 = Vec2.transform(l.p0, p, angle)
         const p1 = Vec2.transform(l.p1, p, angle)
-        return new LineSegment(p0, p1)
+        return { p0, p1 }
     }
 
     public static transformDeg(
@@ -95,7 +117,7 @@ export class LineSegment implements LineSegmentLike {
     ): LineSegmentLike {
         const p0 = Vec2.untransform(l.p0, p, angle)
         const p1 = Vec2.untransform(l.p1, p, angle)
-        return new LineSegment(p0, p1)
+        return { p0, p1 }
     }
 
     public static untransformDeg(
@@ -109,7 +131,14 @@ export class LineSegment implements LineSegmentLike {
     public static scale(l: LineSegmentLike, scale: number): LineSegmentLike {
         const p0 = Vec2.scale(l.p0, scale)
         const p1 = Vec2.scale(l.p1, scale)
-        return new LineSegment(p0, p1)
+        return { p0, p1 }
+    }
+
+    public static info(l: LineSegmentLike): LineSegmentInfo {
+        const delta = Vec2.sub(l.p1, l.p0)
+        const len = Vec2.len(delta)
+        const dir = Vec2.scale(delta, 1 / len)
+        return { delta, dir, len }
     }
 }
 
