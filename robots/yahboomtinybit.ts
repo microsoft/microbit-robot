@@ -5,12 +5,11 @@ namespace robot {
     const RGB = 0x01
 
     function setPwmRGB(red: number, green: number, blue: number): void {
-        let buf = pins.createBuffer(4)
+        const buf = pins.createBuffer(4)
         buf[0] = RGB
         buf[1] = red
         buf[2] = green
         buf[3] = blue
-
         pins.i2cWriteBuffer(PWM_ADD, buf)
     }
 
@@ -37,34 +36,34 @@ namespace robot {
         ): void {
             if (mode < 0 || mode > 6) return
 
-            let buf = pins.createBuffer(5)
+            const buf = pins.createBuffer(5)
             buf[0] = MOTOR
             switch (mode) {
                 case 0:
-                    buf[1] = 0
-                    buf[2] = 0
-                    buf[3] = 0
-                    buf[4] = 0
+                    //buf[1] = 0
+                    //buf[2] = 0
+                    //buf[3] = 0
+                    //buf[4] = 0
                     break //stop
                 case 1:
                     buf[1] = speed1
-                    buf[2] = 0
+                    //buf[2] = 0
                     buf[3] = speed2
-                    buf[4] = 0
+                    //buf[4] = 0
                     this.car_flag_new = 0
                     break //run
                 case 2:
-                    buf[1] = 0
+                    //buf[1] = 0
                     buf[2] = speed1
-                    buf[3] = 0
+                    //buf[3] = 0
                     buf[4] = speed2
                     this.car_flag_new = 1
                     break //back
                 case 3:
-                    buf[1] = 0
-                    buf[2] = 0
+                    //buf[1] = 0
+                    //buf[2] = 0
                     buf[3] = speed2
-                    buf[4] = 0
+                    //buf[4] = 0
                     this.car_flag_new = 0
                     break //left
                 case 4:
@@ -83,20 +82,20 @@ namespace robot {
                     break //tleft
                 case 6:
                     buf[1] = speed1
-                    buf[2] = 0
-                    buf[3] = 0
+                    //buf[2] = 0
+                    //buf[3] = 0
                     buf[4] = speed2
                     this.car_flag_new = 3
                     break //tright
             }
             if (this.car_flag_new != this.car_flag_old) {
                 //上一次状态是正转，这次是反转
-                let bufff = pins.createBuffer(5)
+                const bufff = pins.createBuffer(5)
                 bufff[0] = MOTOR
-                bufff[1] = 0
-                bufff[2] = 0
-                bufff[3] = 0
-                bufff[4] = 0
+                //bufff[1] = 0
+                //bufff[2] = 0
+                //bufff[3] = 0
+                //bufff[4] = 0
                 pins.i2cWriteBuffer(PWM_ADD, buf) //停止100ms
                 basic.pause(100)
                 this.car_flag_old = this.car_flag_new

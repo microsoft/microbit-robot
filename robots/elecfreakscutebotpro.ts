@@ -28,7 +28,7 @@ namespace robot {
             i2cBuffer[2] = CutebotProWheel.LeftWheel
             i2cBuffer[3] = 0x01
             i2cBuffer[4] = speedL
-            i2cBuffer[5] = 0x00
+            //i2cBuffer[5] = 0x00
             i2cBuffer[6] = 0x88
         } else {
             i2cBuffer[0] = 0x99
@@ -36,7 +36,7 @@ namespace robot {
             i2cBuffer[2] = CutebotProWheel.LeftWheel
             i2cBuffer[3] = 0x00
             i2cBuffer[4] = -speedL
-            i2cBuffer[5] = 0x00
+            //i2cBuffer[5] = 0x00
             i2cBuffer[6] = 0x88
         }
         pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
@@ -47,7 +47,7 @@ namespace robot {
             i2cBuffer[2] = CutebotProWheel.RightWheel
             i2cBuffer[3] = 0x01
             i2cBuffer[4] = speedR
-            i2cBuffer[5] = 0x00
+            //i2cBuffer[5] = 0x00
             i2cBuffer[6] = 0x88
         } else {
             i2cBuffer[0] = 0x99
@@ -55,7 +55,7 @@ namespace robot {
             i2cBuffer[2] = CutebotProWheel.RightWheel
             i2cBuffer[3] = 0x00
             i2cBuffer[4] = -speedR
-            i2cBuffer[5] = 0x00
+            //i2cBuffer[5] = 0x00
             i2cBuffer[6] = 0x88
         }
         pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
@@ -117,10 +117,10 @@ namespace robot {
             const i2cBuffer = pins.createBuffer(7)
             i2cBuffer[0] = 0x99
             i2cBuffer[1] = 0x12
-            i2cBuffer[2] = 0x00
+            /*i2cBuffer[2] = 0x00
             i2cBuffer[3] = 0x00
             i2cBuffer[4] = 0x00
-            i2cBuffer[5] = 0x00
+            i2cBuffer[5] = 0x00*/
             i2cBuffer[6] = 0x88
             pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
             return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt8LE, false)

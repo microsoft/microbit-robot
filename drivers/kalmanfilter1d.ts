@@ -38,24 +38,24 @@ namespace robot.drivers {
          * @param  {Number} u control
          * @return {Number}
          */
-        filter(z: number, u = 0) {
+        filter(z: number/*, u: number*/) {
+            const A = this.A
+            const C = this.C
+            const Q = this.Q
             if (isNaN(this.x)) {
-                this.x = (1 / this.C) * z
-                this.cov = (1 / this.C) * this.Q * (1 / this.C)
+                this.x = (1 / C) * z
+                this.cov = (1 / C) * Q * (1 / C)
             } else {
                 // Compute prediction
-                const predX = this.A * this.x + this.B * u
-                const predCov = this.A * this.cov * this.A + this.R
+                const predX = A * this.x /*+ this.B * u*/
+                const predCov = A * this.cov * A + this.R
 
                 // Kalman gain
-                const K =
-                    predCov *
-                    this.C *
-                    (1 / (this.C * predCov * this.C + this.Q))
+                const K = predCov * C * (1 / (C * predCov * C + Q))
 
                 // Correction
-                this.x = predX + K * (z - this.C * predX)
-                this.cov = predCov - K * this.C * predCov
+                this.x = predX + K * (z - C * predX)
+                this.cov = predCov - K * C * predCov
             }
 
             return this.x

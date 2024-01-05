@@ -11,25 +11,23 @@ namespace robot {
             (1 << RobotLineDetector.OuterRight),
     }
 
-    function radioGroupFromDeviceSerialNumber() {
-        const sn = control.deviceLongSerialNumber()
-        return (
-            (sn.hash(configuration.MAX_DEFAULT_GROUPS) %
-                (configuration.MAX_DEFAULT_GROUPS - 1)) +
-            1
-        )
-    }
-
     //% shim=TD_NOOP
     function nativeSendNumber(msg: number) {
         radio.sendNumber(msg)
     }
 
-    function lerpChannel(c: number, tc: number) {
+    function lerpChannel(c: number, tc: number, shift: number) {
         const FACTOR = 0.8
-        return Math.abs(c - tc) < 16
-            ? tc
-            : Math.round(c * FACTOR + tc * (1 - FACTOR)) & 0xff
+        const cs = (c >> shift) & 0xff
+        const tcs = (tc >> shift) & 0xff
+        const r = Math.abs(cs- tcs) < 16
+            ? tcs
+            : Math.round(cs * FACTOR + tcs * (1 - FACTOR)) & 0xff
+        return r
+    }
+
+    function clampSpeed(speed: number) {
+        return Math.clamp(-100, 100, Math.round(speed))
     }
 
     /**
@@ -119,9 +117,7 @@ namespace robot {
 
             this.currentThrottle = [0, 0]
             // configuration of common hardware
-            this.radioGroup =
-                configuration.readCalibration(0) ||
-                radioGroupFromDeviceSerialNumber()
+            this.radioGroup = configuration.readCalibration(0) || 1
             this.runDrift = configuration.readCalibration(1)
             this.lineLostCounter = this.robot.lineLostThreshold + 1
 
@@ -167,17 +163,10 @@ namespace robot {
         private updateColor() {
             if (this.targetColor === this.currentColor) return
 
-            let red = (this.currentColor >> 16) & 0xff
-            let green = (this.currentColor >> 8) & 0xff
-            let blue = (this.currentColor >> 0) & 0xff
 
-            const tred = (this.targetColor >> 16) & 0xff
-            const tgreen = (this.targetColor >> 8) & 0xff
-            const tblue = (this.targetColor >> 0) & 0xff
-
-            red = lerpChannel(red, tred)
-            green = lerpChannel(green, tgreen)
-            blue = lerpChannel(blue, tblue)
+            const red = lerpChannel(this.currentColor, this.targetColor, 16)
+            const green = lerpChannel(this.currentColor, this.targetColor, 8)
+            const blue = lerpChannel(this.currentColor, this.targetColor, 0)
 
             this.currentColor = (red << 16) | (green << 8) | blue
             this.robot.headlightsSetColor(red, green, blue)
@@ -185,48 +174,49 @@ namespace robot {
         }
 
         private updateSpeed() {
+            const robot = this.robot
             // smooth update of speed
             {
                 const accelerating =
                     this.targetSpeed > 0 && this.currentSpeed < this.targetSpeed
                 const alpha = accelerating
-                    ? this.robot.speedTransitionAlpha
-                    : this.robot.speedBrakeTransitionAlpha
+                    ? robot.speedTransitionAlpha
+                    : robot.speedBrakeTransitionAlpha
                 this.currentSpeed =
                     this.currentSpeed * alpha + this.targetSpeed * (1 - alpha)
 
                 // apply line assist
                 if (
                     this.assists & RobotAssist.LineFollowing &&
-                    this.lineLostCounter < this.robot.lineLostThreshold
+                    this.lineLostCounter < robot.lineLostThreshold
                 ) {
                     // recently lost line
                     this.currentSpeed = Math.min(
                         this.currentSpeed,
-                        this.robot.maxLineSpeed
+                        robot.maxLineSpeed
                     )
                 }
                 // accelerate convergence to target speed
                 if (
                     Math.abs(this.currentSpeed - this.targetSpeed) <
-                    this.robot.targetSpeedThreshold
+                    robot.targetSpeedThreshold
                 )
                     this.currentSpeed = this.targetSpeed
             }
             // smoth update of turn ratio
             {
-                const alpha = this.robot.turnRatioTransitionAlpha
+                const alpha = robot.turnRatioTransitionAlpha
                 this.currentTurnRatio =
                     this.currentTurnRatio * alpha +
                     this.targetTurnRatio * (1 - alpha)
                 if (
                     Math.abs(this.currentTurnRatio - this.targetTurnRatio) <
-                    this.robot.targetTurnRatioThreshold
+                    robot.targetTurnRatioThreshold
                 )
                     this.currentTurnRatio = this.targetTurnRatio
             }
 
-            if (Math.abs(this.currentSpeed) < this.robot.stopThreshold)
+            if (Math.abs(this.currentSpeed) < robot.stopThreshold)
                 this.setMotorState(0, 0)
             else {
                 let s = this.currentSpeed
@@ -253,8 +243,8 @@ namespace robot {
                 right += drift
 
                 // clamp again
-                left = Math.clamp(-100, 100, Math.round(left))
-                right = Math.clamp(-100, 100, Math.round(right))
+                left = clampSpeed(left)
+                right = clampSpeed(right)
                 this.setMotorState(left, right)
             }
         }
@@ -340,17 +330,12 @@ namespace robot {
             turnRatio = Math.clamp(-200, 200, Math.round(turnRatio))
             speed = Math.clamp(-100, 100, Math.round(speed))
 
-            if (
-                this.targetSpeed !== speed ||
-                this.targetTurnRatio !== turnRatio
-            ) {
-                this.targetSpeed = speed
-                this.targetTurnRatio = turnRatio
+            this.targetSpeed = speed
+            this.targetTurnRatio = turnRatio
 
-                if (!(this.assists & RobotAssist.Speed)) {
-                    this.currentSpeed = this.targetSpeed
-                    this.currentTurnRatio = this.targetTurnRatio
-                }
+            if (!(this.assists & RobotAssist.Speed)) {
+                this.currentSpeed = this.targetSpeed
+                this.currentTurnRatio = this.targetTurnRatio
             }
         }
 
@@ -359,8 +344,7 @@ namespace robot {
                 return this.robot.sonar.distance(
                     configuration.MAX_SONAR_DISTANCE
                 )
-            else
-                return this.robot.ultrasonicDistance(
+            return this.robot.ultrasonicDistance(
                     configuration.MAX_SONAR_DISTANCE
                 )
         }

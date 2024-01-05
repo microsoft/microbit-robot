@@ -71,7 +71,7 @@ namespace robot {
 
             if (current.length === prev.length && current.every((v,i) => prev[i] === v))
                 return; // unchanged
-
+            
             // TODO refactor this out
             // left, right, middle
             let msg: robots.RobotCompactCommand =
