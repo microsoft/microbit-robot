@@ -13,8 +13,7 @@ namespace robot {
         pins.i2cWriteBuffer(PCA_9624, buf)
         basic.pause(200)
 
-        pins.i2cWriteNumber(PCA_9624, 0x0, NumberFormat.UInt8BE)
-        let val = pins.i2cReadNumber(PCA_9624, NumberFormat.UInt8BE)
+        const val = robots.i2cReadRegU8(PCA_9624, 0x0)
 
         buf = pins.createBuffer(3)
         buf[0] = 0x0c | 0x80

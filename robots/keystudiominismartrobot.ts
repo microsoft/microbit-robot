@@ -19,9 +19,7 @@ namespace robot {
     const ECHO_PIN = DigitalPin.P15
 
     function i2cRead(reg: number) {
-        pins.i2cWriteNumber(PCA9685_ADDRESS, reg, NumberFormat.UInt8BE)
-        let val = pins.i2cReadNumber(PCA9685_ADDRESS, NumberFormat.UInt8BE)
-        return val
+        return robots.i2cReadRegU8(PCA9685_ADDRESS, reg)
     }
 
     function i2cWrite(reg: number, value: number) {

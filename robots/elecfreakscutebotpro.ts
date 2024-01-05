@@ -123,7 +123,7 @@ namespace robot {
             i2cBuffer[5] = 0x00*/
             i2cBuffer[6] = 0x88
             pins.i2cWriteBuffer(i2cAddr, i2cBuffer)
-            return pins.i2cReadNumber(i2cAddr, NumberFormat.UInt8LE, false)
+            return robots.i2cReadU8(i2cAddr)
         }
     }
 

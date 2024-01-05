@@ -28,7 +28,7 @@ namespace robot {
     const STP_CHD_L = 3071
     const STP_CHD_H = 1023
 
-    enum Servos {
+    const enum Servos {
         S1 = 0x01,
         S2 = 0x02,
         S3 = 0x03,
@@ -39,7 +39,7 @@ namespace robot {
         S8 = 0x08,
     }
 
-    enum Motors {
+    const enum Motors {
         M1A = 0x1,
         M1B = 0x2,
         M2A = 0x3,
@@ -47,27 +47,23 @@ namespace robot {
     }
 
     function i2cwrite(addr: number, reg: number, value: number) {
-        let buf = pins.createBuffer(2)
+        const buf = pins.createBuffer(2)
         buf[0] = reg
         buf[1] = value
         pins.i2cWriteBuffer(addr, buf)
     }
 
-    function i2ccmd(addr: number, value: number) {
-        let buf = pins.createBuffer(1)
-        buf[0] = value
-        pins.i2cWriteBuffer(addr, buf)
-    }
-
     function i2cread(addr: number, reg: number) {
-        pins.i2cWriteNumber(addr, reg, NumberFormat.UInt8BE)
-        let val = pins.i2cReadNumber(addr, NumberFormat.UInt8BE)
-        return val
+        const req = pins.createBuffer(1)
+        req[0] = reg
+        pins.i2cWriteBuffer(addr, req)
+        const resp = pins.i2cReadBuffer(addr, 1)
+        return resp[0]
     }
 
     function setFreq(): void {
-        let oldmode = i2cread(PCA9685_ADDRESS, MODE1)
-        let newmode = (oldmode & 0x7f) | 0x10 // sleep
+        const oldmode = i2cread(PCA9685_ADDRESS, MODE1)
+        const newmode = (oldmode & 0x7f) | 0x10 // sleep
         i2cwrite(PCA9685_ADDRESS, MODE1, newmode) // go to sleep
         i2cwrite(PCA9685_ADDRESS, PRESCALE, 121) // set the prescaler
         i2cwrite(PCA9685_ADDRESS, MODE1, oldmode)
@@ -86,7 +82,7 @@ namespace robot {
     function setPwm(channel: number, on: number, off: number): void {
         if (channel < 0 || channel > 15) return
 
-        let buf = pins.createBuffer(5)
+        const buf = pins.createBuffer(5)
         buf[0] = LED0_ON_L + 4 * channel
         buf[1] = on & 0xff
         buf[2] = (on >> 8) & 0xff
@@ -110,21 +106,21 @@ namespace robot {
         }
     }
 
-    function Servo(index: Servos, degree: number): void {
+    function setServoAngle(index: Servos, degree: number): void {
         // 50hz: 20,000 us
-        let v_us = (degree * 1800) / 180 + 600 // 0.6 ~ 2.4
-        let value = (v_us * 4096) / 20000
+        const v_us = (degree * 1800) / 180 + 600 // 0.6 ~ 2.4
+        const value = (v_us * 4096) / 20000
         setPwm(index + 7, 0, value)
     }
 
     class PwmArm implements drivers.Arm {
         constructor(public readonly servo: Servos) {}
-        start() { }
+        start() {}
         open(aperture: number) {
             if (aperture > 50) {
-                Servo(this.servo, 0)
+                setServoAngle(this.servo, 0)
             } else {
-                Servo(this.servo, 90)
+                setServoAngle(this.servo, 90)
             }
         }
     }

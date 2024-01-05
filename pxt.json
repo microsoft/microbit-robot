@@ -9,6 +9,7 @@
     "files": [
         "README.md",
         "protocol/protocol.ts",
+        "i2c.ts",
         "microbit.ts",
         "messages.ts",
         "blocks.ts",
