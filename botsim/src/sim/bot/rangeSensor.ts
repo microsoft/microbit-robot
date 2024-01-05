@@ -334,8 +334,8 @@ export class RangeSensor {
 
         // Find the nearest detected point
         detectedVerts.sort((a, b) => {
-            const aLen = Vec2.len(Vec2.sub(a, sensorPos))
-            const bLen = Vec2.len(Vec2.sub(b, sensorPos))
+            const aLen = Vec2.lenSq(Vec2.sub(a, sensorPos))
+            const bLen = Vec2.lenSq(Vec2.sub(b, sensorPos))
             return aLen - bLen
         })
         const nearest = detectedVerts.shift()
