@@ -27,7 +27,7 @@ namespace robot {
     }
 
     function clampSpeed(speed: number, m: number = 100) {
-        return Math.clamp(-100, 100, Math.round(speed))
+        return Math.clamp(-m, m, Math.round(speed))
     }
 
     function near(v0: number, v1: number, threshold: number) {
