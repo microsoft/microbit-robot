@@ -292,7 +292,7 @@ namespace robot {
             const s = this.currentLineState
             for (let i = 0; i < 5; ++i) {
                 if (s[RobotLineDetector.Left] >= threshold) led.plot(4, i)
-                else led.unplot(4, i)
+                else led.unplot(i, 4)
             }
         }
 
