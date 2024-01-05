@@ -1,5 +1,6 @@
 import { BoxShapeSpec, HorizontalAlignment, VerticalAlignment } from "./specs"
 import { Vec2, Vec2Like } from "../types/vec2"
+import { LineSegment } from "../types/line"
 import { RENDER_SCALE } from "../constants"
 import * as Pixi from "pixi.js"
 import Planck from "planck-js"
@@ -458,10 +459,7 @@ export function calcUvs(verts: Vec2Like[]): Vec2Like[] {
     const h = aabb.max.y - aabb.min.y
 
     for (const v of verts) {
-        const uv = Vec2.like(
-            (v.x - aabb.min.x) / w,
-            (v.y - aabb.min.y) / h
-        )
+        const uv = Vec2.like((v.x - aabb.min.x) / w, (v.y - aabb.min.y) / h)
         uvs.push(uv)
     }
 
@@ -507,4 +505,55 @@ export function expandMesh(verts: Vec2Like[], indices: number[]): Vec2Like[] {
         expanded.push(verts[i])
     }
     return expanded
+}
+
+// Based on https://wrfranklin.org/Research/Short_Notes/pnpoly.html
+export function pointInPolygon(p: Vec2Like, verts: Vec2Like[]): boolean {
+    const n = verts.length
+    let inside = false
+    for (let i = 0, j = n - 1; i < n; j = i++) {
+        const vi = verts[i]
+        const vj = verts[j]
+        if (
+            vi.y > p.y !== vj.y > p.y &&
+            p.x < ((vj.x - vi.x) * (p.y - vi.y)) / (vj.y - vi.y) + vi.x
+        ) {
+            inside = !inside
+        }
+    }
+    return inside
+}
+
+export function lineIntersectsPolygon(
+    p0: Vec2Like,
+    p1: Vec2Like,
+    verts: Vec2Like[]
+): boolean {
+    const n = verts.length
+    for (let i = 0, j = n - 1; i < n; j = i++) {
+        const vi = verts[i]
+        const vj = verts[j]
+        if (LineSegment.intersection({ p0, p1 }, { p0: vi, p1: vj })) {
+            return true
+        }
+    }
+    return false
+}
+
+export function linePolygonIntersections(
+    p0: Vec2Like,
+    p1: Vec2Like,
+    verts: Vec2Like[]
+): Vec2Like[] {
+    const isects: Vec2Like[] = []
+    const n = verts.length
+    for (let i = 0, j = n - 1; i < n; j = i++) {
+        const vi = verts[i]
+        const vj = verts[j]
+        const isect = LineSegment.intersection({ p0, p1 }, { p0: vi, p1: vj })
+        if (isect.type === "point") {
+            isects.push(isect.p)
+        }
+    }
+    return isects
 }
