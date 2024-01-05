@@ -20,14 +20,18 @@ namespace robot {
         const FACTOR = 0.8
         const cs = (c >> shift) & 0xff
         const tcs = (tc >> shift) & 0xff
-        const r = Math.abs(cs- tcs) < 16
+        const r = near(cs, tcs, 16)
             ? tcs
             : Math.round(cs * FACTOR + tcs * (1 - FACTOR)) & 0xff
         return r
     }
 
-    function clampSpeed(speed: number) {
+    function clampSpeed(speed: number, m: number = 100) {
         return Math.clamp(-100, 100, Math.round(speed))
+    }
+
+    function near(v0: number, v1: number, threshold: number) {
+        return Math.abs(v0 - v1) < threshold
     }
 
     /**
@@ -163,7 +167,6 @@ namespace robot {
         private updateColor() {
             if (this.targetColor === this.currentColor) return
 
-
             const red = lerpChannel(this.currentColor, this.targetColor, 16)
             const green = lerpChannel(this.currentColor, this.targetColor, 8)
             const blue = lerpChannel(this.currentColor, this.targetColor, 0)
@@ -175,15 +178,18 @@ namespace robot {
 
         private updateSpeed() {
             const robot = this.robot
+            const targetSpeed = this.targetSpeed
+            const targetTurnRatio = this.targetTurnRatio
+
             // smooth update of speed
             {
                 const accelerating =
-                    this.targetSpeed > 0 && this.currentSpeed < this.targetSpeed
+                    targetSpeed > 0 && this.currentSpeed < targetSpeed
                 const alpha = accelerating
                     ? robot.speedTransitionAlpha
                     : robot.speedBrakeTransitionAlpha
                 this.currentSpeed =
-                    this.currentSpeed * alpha + this.targetSpeed * (1 - alpha)
+                    this.currentSpeed * alpha + targetSpeed * (1 - alpha)
 
                 // apply line assist
                 if (
@@ -198,44 +204,51 @@ namespace robot {
                 }
                 // accelerate convergence to target speed
                 if (
-                    Math.abs(this.currentSpeed - this.targetSpeed) <
-                    robot.targetSpeedThreshold
+                    near(
+                        this.currentSpeed,
+                        targetSpeed,
+                        robot.targetSpeedThreshold
+                    )
                 )
-                    this.currentSpeed = this.targetSpeed
+                    this.currentSpeed = targetSpeed
             }
             // smoth update of turn ratio
             {
                 const alpha = robot.turnRatioTransitionAlpha
                 this.currentTurnRatio =
                     this.currentTurnRatio * alpha +
-                    this.targetTurnRatio * (1 - alpha)
+                    targetTurnRatio * (1 - alpha)
                 if (
-                    Math.abs(this.currentTurnRatio - this.targetTurnRatio) <
-                    robot.targetTurnRatioThreshold
+                    near(
+                        this.currentTurnRatio,
+                        targetTurnRatio,
+                        robot.targetTurnRatioThreshold
+                    )
                 )
-                    this.currentTurnRatio = this.targetTurnRatio
+                    this.currentTurnRatio = targetTurnRatio
             }
 
-            if (Math.abs(this.currentSpeed) < robot.stopThreshold)
+            const currentSpeed = this.currentSpeed
+            const currentTurnRatio = this.currentTurnRatio
+            if (near(currentSpeed, 0, robot.stopThreshold))
                 this.setMotorState(0, 0)
             else {
-                let s = this.currentSpeed
-                const ns = Math.abs(s)
+                const ns = Math.abs(currentSpeed)
 
                 let left = 0
                 let right = 0
                 // apply turn ratio
-                if (this.currentTurnRatio < 0) {
-                    right += s
-                    left += s * (1 + this.currentTurnRatio / 100)
+                if (currentTurnRatio < 0) {
+                    right += currentSpeed
+                    left += currentSpeed * (1 + currentTurnRatio / 100)
                 } else {
-                    left += s
-                    right += s * (1 - this.currentTurnRatio / 100)
+                    left += currentSpeed
+                    right += currentSpeed * (1 - currentTurnRatio / 100)
                 }
 
                 // clamp
-                left = Math.clamp(-ns, ns, Math.round(left))
-                right = Math.clamp(-ns, ns, Math.round(right))
+                left = clampSpeed(left, ns)
+                right = clampSpeed(ns, right)
 
                 // apply drift
                 const drift = this.runDrift / 2
@@ -345,8 +358,8 @@ namespace robot {
                     configuration.MAX_SONAR_DISTANCE
                 )
             return this.robot.ultrasonicDistance(
-                    configuration.MAX_SONAR_DISTANCE
-                )
+                configuration.MAX_SONAR_DISTANCE
+            )
         }
 
         private readUltrasonicDistance() {

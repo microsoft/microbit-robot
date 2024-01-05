@@ -103,46 +103,18 @@ namespace robot {
             pins.i2cWriteBuffer(PWM_ADD, buf)
         }
 
-        private Car_run(speed1: number, speed2: number) {
-            this.setPwmMotor(1, speed1, speed2)
-        }
-
-        private Car_back(speed1: number, speed2: number) {
-            this.setPwmMotor(2, speed1, speed2)
-        }
-
-        private Car_left(speed1: number, speed2: number) {
-            this.setPwmMotor(3, speed1, speed2)
-        }
-
-        private Car_right(speed1: number, speed2: number) {
-            this.setPwmMotor(4, speed1, speed2)
-        }
-
-        private Car_stop() {
-            this.setPwmMotor(0, 0, 0)
-        }
-
-        private Car_spinleft(speed1: number, speed2: number) {
-            this.setPwmMotor(5, speed1, speed2)
-        }
-
-        private Car_spinright(speed1: number, speed2: number) {
-            this.setPwmMotor(6, speed1, speed2)
-        }
-
         motorRun(left: number, right: number): void {
             const speed = (left + right) >> 1
             const spin = Math.sign(left) != Math.sign(right)
-            if (left === 0 && right === 0) this.Car_stop()
-            else if (left >= 0 && right >= 0) this.Car_run(left, right)
-            else if (left <= 0 && right <= 0) this.Car_back(-left, -right)
+            if (left === 0 && right === 0) this.setPwmMotor(0, 0, 0)
+            else if (left >= 0 && right >= 0) this.setPwmMotor(1, left, right)
+            else if (left <= 0 && right <= 0) this.setPwmMotor(2, -left, -right)
             else if (right > left) {
-                if (spin) this.Car_spinleft(Math.abs(left), right)
-                else this.Car_left(Math.abs(left), right)
+                if (spin) this.setPwmMotor(5, Math.abs(left), right)
+                else this.setPwmMotor(3, Math.abs(left), right)
             } else {
-                if (spin) this.Car_spinright(left, Math.abs(right))
-                else this.Car_right(left, Math.abs(right))
+                if (spin) this.setPwmMotor(6, left, Math.abs(right))
+                else this.setPwmMotor(4, left, Math.abs(right))
             }
         }
 
