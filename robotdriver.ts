@@ -123,17 +123,22 @@ namespace robot {
             // configuration of common hardware
             this.radioGroup = configuration.readCalibration(0) || 1
             this.runDrift = configuration.readCalibration(1)
-            this.lineLostCounter = this.robot.lineLostThreshold + 1
 
             robots.registerSim()
 
-            this.robot.start()
-            if (this.robot.leds) this.robot.leds.start()
-            if (this.robot.lineDetectors) this.robot.lineDetectors.start()
-            if (this.robot.sonar) this.robot.sonar.start()
-            if (this.robot.arms) {
-                for (let i = 0; i < this.robot.arms.length; ++i)
-                    this.robot.arms[i].start()
+            const robot = this.robot
+            this.lineLostCounter = robot.lineLostThreshold + 1
+            robot.start()
+            const leds = robot.leds
+            const lineDetectors = robot.lineDetectors
+            const sonar = robot.sonar
+            const arms = robot.arms
+
+            if (leds) leds.start()
+            if (lineDetectors) lineDetectors.start()
+            if (sonar) sonar.start()
+            if (arms) {
+                for (let i = 0; i < arms.length; ++i) arms[i].start()
             }
 
             // stop motors
@@ -165,15 +170,19 @@ namespace robot {
         }
 
         private updateColor() {
-            if (this.targetColor === this.currentColor) return
+            const targetColor = this.targetColor
+            const currentColor = this.currentColor
+            if (targetColor === currentColor) return
 
-            const red = lerpChannel(this.currentColor, this.targetColor, 16)
-            const green = lerpChannel(this.currentColor, this.targetColor, 8)
-            const blue = lerpChannel(this.currentColor, this.targetColor, 0)
+            const red = lerpChannel(currentColor, targetColor, 16)
+            const green = lerpChannel(currentColor, targetColor, 8)
+            const blue = lerpChannel(currentColor, targetColor, 0)
 
             this.currentColor = (red << 16) | (green << 8) | blue
+
             this.robot.headlightsSetColor(red, green, blue)
-            if (this.robot.leds) this.robot.leds.setColor(red, green, blue)
+            const leds = this.robot.leds
+            if (leds) leds.setColor(red, green, blue)
         }
 
         private updateSpeed() {
@@ -263,8 +272,9 @@ namespace robot {
         }
 
         private setMotorState(left: number, right: number) {
-            this.currentThrottle[0] = left
-            this.currentThrottle[1] = right
+            const t = this.currentThrottle
+            t[0] = left
+            t[1] = right
             this.robot.motorRun(left, right)
         }
 
@@ -340,8 +350,8 @@ namespace robot {
 
         motorRun(turnRatio: number, speed: number) {
             this.start()
-            turnRatio = Math.clamp(-200, 200, Math.round(turnRatio))
-            speed = Math.clamp(-100, 100, Math.round(speed))
+            turnRatio = clampSpeed(turnRatio, 200)
+            speed = clampSpeed(speed, 100)
 
             this.targetSpeed = speed
             this.targetTurnRatio = turnRatio
@@ -353,20 +363,18 @@ namespace robot {
         }
 
         private ultrasonicDistanceOnce() {
-            if (this.robot.sonar)
-                return this.robot.sonar.distance(
-                    configuration.MAX_SONAR_DISTANCE
-                )
-            return this.robot.ultrasonicDistance(
-                configuration.MAX_SONAR_DISTANCE
-            )
+            const robot = this.robot
+            const sonar = robot.sonar
+            if (sonar) return sonar.distance(configuration.MAX_SONAR_DISTANCE)
+            return robot.ultrasonicDistance(configuration.MAX_SONAR_DISTANCE)
         }
 
         private readUltrasonicDistance() {
             const dist = this.ultrasonicDistanceOnce()
+            const filter = this.sonarDistanceFilter
             if (!isNaN(dist) && dist > this.robot.sonarMinReading)
-                this.sonarDistanceFilter.filter(dist)
-            const filtered = this.sonarDistanceFilter.x
+                filter.filter(dist)
+            const filtered = filter.x
             return filtered
         }
 
