@@ -2,7 +2,7 @@
 
 This extension contains **blocks for most 2 wheeled robots available for the micro:bit**
 and **a web simulator**.
-This library is compatible with micro:bit V1 and V2.
+This library is compatible with micro:bit V2 and V1. However, the code space in V1 is limited and you may need to remove some features to fit your program.
 
 > The library is still in beta and is subject to changes.
 
@@ -48,7 +48,7 @@ The following features are found often those robots:
 
 ## Simulator
 
-The simulator will load automatically in MakeCode once you use a robot block. 
+The simulator will load automatically in MakeCode once you use a robot block.
 It is designed to help programming this kind of robot.
 
 -   The simulator supports the line sensors and obstacle detectors.
@@ -56,7 +56,7 @@ It is designed to help programming this kind of robot.
 -   If you use radio, you will see a single simulator with multiple robots.
 -   On a small screen, click on the **full screen icon** to show the simulator.
 -   Remember that the simulation is not perfect. It does not capture all the subtle imperfections of the physical robot
-(motor wear, battery level, weight distribution, ground friction, ...).
+    (motor wear, battery level, weight distribution, ground friction, ...).
 
 ## Blocks
 
@@ -91,7 +91,7 @@ input.onButtonPressed(Button.A, () => {
 })
 ```
 
-The move block takes a `steering` and  `speed`parameters.
+The move block takes a `steering` and `speed`parameters.
 The`steering`controls how much "turn",`speed` controls the throttle on the motors.
 
 -   stop the robot
@@ -129,7 +129,7 @@ input.onButtonPressed(Button.A, function () {
 ### Input
 
 -   detect when an obstacle is changing
-and read the current distance (in cm)
+    and read the current distance (in cm)
 
 ```blocks
 let dist = 0
