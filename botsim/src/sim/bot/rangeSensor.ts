@@ -28,7 +28,9 @@ const SENSOR_HALF_WIDTH = SENSOR_WIDTH / 2
 const beamPositiveColor = "#68aed420"
 const beamNegativeColor = "#68aed420"
 //const targetColor = "#212738"
-const targetColor = "#1c4a62"
+//const targetColor = "#1c4a62"
+const targetColor = "#FF5733"
+//const targetColor = "#33FF00"
 
 const positiveBrush: BrushSpec = {
     ...defaultColorBrush(),
@@ -64,10 +66,12 @@ export class RangeSensor {
     targetSpec!: EntityShapeSpec
     _value: number
     used: boolean = false
-    pLeftNear!: Vec2Like
-    pRightNear!: Vec2Like
-    pLeftFar!: Vec2Like
-    pRightFar!: Vec2Like
+    //pLeftNear!: Vec2Like
+    //pRightNear!: Vec2Like
+    //pLeftFar!: Vec2Like
+    //pRightFar!: Vec2Like
+    sensorVerts!: Vec2Like[]
+    sensorEdges!: LineSegment[]
 
     public get shapeSpecs() {
         return [this.coneSpec, this.visualSpec, this.targetSpec]
@@ -80,22 +84,35 @@ export class RangeSensor {
     }
 
     private constructShapeSpecs() {
-        this.pLeftNear = Vec2.like(-SENSOR_HALF_WIDTH, 0)
-        this.pRightNear = Vec2.like(SENSOR_HALF_WIDTH, 0)
-        this.pLeftFar = Vec2.rotateDeg(
-            Vec2.add(this.pLeftNear, Vec2.like(0, -this.spec.maxRange)),
+        const pLeftNear = Vec2.like(-SENSOR_HALF_WIDTH, 0)
+        const pRightNear = Vec2.like(SENSOR_HALF_WIDTH, 0)
+        const pLeftFar = Vec2.rotateDeg(
+            Vec2.add(pLeftNear, Vec2.like(0, -this.spec.maxRange)),
             -this.spec.beamAngle / 2
         )
-        this.pRightFar = Vec2.rotateDeg(
-            Vec2.add(this.pRightNear, Vec2.like(0, -this.spec.maxRange)),
+        const pRightFar = Vec2.rotateDeg(
+            Vec2.add(pRightNear, Vec2.like(0, -this.spec.maxRange)),
             this.spec.beamAngle / 2
         )
-        const coneVerts = [
-            this.pLeftNear,
-            this.pRightNear,
-            this.pRightFar,
-            this.pLeftFar,
+        const arcVerts = appoximateArc(
+            Vec2.like(0, 0),
+            this.spec.maxRange,
+            -this.spec.beamAngle / 2 - 90,
+            this.spec.beamAngle / 2 - 90,
+            4
+        )
+        this.sensorVerts = [
+            pLeftNear,
+            pRightNear,
+            pRightFar,
+            ...arcVerts.reverse(),
+            pLeftFar,
         ]
+        this.sensorEdges = [];
+        for (let i = 1; i < this.sensorVerts.length; ++i) {
+            this.sensorEdges.push(LineSegment.like(this.sensorVerts[i - 1], this.sensorVerts[i]))
+        }
+
 
         // The shape of the sensor area, for collision detection
         this.coneSpec = {
@@ -103,7 +120,7 @@ export class RangeSensor {
             ...defaultPolygonShape(),
             label: this.sensorId + ".cone",
             offset: this.spec.pos,
-            verts: coneVerts,
+            verts: this.sensorVerts,
             physics: {
                 ...defaultShapePhysics(),
                 sensor: true, // don't collide with anything (but still reports collisions)
@@ -120,7 +137,7 @@ export class RangeSensor {
             ...defaultPolygonShape(),
             label: this.sensorId + ".visual",
             offset: this.spec.pos,
-            verts: coneVerts,
+            verts: this.sensorVerts,
             physics: {
                 ...defaultShapePhysics(),
                 sensor: true, // don't collide with anything
@@ -184,32 +201,8 @@ export class RangeSensor {
 
         // Transform the sensor cone to world space
         // TODO: Can these be gotten from the physics shape? They may already be available transformed.
-        const pLeftNear = Vec2.transformDeg(
-            this.pLeftNear,
-            sensorPos,
-            sensorAngle
-        )
-        const pRightNear = Vec2.transformDeg(
-            this.pRightNear,
-            sensorPos,
-            sensorAngle
-        )
-        const pLeftFar = Vec2.transformDeg(
-            this.pLeftFar,
-            sensorPos,
-            sensorAngle
-        )
-        const pRightFar = Vec2.transformDeg(
-            this.pRightFar,
-            sensorPos,
-            sensorAngle
-        )
-        const sensorVerts = [pLeftNear, pRightNear, pRightFar, pLeftFar]
-        const leftEdge = LineSegment.like(pLeftNear, pLeftFar)
-        const rightEdge = LineSegment.like(pRightNear, pRightFar)
-        const nearEdge = LineSegment.like(pLeftNear, pRightNear)
-        const farEdge = LineSegment.like(pLeftFar, pRightFar)
-        const sensorEdges = [nearEdge, leftEdge, farEdge, rightEdge]
+        const sensorVerts = this.sensorVerts.map((v) => Vec2.transformDeg(v, sensorPos, sensorAngle))
+        const sensorEdges = this.sensorEdges.map((edge) => LineSegment.transformDeg(edge, sensorPos, sensorAngle))
 
         // Returns true if `roles` contains a value we should consider an
         // obstacle
