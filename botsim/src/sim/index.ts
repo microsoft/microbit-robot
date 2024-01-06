@@ -124,17 +124,19 @@ export class Simulation {
     private run() {
         this.running = true
         this.paused = false
+        let prevMs = performance.now()
         const loop = () => {
-            // Use fixed timestep for more consistent physics across devices of
-            // varying performance.
-            const dtSecs = 1 / 60
-
-            if (!this.paused) {
-                this.step(dtSecs)
+            const currMs = performance.now()
+            const dtMs = currMs - prevMs
+            if (dtMs >= 1000 / 60) {
+                prevMs = currMs
+                if (!this.paused) {
+                    // Use fixed timestep for more consistent physics across
+                    // devices of varying performance.
+                    this.step(1 / 60)
+                }
             }
-
             this.updateCursor()
-
             if (this.running) {
                 this.animframe = window.requestAnimationFrame(loop)
             }
