@@ -202,7 +202,7 @@ export class RangeSensor {
         // Transform the sensor cone to world space
         // TODO: Can these be gotten from the physics shape? They may already be available transformed.
         const sensorVerts = this.sensorVerts.map((v) => Vec2.transformDeg(v, sensorPos, sensorAngle))
-        const sensorEdges = this.sensorEdges.map((edge) => LineSegment.transformDeg(edge, sensorPos, sensorAngle))
+        const sensorEdges = this.sensorEdges.map((e) => LineSegment.transformDeg(e, sensorPos, sensorAngle))
 
         // Returns true if `roles` contains a value we should consider an
         // obstacle
