@@ -124,14 +124,10 @@ export class Simulation {
     private run() {
         this.running = true
         this.paused = false
-        let prevMs = performance.now()
         const loop = () => {
-            const currMs = performance.now()
-            let dtMs = currMs - prevMs
-            prevMs = currMs
-            // Avoid instabilities from large time jumps (window was in background)
-            if (dtMs > 100) dtMs = 100
-            let dtSecs = dtMs / 1000
+            // Use fixed timestep for more consistent physics across devices of
+            // varying performance.
+            const dtSecs = 1 / 60
 
             if (!this.paused) {
                 this.step(dtSecs)
