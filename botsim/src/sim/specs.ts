@@ -185,9 +185,9 @@ export const defaultStaticPhysics = (): EntityPhysicsSpec => ({
 
 /// Brushes
 
-export type BrushSpec = ColorBrushSpec | TextureBrushSpec | PatternBrushSpec
+export type BrushSpec = ColorBrushSpec | TextureBrushSpec
 
-export type BrushType = "color" | "texture" | "pattern"
+export type BrushType = "color" | "texture"
 
 type BrushCommonSpec = {
     type: BrushType
@@ -227,18 +227,3 @@ export const defaultTextureBrush = (): TextureBrushSpec => ({
     zIndex: 0,
     visible: true,
 })
-
-export type PatternType = "lines" | "grid" | "hatch" | "blobs" | "maze"
-
-export type PatternBrushSpec = BrushCommonSpec & {
-    type: "pattern"
-    pattern: PatternType
-    scale: Vec2Like
-    variance: Vec2Like
-    density: Vec2Like
-    amplitude: Vec2Like
-    angle: number
-    fillColor: string
-    lineColor: string
-    lineWidth: string
-}

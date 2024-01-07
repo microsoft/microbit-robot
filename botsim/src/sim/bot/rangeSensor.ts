@@ -25,24 +25,16 @@ import { RENDER_SCALE } from "../../constants"
 const SENSOR_WIDTH = 4 // cm
 const SENSOR_HALF_WIDTH = SENSOR_WIDTH / 2
 
-const beamPositiveColor = "#68aed420"
-const beamNegativeColor = "#68aed420"
+const beamColor = "#68aed420"
 //const targetColor = "#212738"
 //const targetColor = "#1c4a62"
 const targetColor = "#FF5733"
 //const targetColor = "#33FF00"
 
-const positiveBrush: BrushSpec = {
+const sensorBrush: BrushSpec = {
     ...defaultColorBrush(),
-    fillColor: beamPositiveColor,
-    borderColor: beamPositiveColor,
-    borderWidth: 0.25,
-    zIndex: 5,
-}
-const negativeBrush: BrushSpec = {
-    ...defaultColorBrush(),
-    fillColor: beamNegativeColor,
-    borderColor: beamNegativeColor,
+    fillColor: beamColor,
+    borderColor: beamColor,
     borderWidth: 0.25,
     zIndex: 5,
 }
@@ -144,7 +136,7 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...positiveBrush,
+                ...sensorBrush,
                 visible: false,
             },
         }

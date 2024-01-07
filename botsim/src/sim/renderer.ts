@@ -17,7 +17,6 @@ import {
     BrushSpec,
     ColorBrushSpec,
     TextureBrushSpec,
-    PatternBrushSpec,
     ShapeType,
     BrushType,
     EntityShapeSpec,
@@ -215,6 +214,42 @@ const pgm_textured_colored = Pixi.Program.from(
     }`
 )
 
+const pgm_sonar_effect = Pixi.Program.from(
+    // Vertex shader
+    `
+    precision mediump float;
+    attribute vec2 aVerts;
+    attribute vec2 aUvs;
+    uniform mat3 translationMatrix;
+    uniform mat3 projectionMatrix;
+    varying vec2 vUvs;
+    void main() {
+        vUvs = aUvs;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVerts, 1.0)).xy, 0.0, 1.0);
+    }`,
+    // Fragment shader
+    `
+    precision mediump float;
+    varying vec2 vUvs;
+    uniform vec3 uColor;
+    uniform float uAlpha;
+    uniform float uTime;
+    void main() {
+        float dist = distance(vec2(-.1, 0.5), aUvs);
+
+        float c = mod(uTime * 5. - dist * 40., 1.);
+        c = 1. - c;
+        c *= c;
+
+        vec3 alpha = vec3(c * .3) + vec3(.4);
+        alpha *= vec3(uAlpha);
+        //vec3 col = vec3(.4, .68, .83);
+        vec3 tex = vec3(1, 1, 1);
+
+        gl_FragColor = vec4(mix(tex, uColor, alpha), 1.);
+    }`
+)
+
 // Factory functions for creating renderable objects
 export const createGraphics: {
     [entity in ShapeType]: {
@@ -230,11 +265,6 @@ export const createGraphics: {
                 s as EntityBoxShapeSpec,
                 b as ColorBrushSpec
             ),
-        pattern: (s, b) =>
-            createPatternBoxGraphics(
-                s as EntityBoxShapeSpec,
-                b as PatternBrushSpec
-            ),
         texture: (s, b) =>
             createTextureBoxGraphics(
                 s as EntityBoxShapeSpec,
@@ -246,11 +276,6 @@ export const createGraphics: {
             createColorCircleGraphics(
                 s as EntityCircleShapeSpec,
                 b as ColorBrushSpec
-            ),
-        pattern: (s, b) =>
-            createPatternCircleGraphics(
-                s as EntityCircleShapeSpec,
-                b as PatternBrushSpec
             ),
         texture: (s, b) =>
             createTextureCircleGraphics(
@@ -264,11 +289,6 @@ export const createGraphics: {
                 s as EntityPathShapeSpec,
                 b as ColorBrushSpec
             ),
-        pattern: (s, b) =>
-            createPatternPathGraphics(
-                s as EntityPathShapeSpec,
-                b as PatternBrushSpec
-            ),
         texture: (s, b) =>
             createTexturePathGraphics(
                 s as EntityPathShapeSpec,
@@ -281,11 +301,6 @@ export const createGraphics: {
                 s as EntityPolygonShapeSpec,
                 b as ColorBrushSpec
             ),
-        pattern: (s, b) =>
-            createPatternPolygonGraphics(
-                s as EntityPolygonShapeSpec,
-                b as PatternBrushSpec
-            ),
         texture: (s, b) =>
             createTexturePolygonGraphics(
                 s as EntityPolygonShapeSpec,
@@ -297,11 +312,6 @@ export const createGraphics: {
             createColorEdgeGraphics(
                 s as EntityEdgeShapeSpec,
                 b as ColorBrushSpec
-            ),
-        pattern: (s, b) =>
-            createPatternEdgeGraphics(
-                s as EntityEdgeShapeSpec,
-                b as PatternBrushSpec
             ),
         texture: (s, b) =>
             createTextureEdgeGraphics(
@@ -328,16 +338,6 @@ function createColorCircleGraphics(
     })
     g.beginFill(fillColor)
     g.drawCircle(0, 0, toRenderScale(shape.radius))
-    g.visible = brush.visible
-    return g as any
-}
-
-function createPatternCircleGraphics(
-    shape: EntityCircleShapeSpec,
-    brush: PatternBrushSpec
-): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
     g.visible = brush.visible
     return g as any
 }
@@ -409,16 +409,6 @@ function createColorPathGraphics(
     return g as any
 }
 
-function createPatternPathGraphics(
-    shape: EntityPathShapeSpec,
-    brush: PatternBrushSpec
-): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
-    g.visible = brush.visible
-    return g as any
-}
-
 function createTexturePathGraphics(
     shape: EntityPathShapeSpec,
     brush: TextureBrushSpec
@@ -451,16 +441,6 @@ function createColorBoxGraphics(
     g.lineTo(toRenderScale(verts[2].x), toRenderScale(verts[2].y))
     g.lineTo(toRenderScale(verts[3].x), toRenderScale(verts[3].y))
     g.closePath()
-    g.visible = brush.visible
-    return g as any
-}
-
-function createPatternBoxGraphics(
-    shape: EntityBoxShapeSpec,
-    brush: PatternBrushSpec
-): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
     g.visible = brush.visible
     return g as any
 }
@@ -523,16 +503,6 @@ function createColorPolygonGraphics(
     return g as any
 }
 
-function createPatternPolygonGraphics(
-    shape: EntityPolygonShapeSpec,
-    brush: PatternBrushSpec
-): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
-    g.visible = brush.visible
-    return g as any
-}
-
 function createTexturePolygonGraphics(
     shape: EntityPolygonShapeSpec,
     brush: TextureBrushSpec
@@ -583,16 +553,6 @@ function createColorEdgeGraphics(
     g.beginFill(fillColor)
     g.moveTo(toRenderScale(shape.v0.x), toRenderScale(shape.v0.y))
     g.lineTo(toRenderScale(shape.v1.x), toRenderScale(shape.v1.y))
-    g.visible = brush.visible
-    return g as any
-}
-
-function createPatternEdgeGraphics(
-    shape: EntityEdgeShapeSpec,
-    brush: PatternBrushSpec
-): Pixi.DisplayObject {
-    // TODO: implement
-    const g = new Pixi.Graphics()
     g.visible = brush.visible
     return g as any
 }
