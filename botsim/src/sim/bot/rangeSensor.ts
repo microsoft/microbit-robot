@@ -58,10 +58,6 @@ export class RangeSensor {
     targetSpec!: EntityShapeSpec
     _value: number
     used: boolean = false
-    //pLeftNear!: Vec2Like
-    //pRightNear!: Vec2Like
-    //pLeftFar!: Vec2Like
-    //pRightFar!: Vec2Like
     sensorVerts!: Vec2Like[]
     sensorEdges!: LineSegment[]
 
@@ -273,9 +269,8 @@ export class RangeSensor {
                 overlaps.push(fixtureA)
             }
         }
-        // For each overlapping shape, get the set of line segments that:
-        // - overlap the sensor cone
-        // - face the bot
+        // For each overlapping shape, get the set of line segments that overlap
+        // the sensor cone.
         for (const fixture of overlaps) {
             const overlapShape = fixture.getShape()
             const itPos = fixture.getBody().getPosition()
@@ -308,7 +303,7 @@ export class RangeSensor {
                     const verts = polygonShape.m_vertices.map(
                         (v) => Vec2.transform(v, itPos, itAngle) // angle in radians here
                     )
-                    // Build a set of contact edges from this polygon's edges
+                    // Build a set of contact verts from this polygon's edges
                     ingestVerts(verts, true)
                     break
                 }
