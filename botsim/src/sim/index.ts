@@ -147,11 +147,11 @@ export class Simulation {
     private step(dtSecs: number) {
         try {
             this.physics.update(dtSecs)
-            this.renderer.update(dtSecs)
             this.entities.forEach((ent) => ent.update(dtSecs))
             for (let [_, bot] of this.bots) {
                 bot.update(dtSecs)
             }
+            this.renderer.update(dtSecs)
         } catch (e: any) {
             console.error(e.toString())
         }

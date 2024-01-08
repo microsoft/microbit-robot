@@ -1,7 +1,7 @@
 import { Bot } from "."
 import { RangeSensorSpec } from "../../bots/specs"
 import { Vec2, Vec2Like } from "../../types/vec2"
-import { nextId } from "../../util"
+import { nextId, toRadians } from "../../util"
 import {
     BrushSpec,
     EntityShapeSpec,
@@ -9,35 +9,40 @@ import {
     defaultColorBrush,
     defaultEntityShape,
     defaultPolygonShape,
+    defaultShaderBrush,
     defaultShapePhysics,
 } from "../specs"
 import Planck from "planck-js"
 import {
     appoximateArc,
     pointInPolygon,
+    rgbToFloatArray,
     testOverlap,
     toRenderScale,
 } from "../util"
 import { LineSegment } from "../../types/line"
 import * as Pixi from "pixi.js"
 import { RENDER_SCALE } from "../../constants"
+import {
+    BasicVertexShader,
+    CommonFragmentShaderGlobals,
+    addShaderProgram,
+} from "../renderer"
 
 const SENSOR_WIDTH = 4 // cm
 const SENSOR_HALF_WIDTH = SENSOR_WIDTH / 2
 
-const beamColor = "#68aed420"
+//const beamColor = "#68aed420"
+const beamColor = {
+    r: 0x68,
+    g: 0xae,
+    b: 0xd4,
+}
 //const targetColor = "#212738"
 //const targetColor = "#1c4a62"
 const targetColor = "#FF5733"
 //const targetColor = "#33FF00"
 
-const sensorBrush: BrushSpec = {
-    ...defaultColorBrush(),
-    fillColor: beamColor,
-    borderColor: beamColor,
-    borderWidth: 0.25,
-    zIndex: 5,
-}
 const targetBrush: BrushSpec = {
     ...defaultColorBrush(),
     fillColor: "transparent",
@@ -46,10 +51,40 @@ const targetBrush: BrushSpec = {
     zIndex: 6,
 }
 
-/**
- * Renders range sensor as a cone using a color brush. Nearest sensed point is
- * marked with a circle and a connecting line.
- */
+addShaderProgram(
+    "sonar_wave",
+    BasicVertexShader,
+    CommonFragmentShaderGlobals +
+        `
+    uniform vec3 uColor;
+    uniform float uMaxRange;
+    uniform float uBeamAngle;
+
+    float dist(vec2 p0, vec2 p1) {
+        return sqrt(pow(p1.x - p0.x, 2.) + pow(p1.y - p0.y, 2.));
+    }
+    float angle(vec2 p0, vec2 p1) {
+        return atan(p1.y - p0.y, p1.x - p0.x) + 1.57;
+    }
+
+    void main() {
+        vec2 uv = vUvs;
+        uv = vec2(uv.x * uAspectRatio, uv.y);
+        vec2 ofs = vec2(0.265, 1.1); // hand-tuned to appear to emanate from the sensor
+        float maxRange = uMaxRange + ofs.y;
+        float maxAngle = uBeamAngle / 2.;
+        float d = dist(ofs, uv);
+        float c = mod(uTime * 8. - d * 22., 1.);
+        c = 1. - c;
+        c = c * c;
+        c = .2 + c * .66;
+        float alpha = c * .75;
+        float linFade = 1. - smoothstep(0., 1., d - 0.33);
+        float angFade = 1. - smoothstep(0., 1., abs(angle(ofs, uv) * 0.65) / maxAngle);
+        alpha *= linFade * angFade;
+        gl_FragColor = vec4(uColor * alpha, alpha);
+    }`
+)
 
 export class RangeSensor {
     sensorId: string
@@ -96,11 +131,12 @@ export class RangeSensor {
             ...arcVerts.reverse(),
             pLeftFar,
         ]
-        this.sensorEdges = [];
+        this.sensorEdges = []
         for (let i = 1; i < this.sensorVerts.length; ++i) {
-            this.sensorEdges.push(LineSegment.like(this.sensorVerts[i - 1], this.sensorVerts[i]))
+            this.sensorEdges.push(
+                LineSegment.like(this.sensorVerts[i - 1], this.sensorVerts[i])
+            )
         }
-
 
         // The shape of the sensor area, for collision detection
         this.coneSpec = {
@@ -132,8 +168,15 @@ export class RangeSensor {
                 density: 0,
             },
             brush: {
-                ...sensorBrush,
+                ...defaultShaderBrush(),
+                shader: "sonar_wave",
+                uniforms: {
+                    uColor: rgbToFloatArray(beamColor),
+                    uMaxRange: toRenderScale(this.spec.maxRange),
+                    uBeamAngle: toRadians(this.spec.beamAngle),
+                },
                 visible: false,
+                zIndex: 5,
             },
         }
         // A marker to place on the point of nearest range, if any
@@ -166,11 +209,11 @@ export class RangeSensor {
     public destroy() {}
 
     public update(dtSecs: number) {
-        const sensorShape = this.bot.entity.renderObj.shapes.get(
+        const sensorRenderable = this.bot.entity.renderObj.shapes.get(
             this.sensorId + ".visual"
         )
-        if (sensorShape) {
-            sensorShape.visible = this.used
+        if (sensorRenderable) {
+            sensorRenderable.visible = this.used
         }
         this._value = this.spec.maxRange
         if (!this.used) return
@@ -188,9 +231,12 @@ export class RangeSensor {
         const detectedVerts: Vec2Like[] = []
 
         // Transform the sensor cone to world space
-        // TODO: Can these be gotten from the physics shape? They may already be available transformed.
-        const sensorVerts = this.sensorVerts.map((v) => Vec2.transformDeg(v, sensorPos, sensorAngle))
-        const sensorEdges = this.sensorEdges.map((e) => LineSegment.transformDeg(e, sensorPos, sensorAngle))
+        const sensorVerts = this.sensorVerts.map((v) =>
+            Vec2.transformDeg(v, sensorPos, sensorAngle)
+        )
+        const sensorEdges = this.sensorEdges.map((e) =>
+            LineSegment.transformDeg(e, sensorPos, sensorAngle)
+        )
 
         // Returns true if `roles` contains a value we should consider an
         // obstacle
@@ -325,16 +371,15 @@ export class RangeSensor {
         }
 
         // Update the target marker
-        const targetShape = this.bot.entity.renderObj.shapes.get(
+        const targetRenderable = this.bot.entity.renderObj.shapes.get(
             this.sensorId + ".target"
         )
-        if (targetShape) {
+        if (targetRenderable) {
             if (nearest) {
                 const pt = Vec2.scale(
                     Vec2.untransformDeg(nearest, botPos, sensorAngle),
                     RENDER_SCALE
                 )
-
                 const newGfx = new Pixi.Graphics()
                 newGfx.lineStyle({
                     width: toRenderScale(0.5),
@@ -343,10 +388,10 @@ export class RangeSensor {
                 })
                 newGfx.drawCircle(pt.x, pt.y, toRenderScale(1))
                 newGfx.zIndex = 6
-                targetShape.setGfx(newGfx as any)
-                targetShape.visible = this.used
+                targetRenderable.setGfx(newGfx as any)
+                targetRenderable.visible = true
             } else {
-                targetShape.visible = false
+                targetRenderable.visible = false
             }
         }
     }

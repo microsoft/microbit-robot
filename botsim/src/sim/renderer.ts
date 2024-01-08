@@ -12,6 +12,7 @@ import {
 } from "./util"
 import { Simulation } from "."
 import { Vec2, Vec2Like } from "../types/vec2"
+import { AABB } from "../types/aabb"
 import {
     EntitySpec,
     BrushSpec,
@@ -25,12 +26,12 @@ import {
     EntityPathShapeSpec,
     EntityPolygonShapeSpec,
     EntityEdgeShapeSpec,
+    ShaderBrushSpec,
 } from "./specs"
 import { Entity } from "./entity"
 import { toRadians } from "../util"
 import { MAP_ASPECT_RATIO, RENDER_SCALE } from "../constants"
 import { nextId } from "../util"
-import { GradientFactory } from "@pixi-essentials/gradients"
 import earcut from "earcut"
 
 /**
@@ -38,6 +39,7 @@ import earcut from "earcut"
  */
 export default class Renderer {
     private pixi: Pixi.Application
+    private renderer: Pixi.Renderer
     private _size: Vec2Like
     private _debugLayer: Pixi.Container
 
@@ -71,15 +73,20 @@ export default class Renderer {
     constructor(private sim: Simulation) {
         this._size = Vec2.like(10 * MAP_ASPECT_RATIO, 10)
         this.pixi = new Pixi.Application({
+            // temp size, will be changed when map loads
             width: toRenderScale(this._size.x),
             height: toRenderScale(this._size.y),
             antialias: true,
+            clearBeforeRender: true,
         })
         if (this.pixi.view.style) {
             // Stretch to fill parent container
             this.pixi.view.style.width = "100%"
             this.pixi.view.style.height = "100%"
         }
+        this.renderer = this.pixi.renderer as Pixi.Renderer
+        // Global uniforms must be created before the first render
+        this.renderer.globalUniforms.uniforms.uTime = 0
 
         // Create a debug layer
         this._debugLayer = new Pixi.Container()
@@ -100,7 +107,9 @@ export default class Renderer {
         }
     }
 
-    public update(dtSecs: number) {}
+    public update(dtSecs: number) {
+        this.renderer.globalUniforms.uniforms.uTime += dtSecs
+    }
 
     public resize(size: Vec2Like) {
         this._size = Vec2.copy(size)
@@ -189,66 +198,82 @@ export class RenderObject {
     }
 }
 
-const pgm_textured_colored = Pixi.Program.from(
-    // Vertex shader
-    `
-    precision mediump float;
-    attribute vec2 aVerts;
-    attribute vec2 aUvs;
-    uniform mat3 translationMatrix;
-    uniform mat3 projectionMatrix;
-    varying vec2 vUvs;
-    void main() {
-        vUvs = aUvs;
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVerts, 1.0)).xy, 0.0, 1.0);
-    }`,
-    // Fragment shader
-    `
-    precision mediump float;
-    varying vec2 vUvs;
-    uniform sampler2D uSampler2;
-    uniform vec3 uColor;
-    uniform float uAlpha;
-    void main() {
-        gl_FragColor = texture2D(uSampler2, vUvs) * vec4(uColor.rgb, uAlpha);
-    }`
-)
+/*********************************************************************
+ * SHADERS
+ ********************************************************************/
 
-const pgm_sonar_effect = Pixi.Program.from(
-    // Vertex shader
-    `
+const shaderPrograms = new Map<string, Pixi.Program>()
+
+export function addShaderProgram(name: string, vert: string, frag: string) {
+    shaderPrograms.set(name, Pixi.Program.from(vert, frag))
+}
+
+function getShaderProgram(name: string): Pixi.Program {
+    const pgm = shaderPrograms.get(name)
+    if (pgm) return pgm
+    console.error(`shader program not found: "${name}"`)
+    return shaderPrograms.get("$$missing_shader$$")!
+}
+
+export const CommonVertexShaderGlobals = `
     precision mediump float;
     attribute vec2 aVerts;
     attribute vec2 aUvs;
+    uniform float uAspectRatio;
     uniform mat3 translationMatrix;
     uniform mat3 projectionMatrix;
-    varying vec2 vUvs;
-    void main() {
-        vUvs = aUvs;
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVerts, 1.0)).xy, 0.0, 1.0);
-    }`,
-    // Fragment shader
-    `
-    precision mediump float;
-    varying vec2 vUvs;
-    uniform vec3 uColor;
-    uniform float uAlpha;
     uniform float uTime;
+    varying vec2 vUvs;
+`
+export const BasicVertexShader =
+    CommonVertexShaderGlobals +
+    `
     void main() {
-        float dist = distance(vec2(-.1, 0.5), aUvs);
-
-        float c = mod(uTime * 5. - dist * 40., 1.);
-        c = 1. - c;
-        c *= c;
-
-        vec3 alpha = vec3(c * .3) + vec3(.4);
-        alpha *= vec3(uAlpha);
-        //vec3 col = vec3(.4, .68, .83);
-        vec3 tex = vec3(1, 1, 1);
-
-        gl_FragColor = vec4(mix(tex, uColor, alpha), 1.);
+        vUvs = aUvs;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVerts, 1.0)).xy, 0.0, 1.0);
     }`
+
+export const CommonFragmentShaderGlobals = `
+        precision mediump float;
+        uniform float uTime;
+        uniform float uAspectRatio;
+        varying vec2 vUvs;
+    `
+
+addShaderProgram(
+    "$$missing_shader$$",
+    BasicVertexShader,
+    CommonFragmentShaderGlobals +
+        `
+        void main() {
+            vec2 uv = vUvs;
+            uv = vec2(uv.x * uAspectRatio, uv.y);
+            uv = floor(uv * 10.);
+            vec3 color1 = vec3(0.4, 0.0, 0.0);
+            vec3 color2 = vec3(0.0, 0.4, 0.4);
+            vec3 outColor = mod(uv.x + uv.y, 2.) < 0.5 ? color1 : color2;
+            gl_FragColor = vec4(outColor.rgb, 0.5);
+        }`
 )
+
+addShaderProgram(
+    "textured_colored",
+    BasicVertexShader,
+    CommonFragmentShaderGlobals +
+        `
+        uniform sampler2D uSampler2;
+        uniform vec3 uColor;
+        uniform float uAlpha;
+        void main() {
+            vec2 uv = vUvs;
+            uv = vec2(uv.x * uAspectRatio, uv.y);
+            gl_FragColor = texture2D(uSampler2, uv) * vec4(uColor.rgb, uAlpha);
+        }`
+)
+
+/*********************************************************************
+ * RENDER OBJECT FACTORIES
+ ********************************************************************/
 
 // Factory functions for creating renderable objects
 export const createGraphics: {
@@ -261,67 +286,92 @@ export const createGraphics: {
 } = {
     box: {
         color: (s, b) =>
-            createColorBoxGraphics(
+            createColoredBoxGraphics(
                 s as EntityBoxShapeSpec,
                 b as ColorBrushSpec
             ),
         texture: (s, b) =>
-            createTextureBoxGraphics(
+            createTexturedBoxGraphics(
                 s as EntityBoxShapeSpec,
                 b as TextureBrushSpec
+            ),
+        shader: (s, b) =>
+            createShadedBoxGraphics(
+                s as EntityBoxShapeSpec,
+                b as ShaderBrushSpec
             ),
     },
     circle: {
         color: (s, b) =>
-            createColorCircleGraphics(
+            createColoredCircleGraphics(
                 s as EntityCircleShapeSpec,
                 b as ColorBrushSpec
             ),
         texture: (s, b) =>
-            createTextureCircleGraphics(
+            createTexturedCircleGraphics(
                 s as EntityCircleShapeSpec,
                 b as TextureBrushSpec
+            ),
+        shader: (s, b) =>
+            createShadedCircleGraphics(
+                s as EntityCircleShapeSpec,
+                b as ShaderBrushSpec
             ),
     },
     path: {
         color: (s, b) =>
-            createColorPathGraphics(
+            createColoredPathGraphics(
                 s as EntityPathShapeSpec,
                 b as ColorBrushSpec
             ),
         texture: (s, b) =>
-            createTexturePathGraphics(
+            createTexturedPathGraphics(
                 s as EntityPathShapeSpec,
                 b as TextureBrushSpec
+            ),
+        shader: (s, b) =>
+            createShadedPathGraphics(
+                s as EntityPathShapeSpec,
+                b as ShaderBrushSpec
             ),
     },
     polygon: {
         color: (s, b) =>
-            createColorPolygonGraphics(
+            createColoredPolygonGraphics(
                 s as EntityPolygonShapeSpec,
                 b as ColorBrushSpec
             ),
         texture: (s, b) =>
-            createTexturePolygonGraphics(
+            createTexturedPolygonGraphics(
                 s as EntityPolygonShapeSpec,
                 b as TextureBrushSpec
+            ),
+        shader: (s, b) =>
+            createShadedPolygonGraphics(
+                s as EntityPolygonShapeSpec,
+                b as ShaderBrushSpec
             ),
     },
     edge: {
         color: (s, b) =>
-            createColorEdgeGraphics(
+            createColoredEdgeGraphics(
                 s as EntityEdgeShapeSpec,
                 b as ColorBrushSpec
             ),
         texture: (s, b) =>
-            createTextureEdgeGraphics(
+            createTexturedEdgeGraphics(
                 s as EntityEdgeShapeSpec,
                 b as TextureBrushSpec
+            ),
+        shader: (s, b) =>
+            createShadedEdgeGraphics(
+                s as EntityEdgeShapeSpec,
+                b as ShaderBrushSpec
             ),
     },
 }
 
-function createColorCircleGraphics(
+function createColoredCircleGraphics(
     shape: EntityCircleShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
@@ -342,7 +392,7 @@ function createColorCircleGraphics(
     return g as any
 }
 
-function createTextureCircleGraphics(
+function createTexturedCircleGraphics(
     shape: EntityCircleShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
@@ -351,21 +401,24 @@ function createTextureCircleGraphics(
     const indices = earcut(flattenVerts(verts))
     const mesh = expandMesh(verts, indices)
     const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
     const color = toColor(brush.color)
     const alpha = brush.alpha
 
     const geom = new Pixi.Geometry()
     const aVerts = flattenVerts(mesh)
     const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
     geom.addAttribute("aVerts", aVerts, 2)
     geom.addAttribute("aUvs", aUvs, 2)
+    //geom.addAttribute("aAspectRatio", [aAspectRatio], 1)
 
-    // TODO: Cache and share shaders
-    const shader = new Pixi.Shader(pgm_textured_colored, {
-        // TODO: Cache textures in asset loader
+    const pgm = getShaderProgram("textured_colored")
+    const shader = new Pixi.Shader(pgm, {
         uSampler2: Pixi.Texture.from(brush.texture),
         uColor: color.toRgbArray(),
-        uAlpha: alpha
+        uAlpha: alpha,
+        uAspectRatio,
     })
     const g = new Pixi.Mesh(geom, shader)
     g.zIndex = brush.zIndex ?? 0
@@ -375,7 +428,39 @@ function createTextureCircleGraphics(
     return g as any
 }
 
-function createColorPathGraphics(
+function createShadedCircleGraphics(
+    shape: EntityCircleShapeSpec,
+    brush: ShaderBrushSpec
+): Pixi.DisplayObject {
+    const radius = toRenderScale(shape.radius)
+    const verts = appoximateArc(Vec2.zero(), radius, 0, 360, 32)
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
+    const uniforms = brush.uniforms
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+
+    const pgm = getShaderProgram(brush.shader)
+    const shader = new Pixi.Shader(pgm, {
+        ...uniforms,
+        uAspectRatio,
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
+    g.visible = brush.visible
+    return g as any
+}
+
+function createColoredPathGraphics(
     shape: EntityPathShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
@@ -409,7 +494,7 @@ function createColorPathGraphics(
     return g as any
 }
 
-function createTexturePathGraphics(
+function createTexturedPathGraphics(
     shape: EntityPathShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
@@ -419,7 +504,17 @@ function createTexturePathGraphics(
     return g as any
 }
 
-function createColorBoxGraphics(
+function createShadedPathGraphics(
+    shape: EntityPathShapeSpec,
+    brush: ShaderBrushSpec
+): Pixi.DisplayObject {
+    // TODO: implement
+    const g = new Pixi.Graphics()
+    g.visible = brush.visible
+    return g as any
+}
+
+function createColoredBoxGraphics(
     shape: EntityBoxShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
@@ -445,7 +540,7 @@ function createColorBoxGraphics(
     return g as any
 }
 
-function createTextureBoxGraphics(
+function createTexturedBoxGraphics(
     shape: EntityBoxShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
@@ -453,21 +548,24 @@ function createTextureBoxGraphics(
     const indices = earcut(flattenVerts(verts))
     const mesh = expandMesh(verts, indices)
     const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
     const color = toColor(brush.color)
     const alpha = brush.alpha
 
     const geom = new Pixi.Geometry()
     const aVerts = flattenVerts(mesh)
     const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
     geom.addAttribute("aVerts", aVerts, 2)
     geom.addAttribute("aUvs", aUvs, 2)
+    //geom.addAttribute("aAspectRatio", [aAspectRatio], 1)
 
-    // TODO: Cache and share shaders
-    const shader = new Pixi.Shader(pgm_textured_colored, {
-        // TODO: Cache textures in asset loader
+    const pgm = getShaderProgram("textured_colored")
+    const shader = new Pixi.Shader(pgm, {
         uSampler2: Pixi.Texture.from(brush.texture),
         uColor: color.toRgbArray(),
-        uAlpha: alpha
+        uAlpha: alpha,
+        uAspectRatio,
     })
     const g = new Pixi.Mesh(geom, shader)
     g.zIndex = brush.zIndex ?? 0
@@ -477,7 +575,39 @@ function createTextureBoxGraphics(
     return g as any
 }
 
-function createColorPolygonGraphics(
+function createShadedBoxGraphics(
+    shape: EntityBoxShapeSpec,
+    brush: ShaderBrushSpec
+): Pixi.DisplayObject {
+    const verts = boxToVertices(shape).map((v) => Vec2.scale(v, RENDER_SCALE))
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
+    const uniforms = brush.uniforms
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+    //geom.addAttribute("aAspectRatio", [aAspectRatio], 1)
+
+    const pgm = getShaderProgram(brush.shader)
+    const shader = new Pixi.Shader(pgm, {
+        ...uniforms,
+        uAspectRatio,
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
+    g.visible = brush.visible
+    return g as any
+}
+
+function createColoredPolygonGraphics(
     shape: EntityPolygonShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
@@ -503,7 +633,7 @@ function createColorPolygonGraphics(
     return g as any
 }
 
-function createTexturePolygonGraphics(
+function createTexturedPolygonGraphics(
     shape: EntityPolygonShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
@@ -511,21 +641,24 @@ function createTexturePolygonGraphics(
     const indices = earcut(flattenVerts(verts))
     const mesh = expandMesh(verts, indices)
     const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
     const color = toColor(brush.color)
     const alpha = brush.alpha
 
     const geom = new Pixi.Geometry()
     const aVerts = flattenVerts(mesh)
     const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
     geom.addAttribute("aVerts", aVerts, 2)
     geom.addAttribute("aUvs", aUvs, 2)
+    //geom.addAttribute("aAspectRatio", [aAspectRatio], 1)
 
-    // TODO: Cache and share shaders
-    const shader = new Pixi.Shader(pgm_textured_colored, {
-        // TODO: Cache textures in asset loader
+    const pgm = getShaderProgram("textured_colored")
+    const shader = new Pixi.Shader(pgm, {
         uSampler2: Pixi.Texture.from(brush.texture),
         uColor: color.toRgbArray(),
-        uAlpha: alpha
+        uAlpha: alpha,
+        uAspectRatio,
     })
     const g = new Pixi.Mesh(geom, shader)
     g.zIndex = brush.zIndex ?? 0
@@ -535,7 +668,39 @@ function createTexturePolygonGraphics(
     return g as any
 }
 
-function createColorEdgeGraphics(
+function createShadedPolygonGraphics(
+    shape: EntityPolygonShapeSpec,
+    brush: ShaderBrushSpec
+): Pixi.DisplayObject {
+    const verts = shape.verts.map((v) => Vec2.scale(v, RENDER_SCALE))
+    const indices = earcut(flattenVerts(verts))
+    const mesh = expandMesh(verts, indices)
+    const uvs = calcUvs(mesh)
+    const aabb = AABB.from(mesh)
+    const uniforms = brush.uniforms
+
+    const geom = new Pixi.Geometry()
+    const aVerts = flattenVerts(mesh)
+    const aUvs = flattenVerts(uvs)
+    const uAspectRatio = AABB.width(aabb) / AABB.height(aabb)
+    geom.addAttribute("aVerts", aVerts, 2)
+    geom.addAttribute("aUvs", aUvs, 2)
+    //geom.addAttribute("aAspectRatio", [aAspectRatio], 1)
+
+    const pgm = getShaderProgram(brush.shader)
+    const shader = new Pixi.Shader(pgm, {
+        ...uniforms,
+        uAspectRatio,
+    })
+    const g = new Pixi.Mesh(geom, shader)
+    g.zIndex = brush.zIndex ?? 0
+    g.position.set(toRenderScale(shape.offset.x), toRenderScale(shape.offset.y))
+    g.angle = shape.angle
+    g.visible = brush.visible
+    return g as any
+}
+
+function createColoredEdgeGraphics(
     shape: EntityEdgeShapeSpec,
     brush: ColorBrushSpec
 ): Pixi.DisplayObject {
@@ -557,7 +722,7 @@ function createColorEdgeGraphics(
     return g as any
 }
 
-function createTextureEdgeGraphics(
+function createTexturedEdgeGraphics(
     shape: EntityEdgeShapeSpec,
     brush: TextureBrushSpec
 ): Pixi.DisplayObject {
@@ -567,6 +732,19 @@ function createTextureEdgeGraphics(
     return g as any
 }
 
+function createShadedEdgeGraphics(
+    shape: EntityEdgeShapeSpec,
+    brush: ShaderBrushSpec
+): Pixi.DisplayObject {
+    // TODO: implement
+    const g = new Pixi.Graphics()
+    g.visible = brush.visible
+    return g as any
+}
+
+/**
+ * Returns a RenderObject for the given EntitySpec
+ */
 export function createRenderObj(
     entity: Entity,
     spec: EntitySpec

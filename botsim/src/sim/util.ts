@@ -5,6 +5,7 @@ import { RENDER_SCALE } from "../constants"
 import * as Pixi from "pixi.js"
 import Planck from "planck-js"
 import { clamp, toRadians } from "../util"
+import { AABB } from "../types/aabb"
 
 export function makeBoxVertices(
     size: Vec2Like,
@@ -454,9 +455,9 @@ export function convexHull(verts: Vec2Like[]): Vec2Like[] {
 export function calcUvs(verts: Vec2Like[]): Vec2Like[] {
     const uvs: Vec2Like[] = []
 
-    const aabb = calcAabb(verts)
-    const w = aabb.max.x - aabb.min.x
-    const h = aabb.max.y - aabb.min.y
+    const aabb = AABB.from(verts)
+    const w = AABB.width(aabb)
+    const h = AABB.height(aabb)
 
     for (const v of verts) {
         const uv = Vec2.like((v.x - aabb.min.x) / w, (v.y - aabb.min.y) / h)
@@ -464,23 +465,6 @@ export function calcUvs(verts: Vec2Like[]): Vec2Like[] {
     }
 
     return uvs
-}
-
-export type AABB = {
-    min: Vec2Like
-    max: Vec2Like
-}
-
-export function calcAabb(verts: Vec2Like[]): AABB {
-    const min = Vec2.like(Infinity, Infinity)
-    const max = Vec2.like(-Infinity, -Infinity)
-    for (const v of verts) {
-        min.x = Math.min(min.x, v.x)
-        min.y = Math.min(min.y, v.y)
-        max.x = Math.max(max.x, v.x)
-        max.y = Math.max(max.y, v.y)
-    }
-    return { min, max }
 }
 
 export function flattenVerts(verts: Vec2Like[]): number[] {

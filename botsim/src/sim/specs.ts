@@ -185,9 +185,9 @@ export const defaultStaticPhysics = (): EntityPhysicsSpec => ({
 
 /// Brushes
 
-export type BrushSpec = ColorBrushSpec | TextureBrushSpec
+export type BrushSpec = ColorBrushSpec | TextureBrushSpec | ShaderBrushSpec
 
-export type BrushType = "color" | "texture"
+export type BrushType = "color" | "texture" | "shader"
 
 type BrushCommonSpec = {
     type: BrushType
@@ -224,6 +224,20 @@ export const defaultTextureBrush = (): TextureBrushSpec => ({
     texture: "placeholder.png",
     color: "#FFFFFF",
     alpha: 1,
+    zIndex: 0,
+    visible: true,
+})
+
+export type ShaderBrushSpec = BrushCommonSpec & {
+    type: "shader"
+    shader: string
+    uniforms: { [key: string]: any }
+}
+
+export const defaultShaderBrush = (): ShaderBrushSpec => ({
+    type: "shader",
+    shader: "default",
+    uniforms: {},
     zIndex: 0,
     visible: true,
 })
