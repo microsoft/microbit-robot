@@ -43,13 +43,31 @@ export const SimContainer: React.FC<Props> = ({}) => {
                     Simulation.instance.mouseUp(p)
                 }
             }
+            const handleTouchStart = (e: TouchEvent) => {
+                const p = Vec2.like(e.touches[0].clientX, e.touches[0].clientY)
+                Simulation.instance.mouseDown(p)
+            }
+            const handleTouchMove = (e: TouchEvent) => {
+                const p = Vec2.like(e.touches[0].clientX, e.touches[0].clientY)
+                Simulation.instance.mouseMove(p)
+            }
+            const handleTouchEnd = (e: TouchEvent) => {
+                const p = Vec2.like(e.touches[0].clientX, e.touches[0].clientY)
+                Simulation.instance.mouseUp(p)
+            }
             simContainer.addEventListener("mousedown", handleMouseDown)
             simContainer.addEventListener("mousemove", handleMouseMove)
             simContainer.addEventListener("mouseup", handleMouseUp)
+            simContainer.addEventListener("touchstart", handleTouchStart)
+            simContainer.addEventListener("touchmove", handleTouchMove)
+            simContainer.addEventListener("touchend", handleTouchEnd)
             return () => {
                 simContainer.removeEventListener("mousedown", handleMouseDown)
                 simContainer.removeEventListener("mousemove", handleMouseMove)
                 simContainer.removeEventListener("mouseup", handleMouseUp)
+                simContainer.removeEventListener("touchstart", handleTouchStart)
+                simContainer.removeEventListener("touchmove", handleTouchMove)
+                simContainer.removeEventListener("touchend", handleTouchEnd)
             }
         }
     }, [simContainer])
