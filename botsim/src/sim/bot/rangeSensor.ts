@@ -42,7 +42,7 @@ const pingColor = {
     g: 0x57,
     b: 0x33,
 }
-const pingRadius = 1.5 // cm
+const pingRadius = 3 // cm
 
 addShaderProgram(
     "sonar_wave",
@@ -90,21 +90,18 @@ addShaderProgram(
     float dist(vec2 p0, vec2 p1) {
         return sqrt(pow(p1.x - p0.x, 2.) + pow(p1.y - p0.y, 2.));
     }
-    vec4 ping(vec2 uv, float innerMargin, float outerMargin, float resetTime, float speed) {
-        float r = dist(uv, vec2(0.5, 0.5));
-        float time = mod(uTime, resetTime) * speed;
-        float color = smoothstep(time - innerMargin, time, r) * smoothstep(time + outerMargin, time, r);
-        float fade = smoothstep(0.5, 0., r);
-        return vec4(uColor * color * fade, color * fade);
-    }
     void main() {
         vec2 uv = vUvs;
         uv = vec2(uv.x * uAspectRatio, uv.y);
-        float innerMargin = 0.4;
-        float outerMargin = 0.02;
+        float innerMargin = 0.1;
+        float outerMargin = 0.05;
         float pingDuration = 1.;
         float pingSpeed = 0.5;
-        vec4 color = ping(uv, innerMargin, outerMargin, pingDuration, pingSpeed);
+        float r = dist(uv, vec2(0.5, 0.5));
+        float time = mod(uTime, pingDuration) * pingSpeed;
+        float alpha = smoothstep(time - innerMargin, time, r) * smoothstep(time + outerMargin, time, r);
+        float fade = smoothstep(0.5, 0., r);
+        vec4 color = vec4(uColor * alpha * fade, alpha * fade);
         gl_FragColor = color;
     }`
 )
