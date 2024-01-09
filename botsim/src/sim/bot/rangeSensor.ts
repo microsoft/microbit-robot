@@ -130,6 +130,7 @@ export class RangeSensor {
             pRightFar,
             ...arcVerts.reverse(),
             pLeftFar,
+            pLeftNear
         ]
         this.sensorEdges = []
         for (let i = 1; i < this.sensorVerts.length; ++i) {
