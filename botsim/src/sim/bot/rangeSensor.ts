@@ -32,24 +32,17 @@ import {
 const SENSOR_WIDTH = 4 // cm
 const SENSOR_HALF_WIDTH = SENSOR_WIDTH / 2
 
-//const beamColor = "#68aed420"
-const beamColor = {
+const waveColor = {
     r: 0x68,
     g: 0xae,
     b: 0xd4,
 }
-//const targetColor = "#212738"
-//const targetColor = "#1c4a62"
-const targetColor = "#FF5733"
-//const targetColor = "#33FF00"
-
-const targetBrush: BrushSpec = {
-    ...defaultColorBrush(),
-    fillColor: "transparent",
-    borderColor: targetColor,
-    borderWidth: 0.5,
-    zIndex: 6,
+const pingColor = {
+    r: 0xff,
+    g: 0x57,
+    b: 0x33,
 }
+const pingRadius = 1.5 // cm
 
 addShaderProgram(
     "sonar_wave",
@@ -66,7 +59,6 @@ addShaderProgram(
     float angle(vec2 p0, vec2 p1) {
         return atan(p1.y - p0.y, p1.x - p0.x) + 1.57;
     }
-
     void main() {
         vec2 uv = vUvs;
         uv = vec2(uv.x * uAspectRatio, uv.y);
@@ -83,6 +75,34 @@ addShaderProgram(
         float angFade = 1. - smoothstep(0., 1., abs(angle(ofs, uv) * 0.65) / maxAngle);
         alpha *= linFade * angFade;
         gl_FragColor = vec4(uColor * alpha, alpha);
+    }`
+)
+
+addShaderProgram(
+    "sonar_ping",
+    BasicVertexShader,
+    CommonFragmentShaderGlobals +
+        `
+    uniform vec3 uColor;
+
+    float dist(vec2 p0, vec2 p1) {
+        return sqrt(pow(p1.x - p0.x, 2.) + pow(p1.y - p0.y, 2.));
+    }
+    vec4 ping(vec2 uv, float innerTail, float edgeBorder, float resetTime, float speed, float fadeDistance) {
+        float r = dist(uv, vec2(0.5, 0.5));
+        float time = mod(uTime, resetTime) * speed;
+        float color = smoothstep(time - innerTail, time, r) * smoothstep(time + edgeBorder, time, r);
+        float fade = smoothstep(fadeDistance, 0., r);
+        return vec4(uColor * color * fade, color * fade);
+    }
+    void main() {
+        vec2 uv = vUvs;
+        uv = vec2(uv.x * uAspectRatio, uv.y);
+        float fadeDistance = 0.5;
+        float resetTimeSec = 0.75;
+        float radarPingSpeed = 1.5;
+        vec4 color = ping(uv, 0.25, 0.025, resetTimeSec, radarPingSpeed, fadeDistance);
+        gl_FragColor = color;
     }`
 )
 
@@ -130,7 +150,7 @@ export class RangeSensor {
             pRightFar,
             ...arcVerts.reverse(),
             pLeftFar,
-            pLeftNear
+            pLeftNear,
         ]
         this.sensorEdges = []
         for (let i = 1; i < this.sensorVerts.length; ++i) {
@@ -172,7 +192,7 @@ export class RangeSensor {
                 ...defaultShaderBrush(),
                 shader: "sonar_wave",
                 uniforms: {
-                    uColor: rgbToFloatArray(beamColor),
+                    uColor: rgbToFloatArray(waveColor),
                     uMaxRange: toRenderScale(this.spec.maxRange),
                     uBeamAngle: toRadians(this.spec.beamAngle),
                 },
@@ -183,17 +203,28 @@ export class RangeSensor {
         // A marker to place on the point of nearest range, if any
         this.targetSpec = {
             ...defaultEntityShape(),
-            ...defaultCircleShape(),
+            ...defaultPolygonShape(),
             label: this.sensorId + ".target",
-            radius: 1.5,
+            verts: [
+                { x: -pingRadius, y: -pingRadius },
+                { x: pingRadius, y: -pingRadius },
+                { x: pingRadius, y: pingRadius },
+                { x: -pingRadius, y: pingRadius },
+            ],
             physics: {
                 ...defaultShapePhysics(),
                 sensor: true, // don't collide with anything
                 density: 0,
             },
             brush: {
-                ...targetBrush,
+                ...defaultShaderBrush(),
+                shader: "sonar_ping",
+                uniforms: {
+                    uColor: rgbToFloatArray(pingColor),
+                    uRadius: toRenderScale(pingRadius),
+                },
                 visible: false,
+                zIndex: 6,
             },
         }
     }
@@ -371,28 +402,18 @@ export class RangeSensor {
             this._value = Vec2.len(Vec2.sub(nearest, sensorPos))
         }
 
-        // Update the target marker
+        // Update the ping marker
         const targetRenderable = this.bot.entity.renderObj.shapes.get(
             this.sensorId + ".target"
         )
         if (targetRenderable) {
+            targetRenderable.visible = !!nearest
             if (nearest) {
                 const pt = Vec2.scale(
                     Vec2.untransformDeg(nearest, botPos, sensorAngle),
                     RENDER_SCALE
                 )
-                const newGfx = new Pixi.Graphics()
-                newGfx.lineStyle({
-                    width: toRenderScale(0.5),
-                    color: targetColor + "A0",
-                    alignment: 0.5,
-                })
-                newGfx.drawCircle(pt.x, pt.y, toRenderScale(1))
-                newGfx.zIndex = 6
-                targetRenderable.setGfx(newGfx as any)
-                targetRenderable.visible = true
-            } else {
-                targetRenderable.visible = false
+                targetRenderable.gfx.position.set(pt.x, pt.y)
             }
         }
     }
