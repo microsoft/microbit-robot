@@ -3,9 +3,7 @@ import { RangeSensorSpec } from "../../bots/specs"
 import { Vec2, Vec2Like } from "../../types/vec2"
 import { nextId, toRadians } from "../../util"
 import {
-    BrushSpec,
     EntityShapeSpec,
-    defaultCircleShape,
     defaultColorBrush,
     defaultEntityShape,
     defaultPolygonShape,
@@ -21,7 +19,6 @@ import {
     toRenderScale,
 } from "../util"
 import { LineSegment } from "../../types/line"
-import * as Pixi from "pixi.js"
 import { RENDER_SCALE } from "../../constants"
 import {
     BasicVertexShader,
@@ -39,8 +36,8 @@ const waveColor = {
 }
 const pingColor = {
     r: 0xff,
-    g: 0x57,
-    b: 0x33,
+    g: 0x3f,
+    b: 0x3f,
 }
 const pingRadius = 3 // cm
 
