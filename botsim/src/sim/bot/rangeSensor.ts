@@ -292,11 +292,8 @@ export class RangeSensor {
                 }
             })
         }
-        const ingestVerts = (verts: Vec2Like[], closed: boolean) => {
+        const ingestPolyline = (verts: Vec2Like[], closed: boolean) => {
             if (verts.length < 2) return
-            // NOTE: verts are assumed to be:
-            // - in world space
-            // - represent a contiguous set of line segments
             for (
                 let i = 1;
                 closed ? i <= verts.length : i < verts.length;
@@ -349,7 +346,7 @@ export class RangeSensor {
         for (const fixture of overlaps) {
             const overlapShape = fixture.getShape()
             const itPos = fixture.getBody().getPosition()
-            const itAngle = fixture.getBody().getAngle()
+            const itAngle = fixture.getBody().getAngle() // radians
             switch (overlapShape.getType()) {
                 case "circle":
                     const circleShape = overlapShape as Planck.Circle
@@ -370,16 +367,16 @@ export class RangeSensor {
                         360,
                         16
                     )
-                    ingestVerts(verts, true)
+                    ingestPolyline(verts, true)
                     break
                 case "polygon": {
                     const polygonShape = overlapShape as Planck.Polygon
                     // Transform verts to world space
-                    const verts = polygonShape.m_vertices.map(
-                        (v) => Vec2.transform(v, itPos, itAngle) // angle in radians here
+                    const verts = polygonShape.m_vertices.map((v) =>
+                        Vec2.transform(v, itPos, itAngle)
                     )
                     // Build a set of contact verts from this polygon's edges
-                    ingestVerts(verts, true)
+                    ingestPolyline(verts, true)
                     break
                 }
                 default:
