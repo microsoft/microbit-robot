@@ -74,7 +74,7 @@ addShaderProgram(
         c = .2 + c * .66;
         float alpha = c * .75;
         float linFade = 1. - smoothstep(0., 1., d - 0.33);
-        float angFade = 1. - smoothstep(0., 1., abs(angle(ofs, uv) * 0.65) / maxAngle);
+        float angFade = 1. - smoothstep(0., 1., -0.5 + abs(angle(ofs, uv)) / maxAngle);
         alpha *= linFade * angFade;
         gl_FragColor = vec4(uColor * alpha, alpha);
     }`
