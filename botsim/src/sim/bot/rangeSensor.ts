@@ -65,7 +65,7 @@ addShaderProgram(
         vec2 ofs = vec2(0.265, 1.1); // hand-tuned to appear to emanate from the sensor
         float maxRange = uMaxRange + ofs.y;
         float maxAngle = uBeamAngle / 2.;
-        float waveSpeed = 8.;
+        float waveSpeed = 5.;
         float waveCount = 22.;
         float d = dist(ofs, uv);
         float c = mod(uTime * waveSpeed - d * waveCount, 1.);
@@ -90,20 +90,21 @@ addShaderProgram(
     float dist(vec2 p0, vec2 p1) {
         return sqrt(pow(p1.x - p0.x, 2.) + pow(p1.y - p0.y, 2.));
     }
-    vec4 ping(vec2 uv, float innerTail, float edgeBorder, float resetTime, float speed, float fadeDistance) {
+    vec4 ping(vec2 uv, float innerMargin, float outerMargin, float resetTime, float speed) {
         float r = dist(uv, vec2(0.5, 0.5));
         float time = mod(uTime, resetTime) * speed;
-        float color = smoothstep(time - innerTail, time, r) * smoothstep(time + edgeBorder, time, r);
-        float fade = smoothstep(fadeDistance, 0., r);
+        float color = smoothstep(time - innerMargin, time, r) * smoothstep(time + outerMargin, time, r);
+        float fade = smoothstep(0.5, 0., r);
         return vec4(uColor * color * fade, color * fade);
     }
     void main() {
         vec2 uv = vUvs;
         uv = vec2(uv.x * uAspectRatio, uv.y);
-        float fadeDistance = 0.5;
-        float pingDuration = 0.75;
-        float pingSpeed = 1.5;
-        vec4 color = ping(uv, 0.25, 0.025, pingDuration, pingSpeed, fadeDistance);
+        float innerMargin = 0.4;
+        float outerMargin = 0.02;
+        float pingDuration = 1.;
+        float pingSpeed = 0.5;
+        vec4 color = ping(uv, innerMargin, outerMargin, pingDuration, pingSpeed);
         gl_FragColor = color;
     }`
 )
