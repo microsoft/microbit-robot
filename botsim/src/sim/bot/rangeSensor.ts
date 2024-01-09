@@ -65,8 +65,10 @@ addShaderProgram(
         vec2 ofs = vec2(0.265, 1.1); // hand-tuned to appear to emanate from the sensor
         float maxRange = uMaxRange + ofs.y;
         float maxAngle = uBeamAngle / 2.;
+        float waveSpeed = 8.;
+        float waveCount = 22.;
         float d = dist(ofs, uv);
-        float c = mod(uTime * 8. - d * 22., 1.);
+        float c = mod(uTime * waveSpeed - d * waveCount, 1.);
         c = 1. - c;
         c = c * c;
         c = .2 + c * .66;
@@ -99,9 +101,9 @@ addShaderProgram(
         vec2 uv = vUvs;
         uv = vec2(uv.x * uAspectRatio, uv.y);
         float fadeDistance = 0.5;
-        float resetTimeSec = 0.75;
-        float radarPingSpeed = 1.5;
-        vec4 color = ping(uv, 0.25, 0.025, resetTimeSec, radarPingSpeed, fadeDistance);
+        float pingDuration = 0.75;
+        float pingSpeed = 1.5;
+        vec4 color = ping(uv, 0.25, 0.025, pingDuration, pingSpeed, fadeDistance);
         gl_FragColor = color;
     }`
 )
