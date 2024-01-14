@@ -54,6 +54,8 @@ It is designed to help programming this kind of robot.
 <video src="https://microsoft.github.io/microbit-robot/assets/docs/sim.mp4" controls loop autoplay muted>
 </video>
 
+![Simulator](https://microsoft.github.io/microbit-robot/assets/docs/sim.gif)
+
 -   The simulator supports the line sensors and obstacle detectors.
 -   You can drag the robot using the mouse to reset the movements.
 -   If you use radio, you will see a single simulator with multiple robots.
