@@ -51,9 +51,6 @@ The following features are found often those robots:
 The simulator will load automatically in MakeCode once you use a robot block.
 It is designed to help programming this kind of robot.
 
-<video src="https://microsoft.github.io/microbit-robot/assets/docs/sim.mp4" controls loop autoplay muted>
-</video>
-
 ![Simulator](https://microsoft.github.io/microbit-robot/assets/docs/sim.gif)
 
 -   The simulator supports the line sensors and obstacle detectors.
