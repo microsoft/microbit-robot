@@ -6,7 +6,7 @@ This library is compatible with micro:bit V2 and V1. However, the code space in 
 
 > The library is still in beta and is subject to changes.
 
-![3 micro:bit robots](https://microsoft.github.io/microbit-robot/assets/images/robots.jpg)
+![3 micro:bit robots](https://microsoft.github.io/microbit-robot/assets/images/robots-sim.jpg)
 
 -   [DFRobot Maqueen](#dfrobot-maq)
 -   [DFRobot Maqueen Plus](#dfrobot-maq-plus)
