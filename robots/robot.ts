@@ -112,7 +112,7 @@ namespace robot.robots {
         start() {}
 
         /*
-        Makes the robot move at % `speed` ([-100, 100]). Negative goes backgward, 0 stops.
+        Makes the robot move at % `speed` ([-100, 100]). Negative goes backward, 0 stops.
         */
         motorRun(left: number, right: number): void {}
 

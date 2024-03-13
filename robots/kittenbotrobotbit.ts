@@ -92,7 +92,8 @@ namespace robot {
     }
 
     function MotorRun(index: Motors, speed: number): void {
-        speed = Math.clamp(-4095, 4095, speed << 4)
+        // speed = [-100, 100] x 41
+        speed = Math.clamp(-4095, 4095, speed * 41)
 
         if (index > 4 || index <= 0) return
         let pp = (index - 1) * 2
