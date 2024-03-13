@@ -12,6 +12,9 @@ jobs:
         strategy:
             matrix:
                 node-version: [18.x]
+        permissions:
+            actions: read
+            contents: write                
         steps:
             - uses: actions/checkout@v3
             - name: Use Node.js ${{ matrix.node-version }}
