@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "ms-edu.pxt-vscode-web",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "genaiscript.genaiscript-vscode"
     ]
 }
