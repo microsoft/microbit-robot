@@ -8,8 +8,8 @@ namespace robot {
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P15, 2)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P12, DigitalPin.P8)
             this.lineDetectors = new drivers.DigitalPinLineDetectors(
-                DigitalPin.P13,
                 DigitalPin.P14,
+                DigitalPin.P13,
                 false
             )
             this.arms = [new drivers.ServoArm(45, 135, AnalogPin.P1), new drivers.ServoArm(45, 135, AnalogPin.P2)]
