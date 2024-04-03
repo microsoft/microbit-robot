@@ -5,7 +5,7 @@ namespace robot.drivers {
         constructor() {}
 
         start() {
-            fwdSensors.ledRing.setBrightness(27)
+            fwdSensors.ledRing.setBrightness(5)
         }
 
         setColor(red: number, green: number, blue: number) {
@@ -26,7 +26,10 @@ namespace robot.drivers {
     export class JacdacLines implements LineDetectors {
         constructor() {}
 
-        start() {}
+        start() {
+            
+
+        }
 
         lineState(state: number[]) {
             state[0] = fwdSensors.line1.brightness() < 50 ? 1 : 0

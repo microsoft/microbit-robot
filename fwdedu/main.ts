@@ -26,4 +26,9 @@ namespace robot {
     export const forwardEducationJacbot = new RobotDriver(
         new ForwardEducationJacbot()
     )
+
 }
+
+robot.forwardEducationJacbot.start()
+robot.startCompactRadio()
+robot.startCalibrationButtons()
