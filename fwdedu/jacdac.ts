@@ -32,9 +32,9 @@ namespace robot.drivers {
         }
 
         lineState(state: number[]) {
-            state[0] = fwdSensors.line1.brightness() < 50 ? 1 : 0
-            state[1] = fwdSensors.line2.brightness() < 50 ? 1 : 0
-            state[2] = fwdSensors.line3.brightness() < 50 ? 1 : 0
+            state[0] = fwdSensors.line1.brightness() ? 0 : 400
+            state[1] = fwdSensors.line2.brightness() ? 0 : 400
+            state[2] = fwdSensors.line3.brightness() ? 0 : 400
 
         }
     }
