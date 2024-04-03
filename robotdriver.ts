@@ -144,7 +144,6 @@ namespace robot {
             // stop motors
             this.setColor(0x0000ff)
             this.motorRun(0, 0)
-            this.playTone(0, 0)
             // wake up sensors
             this.sonarDistanceFilter.x = configuration.MAX_SONAR_DISTANCE
             this.readUltrasonicDistance()
@@ -456,7 +455,7 @@ namespace robot {
         }
 
         private updateTone() {
-            if (this.stopToneMillis && this.stopToneMillis < control.millis()) {
+            if (this.stopToneMillis && this.stopToneMillis <= control.millis()) {
                 pins.analogPitch(0, 0)
                 this.stopToneMillis = 0
             }
