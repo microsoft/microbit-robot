@@ -1,0 +1,24 @@
+{
+    "name": "my-project",
+    "version": "0.0.0",
+    "files": [
+        "main.ts",
+        "jacdac.ts"
+    ],
+    "supportedTargets": [
+        "microbit"
+    ],
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*",
+        "microbit-robot": "github:microsoft/microbit-robot#v2.5.42",
+        "jacdac": "github:microsoft/pxt-jacdac#v1.9.23",
+        "fwd-edu-common": "github:climate-action-kits/pxt-fwd-edu/fwd-common",
+        "fwd-edu-breakout": "github:climate-action-kits/pxt-fwd-edu/fwd-breakout",
+        "fwd-edu-led": "github:climate-action-kits/pxt-fwd-edu/fwd-led",
+        "fwd-edu-line": "github:climate-action-kits/pxt-fwd-edu/fwd-line",
+        "fwd-edu-sonar": "github:climate-action-kits/pxt-fwd-edu/fwd-sonar"
+    },
+    "testDependencies": {}
+}
