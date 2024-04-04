@@ -31,3 +31,5 @@ namespace robot {
 robot.forwardEducationJacbot.start()
 robot.startCompactRadio()
 robot.startCalibrationButtons()
+// fwdMotors.leftServo.stop()
+// fwdMotors.rightServo.stop()
