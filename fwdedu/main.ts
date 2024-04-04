@@ -9,8 +9,14 @@ namespace robot {
         }
 
         motorRun(lspeed: number, rspeed: number) {
-            fwdMotors.leftServo.fwdSetSpeed(lspeed)
-            fwdMotors.rightServo.fwdSetSpeed(-rspeed)  // silliness with servos
+            if (lspeed == 0) 
+                fwdMotors.leftServo.setEnabled(false)
+            else 
+                fwdMotors.leftServo.fwdSetSpeed(lspeed)
+            if (rspeed == 0)
+                fwdMotors.rightServo.setEnabled(false)
+            else
+               fwdMotors.rightServo.fwdSetSpeed(-rspeed)  // silliness with servos
         }
 
         headlightsSetColor(red: number, green: number, blue: number) {
@@ -31,5 +37,3 @@ namespace robot {
 robot.forwardEducationJacbot.start()
 robot.startCompactRadio()
 robot.startCalibrationButtons()
-// fwdMotors.leftServo.stop()
-// fwdMotors.rightServo.stop()

@@ -19,7 +19,7 @@ namespace robot.drivers {
         start() {}
 
         distance(maxCmDistance: number): number {
-            return fwdSensors.sonar1.distance()
+            return fwdSensors.sonar1.distance() * 100
         }
     }
 
@@ -33,8 +33,8 @@ namespace robot.drivers {
 
         lineState(state: number[]) {
             state[0] = fwdSensors.line1.brightness() ? 0 : 400
-            state[1] = fwdSensors.line2.brightness() ? 0 : 400
-            state[2] = fwdSensors.line3.brightness() ? 0 : 400
+            state[2] = fwdSensors.line2.brightness() ? 0 : 400
+            state[4] = fwdSensors.line3.brightness() ? 0 : 400
 
         }
     }
