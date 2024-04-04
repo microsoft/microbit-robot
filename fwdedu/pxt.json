@@ -1,8 +1,9 @@
 {
-    "name": "my-project",
+    "name": "Forward Education JacBot Robot Car",
     "version": "0.0.0",
     "files": [
         "main.ts",
+        "jacbot.ts",
         "jacdac.ts"
     ],
     "supportedTargets": [

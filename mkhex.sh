@@ -31,6 +31,10 @@ cp ./built/mbcodal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v2.hex
 makecode -c mkc-inksmithk8.json -f size
 cp ./built/mbdal-binary.hex ./assets/inksmith-k8-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/inksmith-k8-for-microbit-v2.hex
+cd fwdedu
+makecode -f size
+cd ..
+cp ./fwdedu/built/mbcodal-binary.hex ./assets/fwdedu-for-microbit-v2.hex
 
 cd protocol
 makecode
