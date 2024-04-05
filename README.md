@@ -212,7 +212,7 @@ Use micro:code to remote control a robot using this library.
 
 -   [Home](https://shop.elecfreaks.com/products/elecfreaks-smart-cutebot-pro-v2-programming-robot-car-for-micro-bit)
 
-## InkSmith K8 <a id="inksmith-k8"></a>
+### InkSmith K8 <a id="inksmith-k8"></a>
 
 ![Photograph of the K8](https://microsoft.github.io/microbit-robot/assets/images/inksmithk8.webp)
 
