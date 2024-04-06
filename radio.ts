@@ -64,7 +64,7 @@ namespace robot {
     function handleLineDetected() {
         const d = RobotDriver.instance()
         let prev: number[] = []
-        messages.onEvent(messages.RobotEvents.LineAny, robots.RobotCompactCommand.LineState, () => {
+        messages.onEvent(messages.RobotEvents.LineAny, robots.RobotCompactCommand.LineAnyState, () => {
             const robot = d.robot
             const threshold = robot.lineHighThreshold
             const current = d.currentLineState
