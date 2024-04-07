@@ -95,7 +95,7 @@ namespace robot {
                     msg = robots.RobotCompactCommand.LineLostRight
             }
             sendCompactCommand(msg)
-            prev = current.slice()
+            prev = current // copy not needed as it is done elsewhere
         })
     }
 
