@@ -97,7 +97,7 @@ namespace robot {
 
         if (index > 4 || index <= 0) return
         let pp = (index - 1) * 2
-        let pn = (index - 1) * 2 + 1
+        let pn = pp + 1
         if (speed >= 0) {
             setPwm(pp, 0, speed)
             setPwm(pn, 0, 0)
@@ -118,11 +118,7 @@ namespace robot {
         constructor(public readonly servo: Servos) {}
         start() {}
         open(aperture: number) {
-            if (aperture > 50) {
-                setServoAngle(this.servo, 0)
-            } else {
-                setServoAngle(this.servo, 90)
-            }
+            setServoAngle(this.servo, aperture > 50 ? 0 : 90)
         }
     }
 
@@ -137,7 +133,7 @@ namespace robot {
                 false
             )
             this.maxLineSpeed = 150
-            this.arms = [new PwmArm(Servos.S1)]
+            // this.arms = [new PwmArm(Servos.S1)]   // remove to fit in V1 space
         }
 
         start() {
