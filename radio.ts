@@ -91,11 +91,11 @@ namespace robot {
                 prev[RobotLineDetector.Middle] < threshold
             ) {
                 if (prev[RobotLineDetector.Left] >= threshold) {
-                    msg = robots.RobotCompactCommand.LineLostLeft
+                    msg = robots.RobotCompactCommand.LineLostRight
                     lost = true
                 }
                 else if (prev[RobotLineDetector.Right] >= threshold) {
-                    msg = robots.RobotCompactCommand.LineLostRight
+                    msg = robots.RobotCompactCommand.LineLostLeft
                     lost = true
                 }
             }
