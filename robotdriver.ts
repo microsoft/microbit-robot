@@ -290,8 +290,8 @@ namespace robot {
             const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
             for (let i = 0; i < 5; ++i) {
-                if (s[i] >= threshold) led.plot(i, 4)
-                else led.unplot(i, 4)
+                if (s[i] >= threshold) led.plot(4-i, 4)
+                else led.unplot(4-i, 4)
             }
         }
 

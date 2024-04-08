@@ -80,9 +80,9 @@ namespace robot {
                 msg |= robots.RobotLineState.Left | robots.RobotLineState.Right
             else {
                 if (current[RobotLineDetector.Left] >= threshold)
-                    msg |= robots.RobotLineState.Right              // Left/Right between RobotLineDetector and RobotLineState swapped
+                    msg |= robots.RobotLineState.Left           
                 if (current[RobotLineDetector.Right] >= threshold)
-                    msg |= robots.RobotLineState.Left
+                    msg |= robots.RobotLineState.Right
             }
             // line lost
             lost = false
