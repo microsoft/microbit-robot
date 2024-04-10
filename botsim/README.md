@@ -41,3 +41,10 @@ If your bot chassis specifies a texture, it will be overlaid on the bot.
     - Copy the generated vertices to the chassis' "verts" field.
 14. Reference the texture in your bot's chassis spec
     - Set the chassis' "texture" field to the texture's relative path.
+15. Specify where the (two) wheels are on the chassis
+16. Specify the location of range sensor and line sensors 
+17. Copy over leds section (individual LEDs not supported)
+18. Add bot to botsim/src/bots/index.ts
+
+
+
