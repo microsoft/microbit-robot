@@ -99,8 +99,6 @@ namespace robot {
                     lost = true
                 }
             }
-            // TODO: problem here is how are we going to transition to LineNone?
-
             sendCompactCommand(msg)
             prev = current // copy not needed as it is done elsewhere
         })
