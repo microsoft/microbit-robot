@@ -47,4 +47,16 @@ If your bot chassis specifies a texture, it will be overlaid on the bot.
 18. Add bot to botsim/src/bots/index.ts
 
 
+## Testing
+
+- In the botsim folder run npm start. This will start a dev server for botsim.
+- In the pxt-microbit repo, run pxt serve
+- When the editor opens up, add localhostmessagesims=1 to the url. This will direct the editor to load botsim from localhost.
+- Make a new project.
+- Add the microbit-robots extension.
+- In your "on start" handler, add the "robot start" block from the extension. This will trigger botsim to load.
+
+
+
+
 
