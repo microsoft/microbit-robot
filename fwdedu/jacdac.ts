@@ -22,9 +22,9 @@ namespace robot.drivers {
         start() { }
 
         lineState(state: number[]) {
-            state[RobotLineDetector.Left] = fwdSensors.line3.brightness() ? 0 : 400
+            state[RobotLineDetector.Right] = fwdSensors.line3.brightness() ? 0 : 400
             state[RobotLineDetector.Middle] = fwdSensors.line2.brightness() ? 0 : 400
-            state[RobotLineDetector.Right] = fwdSensors.line1.brightness() ? 0 : 400
+            state[RobotLineDetector.Left] = fwdSensors.line1.brightness() ? 0 : 400
         }
     }
 }
