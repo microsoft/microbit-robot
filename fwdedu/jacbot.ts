@@ -6,6 +6,15 @@ namespace robot {
             this.leds = new drivers.JacdacLed()
             this.sonar = new drivers.JacdacSonar()
             this.lineDetectors = new drivers.JacdacLines()
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
+                turnRatio: -75,
+                speed: 40,
+            }
+
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] = {
+                turnRatio: 75,
+                speed: 40,
+            }
         }
 
         motorRun(lspeed: number, rspeed: number) {
@@ -16,7 +25,7 @@ namespace robot {
             if (rspeed == 0)
                 fwdMotors.rightServo.setEnabled(false)
             else
-               fwdMotors.rightServo.fwdSetSpeed(-rspeed)  // silliness with servos
+                fwdMotors.rightServo.fwdSetSpeed(-rspeed)  // silliness with servos
         }
 
         headlightsSetColor(red: number, green: number, blue: number) {
