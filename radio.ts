@@ -97,7 +97,7 @@ namespace robot {
                 }
             }
             sendCompactCommand(msg)
-            prev = current // copy not needed as it is done elsewhere
+            prev = current
         })
     }
 
