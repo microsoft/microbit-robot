@@ -86,23 +86,18 @@ namespace robot {
             }
             // line lost
             lost = false
-            if (
-                current.every(v => v < threshold) &&
-                prev[RobotLineDetector.Middle] < threshold
-            ) {
+            if (current.every(v => v < threshold)) {
                 if (prev[RobotLineDetector.Left] >= threshold) {
-                    msg = robots.RobotCompactCommand.LineLostRight
-                    lost = true
-                }
-                else if (prev[RobotLineDetector.Right] >= threshold) {
                     msg = robots.RobotCompactCommand.LineLostLeft
                     lost = true
                 }
+                else if (prev[RobotLineDetector.Right] >= threshold) {
+                    msg = robots.RobotCompactCommand.LineLostRight
+                    lost = true
+                }
             }
-            // TODO: problem here is how are we going to transition to LineNone?
-
             sendCompactCommand(msg)
-            prev = current // copy not needed as it is done elsewhere
+            prev = current
         })
     }
 

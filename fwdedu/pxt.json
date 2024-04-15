@@ -1,6 +1,6 @@
 {
     "name": "Forward Education JacBot Robot Car",
-    "version": "2.5.45",
+    "version": "2.5.51",
     "files": [
         "main.ts",
         "jacbot.ts",
@@ -13,7 +13,7 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "microbit-robot": "github:microsoft/microbit-robot#v2.5.42",
+        "microbit-robot": "github:microsoft/microbit-robot#v2.5.47",
         "jacdac": "github:microsoft/pxt-jacdac#v1.9.23",
         "fwd-edu-common": "github:climate-action-kits/pxt-fwd-edu/fwd-common",
         "fwd-edu-breakout": "github:climate-action-kits/pxt-fwd-edu/fwd-breakout",
