@@ -2,13 +2,13 @@
     "name": "Forward Education JacBot Robot Car",
     "version": "2.5.51",
     "files": [
-        "main.ts",
         "jacbot.ts",
         "jacdac.ts"
     ],
     "supportedTargets": [
         "microbit"
     ],
+    "testFiles": [ "main.ts "],
     "dependencies": {
         "core": "*",
         "radio": "*",
