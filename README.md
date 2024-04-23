@@ -12,6 +12,7 @@ This library is compatible with micro:bit V2 and V1. However, the code space in 
 -   [DFRobot Maqueen Plus](#dfrobot-maq-plus)
 -   [Elecfreaks Cutebot](#cutebot)
 -   [Elecfreaks Cutebot PRO](#cutebot-pro)
+-   [Forward Educations Smart Vehicle Kit](#fwdedu)
 -   [InkSmith K8](#inksmith-k8)
 -   [KeyStudio KS0426 Mini Smart Robot](#keystudio-mini)
 -   [KittenBot MiniLFR](#kittenbot-mlfr)
@@ -212,7 +213,15 @@ Use micro:code to remote control a robot using this library.
 
 -   [Home](https://shop.elecfreaks.com/products/elecfreaks-smart-cutebot-pro-v2-programming-robot-car-for-micro-bit)
 
-## InkSmith K8 <a id="inksmith-k8"></a>
+
+## Forward Education Smart Vehicle Kit <a id="fwdedu"></a>
+
+![Photograph of car made with Smart Vehicle Kit](https://microsoft.github.io/microbit-robot/assets/images/fwdedu.jpg){:class="photo"}
+
+-   [Home](https://forwardedu.com/compare-kits/)
+
+
+### InkSmith K8 <a id="inksmith-k8"></a>
 
 ![Photograph of the K8](https://microsoft.github.io/microbit-robot/assets/images/inksmithk8.webp)
 
