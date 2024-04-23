@@ -4,6 +4,9 @@ on:
         paths:
             - "botsim/**"
             - "assets/**"
+        tags:
+            - v**
+    
     workflow_dispatch:
 
 jobs:
