@@ -146,7 +146,7 @@ robot.onObstacleDistanceChanged(function () {
 ```blocks
 let left = false
 robot.onLineDetected(function () {
-    left = robot.detectLines(RobotLineDetector.Left)
+    left = robot.detectLine(RobotLineDetector.Left)
 })
 ```
 
