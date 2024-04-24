@@ -1,6 +1,6 @@
 {
     "name": "microbit-robot-protocol",
-    "version": "2.5.52",
+    "version": "2.5.53",
     "dependencies": {
         "core": "*",
         "radio": "*"

@@ -1,6 +1,6 @@
 {
     "name": "Forward Education JacBot Robot Car",
-    "version": "2.5.52",
+    "version": "2.5.53",
     "files": [
         "main.ts",
         "jacbot.ts",
