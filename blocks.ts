@@ -19,7 +19,7 @@ namespace robot {
     //% turnRatio.shadow=turnRatioPicker
     //% turnRatio.min=-200
     //% turnRatio.max=200
-    export function motorRun(turnRatio: number, speed: number) {
+    export function motorRun(turnRatio: number = 0, speed: number = 100) {
         const robot = RobotDriver.instance()
         robot.motorRun(turnRatio, speed)
     }
