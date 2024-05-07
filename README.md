@@ -84,9 +84,16 @@ robot.elecfreaksCuteBot.start()
 
 This is the only code that is specific to the robot you are using. The rest of the blocks are the same for all robots.
 
-### Output
+### Motors
 
--   move robot using tank controls
+There are two ways to control the motor: **tank** or **steer**.
+
+#### Tank
+
+The `tank` block takes the `left` and `right` motor
+speed between `-100%` and `100%` and an optional `duration` in milliseconds.
+The block will pause for the `duration` before continuing to the next block (it does _not_ stop
+at the end of the duration).
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
@@ -94,12 +101,21 @@ input.onButtonPressed(Button.A, () => {
 })
 ```
 
-The `tank` block takes the `left` and `right` motor
-speed between `-100%` and `100%` and an optional `duration` in milliseconds.
-The block will pause for the `duration` before continuing to the next block (it does _not_ stop
-at the end of the duration).
+### ~hint
 
--   steer robot using turn ration and throttle
+#### Hint Why can't we use angles?
+
+Most micro:bit robots do not have sensors to measure the rotation of the wheels,
+so it is not possible to compute rotation angles or distances. The only known value
+is that amount of power sent to the robot.
+
+### ~
+
+### Steer
+
+The `steer` block takes a `steering` and `speed`parameters.
+The`steering`controls how much "turn",`speed` controls the throttle on the motors.
+The optional duration is in milliseconds.
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
@@ -107,11 +123,9 @@ input.onButtonPressed(Button.A, () => {
 })
 ```
 
-The `steer` block takes a `steering` and `speed`parameters.
-The`steering`controls how much "turn",`speed` controls the throttle on the motors.
-The optional duration is in milliseconds.
+### Stop
 
--   stop the robot
+This block stops the robot.
 
 ```blocks
 input.onButtonPressed(Button.B, () => {
@@ -119,13 +133,19 @@ input.onButtonPressed(Button.B, () => {
 })
 ```
 
--   open a claw/arm (some robots support one or more servos)
+### Arms
+
+Some robot support one or more servo attachments. 
+These are called **arms** in the library.
+Open a claw/arm (some robots support one or more servos)
 
 ```blocks
 input.onButtonPressed(Button.B, () => {
     robot.armOpen(0, 50)
 })
 ```
+
+### LEDS and music
 
 -   set LED and headlights color
 
@@ -143,7 +163,7 @@ input.onButtonPressed(Button.A, function () {
 })
 ```
 
-### Input
+### Obstacle detection
 
 -   detect when an obstacle is changing
     and read the current distance (in cm)
@@ -154,6 +174,8 @@ robot.onObstacleDistanceChanged(function () {
     dist = robot.obstacleDistance()
 })
 ```
+
+### Line detection
 
 -   detect line changes or read line state
 
