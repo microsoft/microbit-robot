@@ -86,15 +86,26 @@ This is the only code that is specific to the robot you are using. The rest of t
 
 ### Output
 
--   move
+-   move robot using tank controls
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
-    robot.motorRun(0, 100)
+    robot.motorTank(50, 50)
 })
 ```
 
-The move block takes a `steering` and `speed`parameters.
+The `tank` block takes the `left` and `right` motor
+speed which can also be negative.
+
+-   steer robot using turn ration and throttle
+
+```blocks
+input.onButtonPressed(Button.A, () => {
+    robot.motorSteer(0, 100)
+})
+```
+
+The `steer` block takes a `steering` and `speed`parameters.
 The`steering`controls how much "turn",`speed` controls the throttle on the motors.
 
 -   stop the robot
@@ -213,13 +224,11 @@ Use micro:code to remote control a robot using this library.
 
 -   [Home](https://shop.elecfreaks.com/products/elecfreaks-smart-cutebot-pro-v2-programming-robot-car-for-micro-bit)
 
-
 ## Forward Education Smart Vehicle Kit <a id="fwdedu"></a>
 
 ![Photograph of car made with Smart Vehicle Kit](https://microsoft.github.io/microbit-robot/assets/images/fwdedu.jpg){:class="photo"}
 
 -   [Home](https://forwardedu.com/compare-kits/)
-
 
 ### InkSmith K8 <a id="inksmith-k8"></a>
 

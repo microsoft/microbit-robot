@@ -301,6 +301,6 @@ namespace robot {
     export function calibrate() {
         robot.motorStop()
         robot.startCalibrationButtons(true)
-        robot.motorRun(0, 80)
+        robot.motorSteer(0, 80)
     }
 }

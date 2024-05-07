@@ -22,7 +22,7 @@ Add an event block to run code when both sensors detect a line.
 
 ```blocks
 robot.onLineLeftRightDetected(true, true, function () {
-    robot.motorRun(50, 100)
+    robot.motorSteer(50, 100)
 })
 ```
 
@@ -33,7 +33,7 @@ Add a `||robot:motor run||` block to run right when both lines are detected.
 ```blocks
 robot.onLineLeftRightDetected(true, true, function () {
     // @highlight
-    robot.motorRun(50, 100)
+    robot.motorSteer(50, 100)
 })
 ```
 
@@ -41,10 +41,9 @@ robot.onLineLeftRightDetected(true, true, function () {
 
 Add blocks to turn left when the line is lost, when the right line sensor stops detecting the line.
 
-
 ```blocks
 robot.onLineLeftRightDetected(false, false, function () {
-    robot.motorRun(-50, 100)
+    robot.motorSteer(-50, 100)
 })
 ```
 
