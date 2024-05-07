@@ -9,9 +9,8 @@ namespace robot {
      */
     //% weight=97
     //% group="Motors"
-    //% block="robot motor steer || with steering $turnRatio at speed $speed \\%"
-    //% expandableArgumentMode="toggle"
-    //% blockid="mbitrobotmotorturn"
+    //% block="robot motor steer $turnRatio at $speed \\%"
+    //% blockid="mbitrobotmotorsteer"
     //% speed.defl=100
     //% speed.min=-100
     //% speed.max=100
