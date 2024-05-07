@@ -271,6 +271,10 @@ Use micro:code to remote control a robot using this library.
 
 MIT
 
+## Acknoledgements
+
+- [Anthony Jacques](https://twitter.com/Syd_Filmore) for a suggestions on the motor block API design.
+
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
