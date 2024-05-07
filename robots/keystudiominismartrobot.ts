@@ -46,8 +46,8 @@ namespace robot {
     }
 
     function setPwm(channel: number, on: number, off: number): void {
-        let buf = pins.createBuffer(5)
-        buf[0] = LED0_ON_L + 4 * channel
+        const buf = pins.createBuffer(5)
+        buf[0] = LED0_ON_L + channel >> 2
         buf[1] = on & 0xff
         buf[2] = (on >> 8) & 0xff
         buf[3] = off & 0xff
