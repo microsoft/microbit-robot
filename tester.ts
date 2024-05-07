@@ -39,17 +39,13 @@ namespace robot.test {
         input.onButtonPressed(Button.B, () => {
             const d = 600
 
-            motorTank(100, 100, d)
             motorTank(50, 50, d)
             motorTank(0, 0, d)
             motorTank(-50, -50, d)
-            motorTank(-100, -100)
             motorStop()
 
             motorSteer(0, 100, d)
-            motorSteer(0, 50)
             motorSteer(0, 0, d)
-            motorSteer(0, -50, d)
             motorSteer(0, -100, d)
             motorStop()
         })
@@ -77,7 +73,6 @@ namespace robot.test {
                 last = 1
                 motorSteer(100, 100)
             })
-            motorSteer(0, 100)
         })
     }
 }

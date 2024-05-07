@@ -26,7 +26,7 @@ namespace robot {
         return r
     }
 
-    function clampSpeed(speed: number, m: number = 100) {
+    export function clampSpeed(speed: number, m: number = 100) {
         return Math.clamp(-m, m, Math.round(speed))
     }
 
@@ -363,20 +363,6 @@ namespace robot {
             if (!isNaN(duration) && duration > 0) {
                 basic.pause(duration)
             }
-        }
-
-        motorTank(left: number, right: number, duration?: number) {
-            left = clampSpeed(left, 100)
-            right = clampSpeed(right, 100)
-
-            const speed = Math.abs(left) > Math.abs(right) ? left : right
-            let turnRatio: number
-            if (speed === 0) {
-                turnRatio = 0
-            } else {
-                turnRatio = (left - right) / speed * 100
-            }
-            this.motorSteer(turnRatio, speed, duration)
         }
 
         private ultrasonicDistanceOnce() {

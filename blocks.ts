@@ -19,8 +19,12 @@ namespace robot {
     //% turnRatio.shadow=turnRatioPicker
     //% turnRatio.min=-200
     //% turnRatio.max=200
-    //% duration.shadow=timePicker 
-    export function motorSteer(turnRatio: number = 0, speed: number = 100, duration?: number) {
+    //% duration.shadow=timePicker
+    export function motorSteer(
+        turnRatio: number = 0,
+        speed: number = 100,
+        duration?: number
+    ) {
         const robot = RobotDriver.instance()
         robot.motorSteer(turnRatio, speed, duration)
     }
@@ -41,12 +45,26 @@ namespace robot {
     //% right.min=-100
     //% right.max=100
     //% right.shadow=speedPicker
-    //% duration.shadow=timePicker 
-    export function motorTank(left: number = 80, right: number = 80, duration?: number) {
-        const robot = RobotDriver.instance()
-        robot.motorTank(left, right, duration)
-    }
+    //% duration.shadow=timePicker
+    export function motorTank(
+        left: number = 80,
+        right: number = 80,
+        duration?: number
+    ) {
+        left = clampSpeed(left, 100)
+        right = clampSpeed(right, 100)
 
+        const speed = Math.abs(left) > Math.abs(right) ? left : right
+        let turnRatio: number
+        if (speed === 0) {
+            turnRatio = 0
+        } else {
+            turnRatio = ((left - right) / speed) * 100
+        }
+
+        const robot = RobotDriver.instance()
+        robot.motorSteer(turnRatio, speed, duration)
+    }
 
     /**
      * Stops the robot.
