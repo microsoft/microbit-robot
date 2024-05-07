@@ -5,11 +5,11 @@
 //% groups='["Robot", "Motors", "Accessories", "Lines", "Obstacles", "Configuration"]'
 namespace robot {
     /**
-     * Moves the robot.
+     * Steers the robot.
      */
-    //% weight=98
+    //% weight=97
     //% group="Motors"
-    //% block="robot motor run || with steering $turnRatio at speed $speed \\%"
+    //% block="robot motor steer || with steering $turnRatio at speed $speed \\%"
     //% expandableArgumentMode="toggle"
     //% blockid="mbitrobotmotorturn"
     //% speed.defl=100
@@ -19,10 +19,37 @@ namespace robot {
     //% turnRatio.shadow=turnRatioPicker
     //% turnRatio.min=-200
     //% turnRatio.max=200
-    export function motorRun(turnRatio: number = 0, speed: number = 100) {
+    export function motorSteer(turnRatio: number = 0, speed: number = 100) {
         const robot = RobotDriver.instance()
-        robot.motorRun(turnRatio, speed)
+        robot.motorSteer(turnRatio, speed)
     }
+
+    // @deprecated use motorSteer instead
+    export function motorRun(turnRatio: number = 0, speed: number = 100) {
+        motorSteer(turnRatio, speed)
+    }
+
+    /**
+     * Tanks the robot.
+     */
+    //% weight=98
+    //% group="Motors"
+    //% block="robot motor tank $left \\% $right \\%"
+    //% expandableArgumentMode="toggle"
+    //% blockid="mbitrobotmotortank"
+    //% left.defl=100
+    //% left.min=-100
+    //% left.max=100
+    //% left.shadow=speedPicker
+    //% right.defl=100
+    //% right.min=-100
+    //% right.max=100
+    //% right.shadow=speedPicker
+    export function motorTank(left: number = 80, right: number = 80) {
+        const robot = RobotDriver.instance()
+        robot.motorTank(left, right)
+    }
+
 
     /**
      * Stops the robot.
@@ -33,7 +60,7 @@ namespace robot {
     //% blockid="mbitrobotmotorstop"
     export function motorStop() {
         const robot = RobotDriver.instance()
-        robot.motorRun(0, 0)
+        robot.motorSteer(0, 0)
     }
 
     /**
