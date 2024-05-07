@@ -143,7 +143,7 @@ namespace robot {
 
             // stop motors
             this.setColor(0x0000ff)
-            this.motorRun(0, 0)
+            this.motorSteer(0, 0)
             // wake up sensors
             this.sonarDistanceFilter.x = configuration.MAX_SONAR_DISTANCE
             this.readUltrasonicDistance()
@@ -290,8 +290,8 @@ namespace robot {
             const threshold = this.robot.lineHighThreshold
             const s = this.currentLineState
             for (let i = 0; i < 5; ++i) {
-                if (s[i] >= threshold) led.plot(4-i, 4)
-                else led.unplot(4-i, 4)
+                if (s[i] >= threshold) led.plot(4 - i, 4)
+                else led.unplot(4 - i, 4)
             }
         }
 
@@ -347,7 +347,7 @@ namespace robot {
             }
         }
 
-        motorRun(turnRatio: number, speed: number) {
+        motorSteer(turnRatio: number, speed: number) {
             this.start()
             turnRatio = clampSpeed(turnRatio, 200)
             speed = clampSpeed(speed, 100)
@@ -359,6 +359,20 @@ namespace robot {
                 this.currentSpeed = this.targetSpeed
                 this.currentTurnRatio = this.targetTurnRatio
             }
+        }
+
+        motorTank(left: number, right: number) {
+            left = clampSpeed(left, 100)
+            right = clampSpeed(right, 100)
+
+            const speed = Math.abs(left) > Math.abs(right) ? left : right
+            let turnRatio: number
+            if (speed === 0) {
+                turnRatio = 0
+            } else {
+                turnRatio = (left - right) / speed * 100
+            }
+            this.motorSteer(turnRatio, speed)
         }
 
         private ultrasonicDistanceOnce() {
@@ -455,7 +469,10 @@ namespace robot {
         }
 
         private updateTone() {
-            if (this.stopToneMillis && this.stopToneMillis <= control.millis()) {
+            if (
+                this.stopToneMillis &&
+                this.stopToneMillis <= control.millis()
+            ) {
                 pins.analogPitch(0, 0)
                 this.stopToneMillis = 0
             }

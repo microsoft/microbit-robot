@@ -34,7 +34,7 @@ You will see the robot moving forward in the robot simulator.
 ```blocks
 robot.elecfreaksCuteBot.start()
 // @highlight
-robot.motorRun(0, 100)
+robot.motorSteer(0, 100)
 ```
 
 ## Stop
@@ -43,7 +43,7 @@ Use the `||robot:robot stop||` block to stop all motors after 1 second.
 
 ```blocks
 robot.elecfreaksCuteBot.start()
-robot.motorRun(0, 100)
+robot.motorSteer(0, 100)
 basic.pause(1000)
 // @highlight
 robot.motorStop()
@@ -57,12 +57,12 @@ where the left motor stops spinning at 100, and starts going negative beyond 100
 
 ```blocks
 robot.elecfreaksCuteBot.start()
-robot.motorRun(0, 100)
+robot.motorSteer(0, 100)
 basic.pause(1000)
 robot.motorStop()
 basic.pause(1000)
 // @highlight
-robot.motorRun(100, 100)
+robot.motorSteer(100, 100)
 ```
 
 ## Spin Right
@@ -72,14 +72,14 @@ and the right motor will spin forward.
 
 ```blocks
 robot.elecfreaksCuteBot.start()
-robot.motorRun(0, 100)
+robot.motorSteer(0, 100)
 basic.pause(1000)
 robot.motorStop()
 basic.pause(1000)
-robot.motorRun(100, 100)
+robot.motorSteer(100, 100)
 basic.pause(1000)
 // @highlight
-robot.motorRun(200, 100)
+robot.motorSteer(200, 100)
 ```
 
 ## Make it dance @showdialog

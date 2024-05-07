@@ -19,7 +19,7 @@ namespace robot {
                 const turnRatio = command.turnRatio || 0
                 const speed = command.speed || 0
                 driver.setAssist(RobotAssist.LineFollowing, msg !== robot.robots.RobotCompactCommand.MotorRunForwardFast)
-                driver.motorRun(turnRatio, speed)
+                driver.motorSteer(turnRatio, speed)
                 break
             }
             case robot.robots.RobotCompactCommand.LEDRed:
