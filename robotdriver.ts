@@ -347,7 +347,7 @@ namespace robot {
             }
         }
 
-        motorSteer(turnRatio: number, speed: number) {
+        motorSteer(turnRatio: number, speed: number, duration?: number) {
             this.start()
             turnRatio = clampSpeed(turnRatio, 200)
             speed = clampSpeed(speed, 100)
@@ -359,9 +359,13 @@ namespace robot {
                 this.currentSpeed = this.targetSpeed
                 this.currentTurnRatio = this.targetTurnRatio
             }
+
+            if (!isNaN(duration) && duration > 0) {
+                basic.pause(duration)
+            }
         }
 
-        motorTank(left: number, right: number) {
+        motorTank(left: number, right: number, duration?: number) {
             left = clampSpeed(left, 100)
             right = clampSpeed(right, 100)
 
@@ -372,7 +376,7 @@ namespace robot {
             } else {
                 turnRatio = (left - right) / speed * 100
             }
-            this.motorSteer(turnRatio, speed)
+            this.motorSteer(turnRatio, speed, duration)
         }
 
         private ultrasonicDistanceOnce() {
