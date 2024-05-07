@@ -37,7 +37,7 @@ namespace robot.test {
         })
 
         input.onButtonPressed(Button.B, () => {
-            const d = 800
+            const d = 600
 
             motorTank(100, 100)
             pause(d)

@@ -365,16 +365,13 @@ namespace robot {
             left = clampSpeed(left, 100)
             right = clampSpeed(right, 100)
 
+            const speed = Math.abs(left) > Math.abs(right) ? left : right
             let turnRatio: number
-            let speed: number
-            if (left < right) {
-                speed = right
-                turnRatio = Math.ceil(((left - speed) * 100) / speed)
+            if (speed === 0) {
+                turnRatio = 0
             } else {
-                speed = left
-                turnRatio = Math.floor(-((right - speed) * 100) / speed)
+                turnRatio = (left - right) / speed * 100
             }
-            console.log({ left, right, turnRatio, speed })
             this.motorSteer(turnRatio, speed)
         }
 
