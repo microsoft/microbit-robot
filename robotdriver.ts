@@ -374,6 +374,7 @@ namespace robot {
                 speed = left
                 turnRatio = Math.floor(-((right - speed) * 100) / speed)
             }
+            console.log({ left, right, turnRatio, speed })
             this.motorSteer(turnRatio, speed)
         }
 

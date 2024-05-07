@@ -24,11 +24,6 @@ namespace robot {
         robot.motorSteer(turnRatio, speed)
     }
 
-    // @deprecated use motorSteer instead
-    export function motorRun(turnRatio: number = 0, speed: number = 100) {
-        motorSteer(turnRatio, speed)
-    }
-
     /**
      * Tanks the robot.
      */
