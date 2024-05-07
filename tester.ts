@@ -39,28 +39,14 @@ namespace robot.test {
         input.onButtonPressed(Button.B, () => {
             const d = 600
 
-            motorTank(100, 100)
-            pause(d)
-            motorTank(50, 50)
-            pause(d)
-            motorTank(0, 0)
-            pause(d)
-            motorTank(-50, -50)
-            pause(d)
-            motorTank(-100, -100)
-            pause(d)
+            motorTank(50, 50, d)
+            motorTank(0, 0, d)
+            motorTank(-50, -50, d)
             motorStop()
-            
-            motorSteer(0, 100)
-            pause(d)
-            motorSteer(0, 50)
-            pause(d)
-            motorSteer(0, 0)
-            pause(d)
-            motorSteer(0, -50)
-            pause(d)
-            motorSteer(0, -100)
-            pause(d)
+
+            motorSteer(0, 100, d)
+            motorSteer(0, 0, d)
+            motorSteer(0, -100, d)
             motorStop()
         })
 
@@ -74,8 +60,7 @@ namespace robot.test {
             })
             onLineLeftRightDetected(false, false, () => {
                 console.log(`o o`)
-                if (last < 0)
-                    motorSteer(-200,100)
+                if (last < 0) motorSteer(-200, 100)
                 else motorSteer(200, 100)
             })
             onLineLeftRightDetected(true, false, () => {
@@ -88,7 +73,6 @@ namespace robot.test {
                 last = 1
                 motorSteer(100, 100)
             })
-            motorSteer(0, 100)
         })
     }
 }

@@ -90,23 +90,26 @@ This is the only code that is specific to the robot you are using. The rest of t
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
-    robot.motorTank(50, 50)
+    robot.motorTank(50, 50, 1000)
 })
 ```
 
 The `tank` block takes the `left` and `right` motor
-speed which can also be negative.
+speed between `-100%` and `100%` and an optional `duration` in milliseconds.
+The block will pause for the `duration` before continuing to the next block (it does _not_ stop
+at the end of the duration).
 
 -   steer robot using turn ration and throttle
 
 ```blocks
 input.onButtonPressed(Button.A, () => {
-    robot.motorSteer(0, 100)
+    robot.motorSteer(0, 100, 1000)
 })
 ```
 
 The `steer` block takes a `steering` and `speed`parameters.
 The`steering`controls how much "turn",`speed` controls the throttle on the motors.
+The optional duration is in milliseconds.
 
 -   stop the robot
 

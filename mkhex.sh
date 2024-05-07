@@ -1,6 +1,9 @@
 set -e
 
 makecode -f size
+makecode -c mkc-keystudiominismartrobot.json -f size
+cp ./built/mbdal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v1.hex
+cp ./built/mbcodal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v2.hex
 makecode -c mkc-kittenbotrobotbit.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-robotbit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-robotbit-for-microbit-v2.hex
@@ -13,9 +16,6 @@ cp ./built/mbcodal-binary.hex ./assets/elecfreaks-cutebotpro-for-microbit-v2.hex
 makecode -c mkc-yahboomtinybit.json -f size
 cp ./built/mbdal-binary.hex ./assets/yahboom-tinybit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/yahboom-tinybit-for-microbit-v2.hex
-makecode -c mkc-keystudiominismartrobot.json -f size
-cp ./built/mbdal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v1.hex
-cp ./built/mbcodal-binary.hex ./assets/keystudio-minismartrobot-for-microbit-v2.hex
 makecode -c mkc-dfrobotmaqueen.json -f size
 cp ./built/mbdal-binary.hex ./assets/dfrobot-maqueen-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/dfrobot-maqueen-for-microbit-v2.hex
