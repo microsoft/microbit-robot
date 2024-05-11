@@ -1,0 +1,5 @@
+{
+    "overrides": {
+        "testFiles": ["remotes/mainkitronikmotordriverv2.ts"]
+    }
+}
