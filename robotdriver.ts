@@ -383,7 +383,8 @@ namespace robot {
 
         private readLineState() {
             const state: number[] = [-1, -1, -1, -1, -1]
-            this.robot.lineDetectors.lineState(state)
+            if (this.robot.lineDetectors)
+                this.robot.lineDetectors.lineState(state)
             return state
         }
 

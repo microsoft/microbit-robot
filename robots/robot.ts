@@ -52,7 +52,7 @@ namespace robot.robots {
         /**
          * Line detector configuration
          */
-        lineDetectors: drivers.LineDetectors
+        lineDetectors?: drivers.LineDetectors
         /**
          * Robotic arm configuration
          */
