@@ -1,59 +1,49 @@
 namespace robot {
-    function clamp(speed: number) {
-        if (speed < -100) return -100
-        else if (speed > 100) return 100
-        else return Math.round(speed)
-    }
+    const MOTOR_SPEED = 100
 
     // https://github.com/KitronikLtd/pxt-kitronik-motor-driver
     class KitronikMotorDriverV2 extends robots.Robot {
-        readonly throttle: drivers.HBridgeMotor
-        readonly direction: drivers.HBridgeMotor
+        readonly throttle: drivers.AnalogPinHBridgeMotor
+        readonly direction: drivers.AnalogPinHBridgeMotor
         constructor() {
             super(0x33498160)
-            this.maxLineSpeed = 100
-            this.throttle = new drivers.HBridgeMotor(
+            this.maxLineSpeed = MOTOR_SPEED
+            this.speedTransitionAlpha = 0
+            this.speedBrakeTransitionAlpha = 0
+            this.throttle = new drivers.AnalogPinHBridgeMotor(
                 DigitalPin.P12,
                 DigitalPin.P8
             )
-            this.direction = new drivers.HBridgeMotor(
+            this.direction = new drivers.AnalogPinHBridgeMotor(
                 DigitalPin.P0,
                 DigitalPin.P16
             )
-            this.commands[
-                robot.robots.RobotCompactCommand.MotorRunForward
-            ] = {
-                speed: 50,
+            this.commands[robot.robots.RobotCompactCommand.MotorRunForward] = {
+                speed: MOTOR_SPEED,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
-                turnRatio: -25,
-                speed: 50,
+                turnRatio: -60,
+                speed: MOTOR_SPEED,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] = {
-                turnRatio: 25,
-                speed: 50,
+                turnRatio: 60,
+                speed: MOTOR_SPEED,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorSpinLeft] = {
-                turnRatio: -50,
-                speed: 50,
+                turnRatio: -100,
+                speed: MOTOR_SPEED,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorSpinRight] = {
-                turnRatio: 50,
-                speed: 50,
+                turnRatio: 100,
+                speed: MOTOR_SPEED,
             }
         }
 
         motorRun(left: number, right: number): void {
             // need to convert this back to angle, throttle
-            const speed = clamp((left + right) / 2)
-            if (speed === 0) {
-                this.throttle.run(0)
-                this.direction.run(0)
-            } else {
-                const dir = clamp(((left - right) / speed) * 100)
-                this.throttle.run(speed)
-                this.direction.run(dir)
-            }
+            const [speed, dir] = drivers.tankToRCMotors(left, right)
+            this.throttle.run(speed)
+            this.direction.run(dir)
         }
     }
 

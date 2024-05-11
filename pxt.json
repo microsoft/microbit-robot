@@ -28,6 +28,7 @@
         "drivers/servoarm.ts",
         "drivers/kalmanfilter1d.ts",
         "drivers/sim.ts",
+        "drivers/rccar.ts",
         "robots/robot.ts",
         "robots/keystudiominismartrobot.ts",
         "robots/yahboomtinybit.ts",
