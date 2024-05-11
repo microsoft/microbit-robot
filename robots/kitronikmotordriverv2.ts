@@ -23,38 +23,34 @@ namespace robot {
             this.commands[
                 robot.robots.RobotCompactCommand.MotorRunForward
             ] = {
-                speed: 100,
+                speed: 50,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] = {
                 turnRatio: -25,
-                speed: 100,
+                speed: 50,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] = {
                 turnRatio: 25,
-                speed: 100,
+                speed: 50,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorSpinLeft] = {
                 turnRatio: -50,
-                speed: 100,
+                speed: 50,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorSpinRight] = {
                 turnRatio: 50,
-                speed: 100,
+                speed: 50,
             }
         }
 
         motorRun(left: number, right: number): void {
-            console.log(`left: ${left}`)
-            console.log(`right: ${right}`)
             // need to convert this back to angle, throttle
             const speed = clamp((left + right) / 2)
-            console.log(`speed: ${speed}`)
             if (speed === 0) {
                 this.throttle.run(0)
                 this.direction.run(0)
             } else {
                 const dir = clamp(((left - right) / speed) * 100)
-                console.log(`dir: ${dir}`)
                 this.throttle.run(speed)
                 this.direction.run(dir)
             }
