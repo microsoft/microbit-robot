@@ -289,7 +289,7 @@ Use micro:code to remote control a robot using this library.
 
 -   [Home](http://www.yahboom.net/study/Tiny:bit)
 
-### Kitronik Motor Driver V2 <a id="kitronik-motor-driver-v2"></a>
+### Kitronik Motor Driver V2 RC Car <a id="kitronik-motor-driver-v2-rc-car"></a>
 
 ![Photograph of the Kitronik MotorDriver V2](https://kitronik.co.uk/cdn/shop/products/5620_large-kitronik-motor-driver-board-microbit_1000x.jpg?v=1600170841)
 

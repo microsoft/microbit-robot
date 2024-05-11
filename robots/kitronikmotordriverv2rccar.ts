@@ -2,7 +2,7 @@ namespace robot {
     const MOTOR_SPEED = 100
 
     // https://github.com/KitronikLtd/pxt-kitronik-motor-driver
-    class KitronikMotorDriverV2 extends robots.Robot {
+    class KitronikMotorDriverV2RCCar extends robots.Robot {
         readonly throttle: drivers.AnalogPinHBridgeMotor
         readonly direction: drivers.AnalogPinHBridgeMotor
         constructor() {
@@ -48,10 +48,10 @@ namespace robot {
     }
 
     /**
-     * Kitronik Motor Driver V2
+     * Kitronik Motor Driver V2 RC Car
      */
-    //% fixedInstance whenUsed block="Kitronik Motor Driver V2"
-    export const kitronikMotorDriverV2 = new RobotDriver(
-        new KitronikMotorDriverV2()
+    //% fixedInstance whenUsed block="Kitronik Motor Driver V2 RC Car"
+    export const kitronikMotorDriverV2RCCar = new RobotDriver(
+        new KitronikMotorDriverV2RCCar()
     )
 }

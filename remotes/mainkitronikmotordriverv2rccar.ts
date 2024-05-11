@@ -1,4 +1,4 @@
-robot.kitronikMotorDriverV2.start()
+robot.kitronikMotorDriverV2RCCar.start()
 robot.startCompactRadio()
 robot.startCalibrationButtons()
 input.onButtonPressed(Button.A, () => {
