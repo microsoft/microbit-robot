@@ -291,9 +291,12 @@ Use micro:code to remote control a robot using this library.
 
 ### Kitronik Motor Driver V2 RC Car <a id="kitronik-motor-driver-v2-rc-car"></a>
 
-![Photograph of the Kitronik MotorDriver V2](https://kitronik.co.uk/cdn/shop/products/5620_large-kitronik-motor-driver-board-microbit_1000x.jpg?v=1600170841)
+![Photograph of the Kitronik MotorDriver V2 RC Car](https://pxt.azureedge.net/blob/cfdf4d024aa79a21e0492ec131098debc937dfa7/static/mb/projects/rc-car/painted.jpg)
 
--   [Home](https://kitronik.co.uk/products/5620-motor-driver-board-for-the-bbc-microbit-v2)
+-   [Build instructions](https://makecode.microbit.org/projects/rc-car)
+
+Note that the [Kitronik motor driver v2](https://kitronik.co.uk/products/5620-motor-driver-board-for-the-bbc-microbit-v2)
+is discontinued.
 
 
 ## License
