@@ -28,9 +28,9 @@ cp ./built/mbcodal-binary.hex ./assets/kittenbot-minilfr-for-microbit-v2.hex
 makecode -c mkc-kittenbotnanobit.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v2.hex
-makecode -c mkc-kitronikmotordriverv2rccar.json -f size
-cp ./built/mbdal-binary.hex ./assets/kitronik-motor-driver-v2-rc-car-for-microbit-v1.hex
-cp ./built/mbcodal-binary.hex ./assets/kitronik-motor-driver-v2-rc-car-for-microbit-v2.hex
+makecode -c mkc-kitronikmotordriverrccar.json -f size
+cp ./built/mbdal-binary.hex ./assets/kitronik-motor-driver-rc-car-for-microbit-v1.hex
+cp ./built/mbcodal-binary.hex ./assets/kitronik-motor-driver-rc-car-for-microbit-v2.hex
 makecode -c mkc-inksmithk8.json -f size
 cp ./built/mbdal-binary.hex ./assets/inksmith-k8-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/inksmith-k8-for-microbit-v2.hex

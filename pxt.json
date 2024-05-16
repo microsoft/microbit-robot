@@ -39,7 +39,7 @@
         "robots/kittenbotminilfr.ts",
         "robots/kittenbotrobotbit.ts",
         "robots/kittenbotnanobit.ts",
-        "robots/kitronikmotordriverv2rccar.ts",
+        "robots/kitronikmotordriverrccar.ts",
         "robots/inksmithk8.ts",
         "robots/sim.ts",
         "constants.ts",

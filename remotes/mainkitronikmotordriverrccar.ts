@@ -1,3 +1,3 @@
-robot.kitronikMotorDriverV2RCCar.start()
+robot.kitronikMotorDriverRCCar.start()
 robot.startCompactRadio()
 robot.startCalibrationButtons()
