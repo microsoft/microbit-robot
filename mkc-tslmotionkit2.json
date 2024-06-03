@@ -1,0 +1,5 @@
+{
+    "overrides": {
+        "testFiles": ["remotes/maintslmotionkit2.ts"]
+    }
+}
