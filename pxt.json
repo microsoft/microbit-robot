@@ -1,6 +1,6 @@
 {
     "name": "microbit-robot",
-    "version": "2.6.1",
+    "version": "2.6.2",
     "dependencies": {
         "core": "*",
         "radio": "*",
