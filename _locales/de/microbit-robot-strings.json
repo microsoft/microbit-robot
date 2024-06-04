@@ -1,0 +1,22 @@
+{
+    "{id:group}Robot": "Roboter",
+    "{id:group}Motors": "Motoren",
+    "{id:group}Accessories": "Zubehör",
+    "{id:group}Lines": "Linien",
+    "{id:group}Obstacles": "Hindernisse",
+    "{id:group}Configuration": "Einstellungen",
+    "robot.motorRun|block": "Robotermotor läuft in Richtung $turnRatio mit Geschwindigkeit $speed \\%",
+    "robot.motorStop|block": "Robotermotor stoppen",
+    "robot.armOpen|block": "Roboterarm $index öffnen $opening \\%",
+    "robot.setColor|block": "setze Roboterfarbe $rgb",
+    "robot.obstacleDistance|block": "Abstand zu Hindernis (cm)",
+    "robot.onObstacleDistanceChanged|block": "wenn Abstand zu Hindernis geändert",
+    "robot.detectLine|block": "Roboter erkennt Linie $detector",
+    "robot.onLineDetected|block": "wenn Roboter Liniensensoränderung erkennt",
+    "robot.onLineLeftRightDetected|block": "Roboter auf Linie $left $right",
+    "robot.setMotorDrift|block": "Motordrift ändern auf %drift",
+    "robot.setAssist|block": "setze Asistenz $assist $enabled",
+    "robot.setRadioGroup|block": "setze Funkgruppe auf $group",
+    "robot.playTone|block": "spiele Ton $frequency für $duration",
+    "robot.calibrate|block": "Roboter (mit den Knöpfen) kalibrieren"
+}

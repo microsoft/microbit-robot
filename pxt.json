@@ -43,6 +43,9 @@
         "robots/inksmithk8.ts",
         "robots/sim.ts",
         "constants.ts",
+        "robots/knotechcallibot.ts",
+        "robots/tslmotionkit2.ts",
+        "_locales/de/microbit-robot-strings.json",
         "tutorials/getting-started.md",
         "tutorials/light-and-sound.md",
         "tutorials/line-follower.md"
