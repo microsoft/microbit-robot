@@ -16,6 +16,11 @@ namespace robot {
         constructor(public readonly servo: Servos) { }
         start() { }
         open(aperture: number) {
+            if (aperture > 5) {
+                aperture = 0
+            } else {
+                aperture = 90
+            }
             let buf4 = pins.createBuffer(3)
             buf4[0] = this.servo
             let minPulse = 600
@@ -32,13 +37,28 @@ namespace robot {
         constructor() { 
             super(0)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 2)
-            this.sonar = new drivers.SR04Sonar(DigitalPin.P14, DigitalPin.P14)
-            // this.lineDetectors = new drivers.AnalogPinLineDetectors(AnalogPin.P1, AnalogPin.P2)
-            this.lineDetectors = new drivers.DigitalPinLineDetectors(
-                DigitalPin.P1,
-                DigitalPin.P2,
-                false
-            )
+            this.sonar = new drivers.SR04Sonar(DigitalPin.P8, DigitalPin.P8)
+            this.lineDetectors = new drivers.AnalogPinLineDetectors(AnalogPin.P2, AnalogPin.P1, true)
+            this.lineHighThreshold = 650
+            this.commands[robot.robots.RobotCompactCommand.MotorRunForward] =
+            {
+                speed: 20,
+            }
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
+            {
+                turnRatio: -50,
+                speed: 20
+            }
+            this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] =
+            {
+                turnRatio: 50,
+                speed: 20,
+            }
+            // this.lineDetectors = new drivers.DigitalPinLineDetectors(
+            //     DigitalPin.P2,
+            //     DigitalPin.P1,
+            //     false
+            // )
             this.arms = [new I2CArm(Servos.S1), new I2CArm(Servos.S2)]
             this.reset()
             this.maxLineSpeed = 50
@@ -52,20 +72,19 @@ namespace robot {
         }
 
         motorRun(left: number, right: number): void {
-            left = 0 - left
-            right = 0 - right
-            
+            left = (0 - left)
+            right = (0 - right)
             let buf = pins.createBuffer(5)
             // REG, M1A, M1B, M2A, M2B
             buf[0] = REG_MOTOR
             if (left >= 0) {
                 buf[1] = left
                 buf[2] = 0
-    
             } else {
                 buf[1] = 0
                 buf[2] = -left
             }
+
             if (right >= 0) {
                 buf[3] = right
                 buf[4] = 0
