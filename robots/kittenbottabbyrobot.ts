@@ -39,20 +39,21 @@ namespace robot {
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 2)
             this.sonar = new drivers.SR04Sonar(DigitalPin.P8, DigitalPin.P8)
             this.lineDetectors = new drivers.AnalogPinLineDetectors(AnalogPin.P2, AnalogPin.P1, true)
-            this.lineHighThreshold = 650
+            this.lineHighThreshold = 600
+            this.maxLineSpeed = 100
             this.commands[robot.robots.RobotCompactCommand.MotorRunForward] =
             {
-                speed: 20,
+                speed: 100,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnLeft] =
             {
-                turnRatio: -50,
-                speed: 20
+                turnRatio: -65,
+                speed: 100,
             }
             this.commands[robot.robots.RobotCompactCommand.MotorTurnRight] =
             {
-                turnRatio: 50,
-                speed: 20,
+                turnRatio: 65,
+                speed: 100,
             }
             // this.lineDetectors = new drivers.DigitalPinLineDetectors(
             //     DigitalPin.P2,
@@ -61,7 +62,7 @@ namespace robot {
             // )
             this.arms = [new I2CArm(Servos.S1), new I2CArm(Servos.S2)]
             this.reset()
-            this.maxLineSpeed = 50
+            
             // this.headlight(50,50)
         }
 
