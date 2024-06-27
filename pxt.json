@@ -54,6 +54,7 @@
     "fileDependencies": {
         "kittenbotnanobit.ts": "target:microbit",
         "kittenbotrobotbit.ts": "target:microbit",
+        "kittenbottabbyrobot.ts": "target:microbit",
         "yahboomtinybit.ts": "target:microbit",
         "microbit.ts": "target:microbit"
     },

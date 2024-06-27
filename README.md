@@ -15,6 +15,7 @@ This library is compatible with micro:bit V2 and V1. However, the code space in 
 -   [Forward Educations Smart Vehicle Kit](#fwdedu)
 -   [InkSmith K8](#inksmith-k8)
 -   [KeyStudio KS0426 Mini Smart Robot](#keystudio-mini)
+-   [KittenBot Tabbybot](#kittenbot-TabbyBot)
 -   [KittenBot MiniLFR](#kittenbot-mlfr)
 -   [KittenBot Robotbit](#kittenbot-robotbit)
 -   [KittenBot Nanobit](#kittenbot-nanobit)
@@ -264,6 +265,12 @@ Use micro:code to remote control a robot using this library.
 ### KeyStudio KS0426 Mini Smart Robot <a id="keystudio-mini"></a>
 
 -   [Home](https://wiki.keyestudio.com/KS0426_Keyestudio_Micro%EF%BC%9Abit_Mini_Smart_Robot_Car_Kit_V2)
+
+### KittenBot TabbyBot <a id="kittenbot-TabbyBot"></a>
+
+![Photo of the TabbyBot](https://microsoft.github.io/microbit-robot/assets/images/tabbyrobot.png)
+
+-   [Home](https://www.kittenbot.cc/products/kittenbot-tabbybot-programming-robotics-kit)
 
 ### KittenBot MiniLFR <a id="kittenbot-mlfr"></a>
 
