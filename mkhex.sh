@@ -25,9 +25,9 @@ cp ./built/mbcodal-binary.hex ./assets/dfrobot-maqueen-plus-for-microbit-v2.hex
 makecode -c mkc-kittenbotminilfr.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-minilfr-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-minilfr-for-microbit-v2.hex
-makecode -c mkc-kittenbottabbyrobot.json -f size
-cp ./built/mbdal-binary.hex ./assets/kittenbot-tabbyrobot-for-microbit-v1.hex
-cp ./built/mbcodal-binary.hex ./assets/kittenbot-tabbyrobot-for-microbit-v2.hex
+makecode -c mkc-kittenbottabbybot.json -f size
+cp ./built/mbdal-binary.hex ./assets/kittenbot-tabbybot-for-microbit-v1.hex
+cp ./built/mbcodal-binary.hex ./assets/kittenbot-tabbybot-for-microbit-v2.hex
 makecode -c mkc-kittenbotnanobit.json -f size
 cp ./built/mbdal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v1.hex
 cp ./built/mbcodal-binary.hex ./assets/kittenbot-nanobit-for-microbit-v2.hex

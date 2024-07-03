@@ -268,9 +268,9 @@ Use micro:code to remote control a robot using this library.
 
 -   [Home](https://wiki.keyestudio.com/KS0426_Keyestudio_Micro%EF%BC%9Abit_Mini_Smart_Robot_Car_Kit_V2)
 
-### KittenBot TabbyBot <a id="kittenbot-TabbyBot"></a>
+### KittenBot TabbyBot <a id="kittenbot-tabbybot"></a>
 
-![Photo of the TabbyBot](https://microsoft.github.io/microbit-robot/assets/images/tabbyrobot.png)
+![Photo of the TabbyBot](https://microsoft.github.io/microbit-robot/assets/images/tabbybot.png)
 
 -   [Home](https://www.kittenbot.cc/products/kittenbot-tabbybot-programming-robotics-kit)
 

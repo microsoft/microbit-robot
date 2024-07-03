@@ -33,7 +33,7 @@ namespace robot {
     }
 
 
-    class KittenBotTabbyRobot extends robots.Robot { 
+    class KittenBotTabbyBot extends robots.Robot { 
         constructor() { 
             super(0)
             this.leds = new drivers.WS2812bLEDStrip(DigitalPin.P16, 2)
@@ -111,11 +111,11 @@ namespace robot {
     }
 
     /**
-     * Kittenbot TabbyRobot
+     * Kittenbot TabbyBot
      */
-    //% fixedInstance whenUsed block="kittenbot tabbyrobot" whenUsed weight=80
-    export const kittenbotTabbyRobot = new RobotDriver(
-        new KittenBotTabbyRobot()
+    //% fixedInstance whenUsed block="kittenbot tabbybot" whenUsed weight=80
+    export const kittenbotTabbyBot = new RobotDriver(
+        new KittenBotTabbyBot()
     )
 }
 
