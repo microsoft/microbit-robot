@@ -254,7 +254,7 @@ Use micro:code to remote control a robot using this library.
 
 ## Forward Education Smart Vehicle Kit <a id="fwdedu"></a>
 
-![Photograph of car made with Smart Vehicle Kit](https://microsoft.github.io/microbit-robot/assets/images/fwdedu.jpg){:class="photo"}
+![Photograph of car made with Smart Vehicle Kit](https://microsoft.github.io/microbit-robot/assets/images/fwdedu.jpg)
 
 -   [Home](https://forwardedu.com/compare-kits/)
 
