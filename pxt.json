@@ -47,6 +47,7 @@
         "robots/knotechcallibot.ts",
         "robots/tslmotionkit2.ts",
         "_locales/de/microbit-robot-strings.json",
+        "_locales/zh-TW/microbit-robot-strings.json",
         "tutorials/getting-started.md",
         "tutorials/light-and-sound.md",
         "tutorials/line-follower.md"
